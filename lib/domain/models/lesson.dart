@@ -1,5 +1,5 @@
-import './teacher.dart';
 import './note.dart';
+import './teacher.dart';
 
 class Lesson {
   final int nr;
@@ -19,7 +19,7 @@ class Lesson {
     required this.rooms,
     required this.teachers,
     required this.notes,
-    required this.wasPresent
+    required this.wasPresent,
   });
 
   factory Lesson.fromJson(Map json) {
@@ -39,14 +39,18 @@ class Lesson {
     }
 
     return Lesson(
-        nr: json['nr'],
-        status: jsonToStatus(json['status']),
-        name: json['subject']['name'],
-        shortName: json['subject']['local_id'],
-        rooms: (json['rooms'] as List).map((e) => e['local_id'].toString()).toList(),
-        teachers: (json['teachers'] as List).map((e) => Teacher.fromJson(e)).toList(),
-        notes: (json['notes'] as List).map((e) => Note.fromJson(e)).toList(),
-        wasPresent: (json['students_present_count'] ??= 0) > 0
+      nr: json['nr'],
+      status: jsonToStatus(json['status']),
+      name: json['subject']['name'],
+      shortName: json['subject']['local_id'],
+      rooms:
+          (json['rooms'] as List).map((e) => e['local_id'].toString()).toList(),
+      teachers:
+          (json['teachers'] as List).map((e) => Teacher.fromJson(e)).toList(),
+      notes: (json['notes'] as List).map((e) => Note.fromJson(e)).toList(),
+      // check if the count of present students is greater than 0 because then
+      // the student was present
+      wasPresent: (json['students_present_count'] ??= 0) > 0,
     );
   }
 }
