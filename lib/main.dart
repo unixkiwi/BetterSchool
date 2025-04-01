@@ -2,7 +2,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/domain/repo/beste_schule_repo.dart';
+import 'package:school_app/data/repo/http_beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/overview_page.dart';
 
 void main() async {
@@ -23,7 +23,7 @@ class SchoolApp extends StatelessWidget {
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider(create: (context) => BesteSchuleRepo()),
+            ChangeNotifierProvider(create: (context) => BesteSchuleRepoHTTP()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
