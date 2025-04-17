@@ -25,12 +25,15 @@ class BesteSchuleRepoHTTP extends ChangeNotifier implements BesteSchuleRepo {
       headers: _HEADERS,
     );
 
-    List days = jsonDecode(resp.body)['data']['days'];
-    days.removeAt(4);
-    days.removeAt(5);
-
     if (resp.statusCode == 200) {
-      return days.map((e) => SchoolDay.fromJson(e)).toList();
+      List<SchoolDay> days;
+      List days_raw = jsonDecode(resp.body)['data']['days'];
+
+      days = days_raw.map((e) => SchoolDay.fromJson(e)).toList();
+
+      days.removeWhere((day) => day.isNull);
+
+      return days;
     } else {
       return [];
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/http_beste_schule_repo.dart';
+import 'package:school_app/presentation/components/overview_lesson_tile.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
@@ -10,24 +11,21 @@ class Homepage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("SchoolApp")),
       body: FutureBuilder(
-        future: context.watch<BesteSchuleRepoHTTP>().getWeek(nr: 13),
+        future: context.watch<BesteSchuleRepoHTTP>().getWeek(nr: 16),
         builder: (context, snap) {
           if (snap.hasData) {
             return ListView.builder(
-              itemCount: snap.data?.length,
+              itemCount: snap.data!.length,
               itemBuilder: (context, i) {
-                print(snap.data![i].date.day);
-
-                return ListTile(
-                  title: Text(snap.data![i].lessons.first.name),
-                  subtitle: Text(snap.data![i].date.weekday.toString()),
-                );
+                return OverviewLessonTile(lessons: snap.data![i].lessons);
               },
             );
           }
 
           if (snap.hasError) {
-            return ListView(children: [Text(snap.error!.toString())]);
+            print(snap.stackTrace);
+
+            return ListView(children: [Text(snap.stackTrace!.toString())]);
           }
 
           return Center(child: CircularProgressIndicator());
