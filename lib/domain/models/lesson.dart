@@ -41,10 +41,12 @@ class Lesson {
     return Lesson(
       nr: json['nr'],
       status: jsonToStatus(json['status']),
-      name: json['subject']['name'],
-      shortName: json['subject']['local_id'],
+      name: json['subject']['name'] ?? "",
+      shortName: json['subject']['local_id'] ?? "",
       rooms:
-          (json['rooms'] as List).map((e) => e['local_id'].toString()).toList(),
+          (json['rooms'] as List)
+              .map((e) => (e['local_id'] ?? "").toString())
+              .toList(),
       teachers:
           (json['teachers'] as List).map((e) => Teacher.fromJson(e)).toList(),
       notes: (json['notes'] as List).map((e) => Note.fromJson(e)).toList(),

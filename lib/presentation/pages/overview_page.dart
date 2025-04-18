@@ -15,11 +15,29 @@ class Homepage extends StatelessWidget {
         builder: (context, snap) {
           if (snap.hasData) {
             return ListView.builder(
+              padding: EdgeInsets.all(8.0),
+              itemCount: snap.data!.length,
+              itemBuilder: (context, rowIndex) {
+                return Row(
+                  children: List.generate(snap.data![rowIndex].lessons.length, (
+                    colIndex,
+                  ) {
+                    return Expanded(
+                      child: OverviewLessonTile(
+                        lesson: snap.data![rowIndex].lessons[colIndex],
+                      ),
+                    );
+                  }),
+                );
+              },
+            );
+
+            /*return ListView.builder(
               itemCount: snap.data!.length,
               itemBuilder: (context, i) {
                 return OverviewLessonTile(lessons: snap.data![i].lessons);
               },
-            );
+            );*/
           }
 
           if (snap.hasError) {

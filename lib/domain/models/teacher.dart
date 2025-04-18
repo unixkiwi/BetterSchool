@@ -7,9 +7,9 @@ class Teacher {
 
   factory Teacher.fromJson(Map json) {
     return Teacher(
-      first: json['forename'],
-      last: json['name'],
-      short: json['local_id'],
+      first: json['forename'] ?? "",
+      last: json['name'] ?? "",
+      short: json['local_id'] ?? "",
     );
   }
 }
