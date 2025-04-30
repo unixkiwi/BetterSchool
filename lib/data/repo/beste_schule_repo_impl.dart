@@ -1,12 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 
-class BesteSchuleRepoHTTP extends ChangeNotifier implements BesteSchuleRepo {
+class BesteSchuleRepoImpl implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
 
   final Map<String, String> _HEADERS = {
@@ -16,7 +15,7 @@ class BesteSchuleRepoHTTP extends ChangeNotifier implements BesteSchuleRepo {
   };
 
   @override
-  Future<List<SchoolDay>> getWeek({required int nr}) async {
+  Future<List<SchoolDay>?> getWeek({required int nr}) async {
     var resp = await http.get(
       Uri.https(_BASE_URL, "/api/journal/weeks/${DateTime.now().year}-$nr", {
         'include': 'days.lessons',
@@ -35,7 +34,7 @@ class BesteSchuleRepoHTTP extends ChangeNotifier implements BesteSchuleRepo {
 
       return days;
     } else {
-      return [];
+      return null;
     }
   }
 }

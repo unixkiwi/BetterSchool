@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/models/lesson.dart';
+import '../../../domain/models/lesson.dart';
 
 class OverviewLessonTile extends StatelessWidget {
   final Lesson lesson;
