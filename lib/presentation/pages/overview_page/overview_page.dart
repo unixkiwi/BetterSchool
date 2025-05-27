@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/presentation/pages/overview_page/page_select_menu.dart';
+import 'package:school_app/presentation/pages/overview_page/tasks_section.dart';
 import 'package:school_app/presentation/pages/overview_page/todays_lessons_section.dart';
 import 'package:school_app/presentation/viewmodels/overview_page_viewmodel.dart';
 
@@ -20,7 +21,7 @@ class _OverviewPageState extends State<OverviewPage> {
     // trigger fetch when page was opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
       log("Fetching lessons...");
-      context.read<OverviewPageViewmodel>().fetchTodaysLessons();
+      context.read<OverviewPageViewmodel>().fetchData();
       log("Done fetching lessons.");
     });
   }
@@ -36,6 +37,9 @@ class _OverviewPageState extends State<OverviewPage> {
 
           // today's lessons
           TodaysLessonsSection(),
+
+          // tasks
+          TasksSection(),
         ],
       ),
     );

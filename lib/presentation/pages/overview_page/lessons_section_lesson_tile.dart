@@ -13,15 +13,14 @@ class LessonTile extends StatelessWidget {
       onTap: () {
         // TODO: Add lesson tile onPress logic
       },
-
-      //FIXME: tap animation is wider than tile
+      //IDEA: show teacher and room
       borderRadius: BorderRadius.circular(7),
       child: Container(
         alignment: Alignment.center,
-        margin: EdgeInsets.only(right: 4, left: 4),
+        margin: EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: BorderRadius.circular(7)
+          borderRadius: BorderRadius.circular(7),
         ),
         child: FittedBox(
           fit: BoxFit.scaleDown,

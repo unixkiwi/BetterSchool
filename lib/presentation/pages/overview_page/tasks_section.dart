@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/presentation/pages/overview_page/lessons_section_lesson_tile.dart';
+import 'package:school_app/presentation/pages/overview_page/task_tile.dart';
 import 'package:school_app/presentation/viewmodels/overview_page_viewmodel.dart';
 
-class TodaysLessonsSection extends StatelessWidget {
-  const TodaysLessonsSection({super.key});
+class TasksSection extends StatelessWidget {
+  const TasksSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,27 +22,28 @@ class TodaysLessonsSection extends StatelessWidget {
                 horizontal: 8.0,
               ),
               child: Text(
-                "Today's lessons",
+                "Tasks",
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
 
-            // horizontal list of lessons of the day
-            viewModel.isLoading && !viewModel.dataFetched
-            ? Center(child: CircularProgressIndicator())
-            : SizedBox(
-              height: 50,
-              child: Row(
-                children: [
-                  for (int index = 0; index < viewModel.lessons.length; index++)
-                    Expanded(
-                      child: LessonTile(index: index, viewModel: viewModel),
-                    ),
-                ],
-              ),
-            ),
+            // horizontal list of lessons of the days
+            viewModel.isLoading ||
+                    !viewModel.dataFetched ||
+                    viewModel.today == null
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                  children: [
+                    for (
+                      int i = 0;
+                      i < viewModel.today!.getLessonNotes().length;
+                      i++
+                    )
+                      TaskTile(note: viewModel.today!.getLessonNotes()[i]),
+                  ],
+                ),
           ],
         );
       },

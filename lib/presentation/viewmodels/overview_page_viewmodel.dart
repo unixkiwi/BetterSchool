@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,28 +14,44 @@ class OverviewPageViewmodel extends ChangeNotifier {
   OverviewPageViewmodel({required this.repo});
 
   List<Lesson> _lessons = [];
+  List<SchoolDay> _schoolDays = [];
   bool _isLoading = false;
+  bool _dataFetched = false;
 
   List<Lesson> get lessons => _lessons;
-  bool get isLoading => _isLoading;
+  List<SchoolDay> get schoolDays => _schoolDays;
+  SchoolDay? get today =>
+      _schoolDays.length >= DateTime.now().weekday
+          ? _schoolDays[DateTime.now().weekday - 1]
+          : null;
 
-  Future<void> fetchTodaysLessons() async {
+  bool get isLoading => _isLoading;
+  bool get dataFetched => _dataFetched;
+
+  Future<void> fetchData() async {
     // await the lessons of the current week from the repo
     _isLoading = true;
-    List<SchoolDay>? days = await repo.getWeek(nr: DateTime.now().weekOfYear);
+    final int weekOfYear = DateTime.now().weekOfYear;
+    List<SchoolDay>? days = await repo.getWeek(nr: weekOfYear);
 
     // return when an error occurred while fetching the api,
     // (getWeek() returns null when an error occurred)
-    if (days == null) return;
+    if (days == null) {
+      log("Fetched days were null!");
+      return;
+    }
 
-    log(days.toString());
+    // set data
+    _schoolDays = days;
 
     // just get the lessons of today
-    List<Lesson> lessonsFetched = days[DateTime.now().weekday].lessons;
+    final int weekday = DateTime.now().weekday - 1;
+    List<Lesson> lessonsFetched = days[weekday].lessons;
 
-    // asign fiels
+    // assign fiels
     _lessons = lessonsFetched;
     _isLoading = false;
+    _dataFetched = true;
 
     // relaod after fetching data
     notifyListeners();

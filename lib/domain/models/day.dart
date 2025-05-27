@@ -33,4 +33,14 @@ class SchoolDay {
       );
     }
   }
+
+  /**
+   * Filters notes which are about the lessons content
+   */
+  List<Note> getLessonNotes() {
+    return lessons
+        .map((lesson) => lesson.notes.where((note) => note.type != NoteType.LESSON_CONTENT))
+        .expand((notes) => notes)
+        .toList();
+  }
 }
