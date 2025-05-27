@@ -44,6 +44,5 @@ class LessonsWeekPage extends StatelessWidget {
         },
       ),
     );
-    ;
   }
 }

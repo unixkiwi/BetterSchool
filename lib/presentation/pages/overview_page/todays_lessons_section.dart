@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:school_app/presentation/pages/overview_page/lessons_section_lesson_tile.dart';
 import 'package:school_app/presentation/viewmodels/overview_page_viewmodel.dart';
 
 class TodaysLessonsSection extends StatelessWidget {
@@ -9,8 +10,6 @@ class TodaysLessonsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<OverviewPageViewmodel>(
       builder: (context, viewModel, child) {
-        print(viewModel.isLoading);
-
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -29,26 +28,17 @@ class TodaysLessonsSection extends StatelessWidget {
             ),
 
             // horizontal list of lessons of the day
-            SizedBox(
+            viewModel.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SizedBox(
               height: 50,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: viewModel.lessons.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.all(5),
-                    child: Text(
-                      viewModel.lessons[index].shortName,
-                      style: TextStyle(
-                        fontSize:
-                            Theme.of(
-                              context,
-                            ).textTheme.headlineSmall!.fontSize ??
-                            26,
-                      ),
+              child: Row(
+                children: [
+                  for (int index = 0; index < viewModel.lessons.length; index++)
+                    Expanded(
+                      child: LessonTile(index: index, viewModel: viewModel),
                     ),
-                  );
-                },
+                ],
               ),
             ),
           ],

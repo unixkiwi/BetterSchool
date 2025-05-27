@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/presentation/pages/overview_page/page_select_menu.dart';
@@ -17,9 +19,9 @@ class _OverviewPageState extends State<OverviewPage> {
     super.initState();
     // trigger fetch when page was opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      print("Fetching lessons...");
+      log("Fetching lessons...");
       context.read<OverviewPageViewmodel>().fetchTodaysLessons();
-      print("Done fetching lessons.");
+      log("Done fetching lessons.");
     });
   }
 

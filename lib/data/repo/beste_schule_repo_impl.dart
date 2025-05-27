@@ -26,9 +26,9 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
     if (resp.statusCode == 200) {
       List<SchoolDay> days;
-      List days_raw = jsonDecode(resp.body)['data']['days'];
+      List daysRaw = jsonDecode(resp.body)['data']['days'];
 
-      days = days_raw.map((e) => SchoolDay.fromJson(e)).toList();
+      days = daysRaw.map((e) => SchoolDay.fromJson(e)).toList();
 
       days.removeWhere((day) => day.isNull);
 

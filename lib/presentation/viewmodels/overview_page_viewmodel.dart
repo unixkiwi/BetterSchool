@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
+import 'package:school_app/utils/time_utils.dart';
 
 class OverviewPageViewmodel extends ChangeNotifier {
   final BesteSchuleRepo repo;
@@ -17,20 +20,23 @@ class OverviewPageViewmodel extends ChangeNotifier {
 
   Future<void> fetchTodaysLessons() async {
     // await the lessons of the current week from the repo
-    //TODO: implement automatic getWeekNumber
     _isLoading = true;
-    List<SchoolDay>? days = await repo.getWeek(nr: 19);
+    List<SchoolDay>? days = await repo.getWeek(nr: DateTime.now().weekOfYear);
 
     // return when an error occurred while fetching the api,
     // (getWeek() returns null when an error occurred)
     if (days == null) return;
 
-    print(days);
+    log(days.toString());
 
     // just get the lessons of today
     List<Lesson> lessonsFetched = days[DateTime.now().weekday].lessons;
 
+    // asign fiels
     _lessons = lessonsFetched;
     _isLoading = false;
+
+    // relaod after fetching data
+    notifyListeners();
   }
 }
