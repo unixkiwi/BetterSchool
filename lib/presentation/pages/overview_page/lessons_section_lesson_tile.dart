@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/presentation/viewmodels/overview_page_viewmodel.dart';
 
 class LessonTile extends StatelessWidget {
   final int index;
   final OverviewPageViewmodel viewModel;
+  late Lesson _lesson;
 
-  const LessonTile({super.key, required this.index, required this.viewModel});
+  LessonTile({super.key, required this.index, required this.viewModel});
+
+  Color getColor(Lesson lesson, BuildContext ctx) {
+    switch (lesson.status) {
+      case LessonStatus.CANCELLED:
+        return Theme.of(ctx).colorScheme.errorContainer;
+      case LessonStatus.HOLD:
+        return Theme.of(ctx).colorScheme.secondaryContainer;
+      default:
+        return Theme.of(ctx).colorScheme.primaryContainer;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    _lesson = viewModel.lessons[index];
+
     return InkWell(
       onTap: () {
         // TODO: Add lesson tile onPress logic
@@ -19,13 +34,13 @@ class LessonTile extends StatelessWidget {
         alignment: Alignment.center,
         margin: EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
+          color: getColor(_lesson, context),
           borderRadius: BorderRadius.circular(7),
         ),
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
-            viewModel.lessons[index].shortName,
+            _lesson.shortName,
             maxLines: 1,
             overflow: TextOverflow.fade,
           ),

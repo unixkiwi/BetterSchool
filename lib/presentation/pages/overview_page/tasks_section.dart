@@ -14,6 +14,7 @@ class TasksSection extends StatelessWidget {
       builder: (context, viewModel, child) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // heading for this section
             Padding(
@@ -36,12 +37,14 @@ class TasksSection extends StatelessWidget {
                 ? Center(child: CircularProgressIndicator())
                 : Column(
                   children: [
-                    for (
-                      int i = 0;
-                      i < viewModel.today!.getLessonNotes().length;
-                      i++
-                    )
-                      TaskTile(note: viewModel.today!.getLessonNotes()[i]),
+                    viewModel.today!.getLessonNotes().isEmpty
+                    ? Text("No tasks for today :)", style: TextStyle(fontWeight: FontWeight.bold),)
+                    : Column(
+                        children: [
+                          for (var note in viewModel.today!.getLessonNotes())
+                            TaskTile(note: note),
+                        ],
+                      ),
                   ],
                 ),
           ],

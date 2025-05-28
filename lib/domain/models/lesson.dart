@@ -1,5 +1,6 @@
 import './note.dart';
 import './teacher.dart';
+import './lesson_note.dart';
 
 class Lesson {
   final int nr;
@@ -8,7 +9,7 @@ class Lesson {
   final String shortName;
   final List<String> rooms;
   final List<Teacher> teachers;
-  final List<Note> notes;
+  final List<LessonNote> notes;
   final bool wasPresent;
 
   const Lesson({
@@ -38,7 +39,8 @@ class Lesson {
       }
     }
 
-    return Lesson(
+    // create temp lesson without notes, so i can use the lesson in the LessonNote
+    final tempLesson = Lesson(
       nr: json['nr'],
       status: jsonToStatus(json['status']),
       name: json['subject']['name'] ?? "",
@@ -49,10 +51,26 @@ class Lesson {
               .toList(),
       teachers:
           (json['teachers'] as List).map((e) => Teacher.fromJson(e)).toList(),
-      notes: (json['notes'] as List).map((e) => Note.fromJson(e)).toList(),
-      // check if the count of present students is greater than 0 because then
-      // the student was present
+      notes: const [],
+      // if student count is greater than 0 -> student was present in the lesson
       wasPresent: (json['students_present_count'] ??= 0) > 0,
+    );
+
+    // create the notes list using the generated tempLesson
+    final notes = (json['notes'] as List)
+        .map((e) => LessonNote.fromJson(e, tempLesson))
+        .toList();
+
+    // return final lesson
+    return Lesson(
+      nr: tempLesson.nr,
+      status: tempLesson.status,
+      name: tempLesson.name,
+      shortName: tempLesson.shortName,
+      rooms: tempLesson.rooms,
+      teachers: tempLesson.teachers,
+      notes: notes,
+      wasPresent: tempLesson.wasPresent,
     );
   }
 }

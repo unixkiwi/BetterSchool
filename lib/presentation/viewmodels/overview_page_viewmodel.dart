@@ -29,6 +29,8 @@ class OverviewPageViewmodel extends ChangeNotifier {
   bool get dataFetched => _dataFetched;
 
   Future<void> fetchData() async {
+    if (_isLoading) return;
+
     // await the lessons of the current week from the repo
     _isLoading = true;
     final int weekOfYear = DateTime.now().weekOfYear;

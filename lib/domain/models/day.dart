@@ -1,3 +1,5 @@
+import 'package:school_app/domain/models/lesson_note.dart';
+
 import './lesson.dart';
 import './note.dart';
 
@@ -34,12 +36,9 @@ class SchoolDay {
     }
   }
 
-  /**
-   * Filters notes which are about the lessons content
-   */
-  List<Note> getLessonNotes() {
+  List<LessonNote> getLessonNotes() {
     return lessons
-        .map((lesson) => lesson.notes.where((note) => note.type != NoteType.LESSON_CONTENT))
+        .map((lesson) => lesson.notes)
         .expand((notes) => notes)
         .toList();
   }
