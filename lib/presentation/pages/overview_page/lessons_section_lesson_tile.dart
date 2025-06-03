@@ -40,7 +40,7 @@ class LessonTile extends StatelessWidget {
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
-            _lesson.shortName,
+            _lesson.subject.shortName,
             maxLines: 1,
             overflow: TextOverflow.fade,
           ),

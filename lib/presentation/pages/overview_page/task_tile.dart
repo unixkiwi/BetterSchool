@@ -12,7 +12,7 @@ class TaskTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // lesson name
-        Text(note.lesson.shortName),
+        Text(note.lesson.subject.shortName),
 
         // content of the note
         Text(note.desc)

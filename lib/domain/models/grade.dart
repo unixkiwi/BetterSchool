@@ -1,0 +1,39 @@
+import 'dart:developer';
+
+import 'package:school_app/domain/models/subject.dart';
+
+class Grade {
+  final String title;
+  final double value;
+  final String type;
+  final DateTime date;
+  final Subject subject;
+
+  const Grade({
+    required this.title,
+    required this.value,
+    required this.type,
+    required this.date,
+    required this.subject,
+  });
+
+  factory Grade.fromJson(Map json) {
+    double gradeToNumber(String grade) {
+      if (grade.endsWith('+')) {
+        return double.parse(grade[0]) - 0.3;
+      } else if (grade.endsWith('-')) {
+        return double.parse(grade[0]) + 0.3;
+      } else {
+        return double.parse(grade);
+      }
+    }
+
+    return Grade(
+      title: json['collection']['name'] ?? "No title found!",
+      value: gradeToNumber(json['value']),
+      type: json['collection']['type'] ?? "",
+      date: DateTime.parse(json['given_at']),
+      subject: Subject.fromJson(json['collection']['subject']),
+    );
+  }
+}

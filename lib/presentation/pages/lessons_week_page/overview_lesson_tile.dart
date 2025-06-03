@@ -16,7 +16,7 @@ class OverviewLessonTile extends StatelessWidget {
         border: Border.all(width: 1, color: Colors.white),
       ),
       child: Column(
-        children: [Text(lesson.shortName), Text(lesson.rooms.join(", "))],
+        children: [Text(lesson.subject.shortName), Text(lesson.rooms.join(", "))],
       ),
     );
   }

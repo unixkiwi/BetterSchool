@@ -1,12 +1,11 @@
-import './note.dart';
 import './teacher.dart';
 import './lesson_note.dart';
+import './subject.dart';
 
 class Lesson {
   final int nr;
   final LessonStatus status;
-  final String name;
-  final String shortName;
+  final Subject subject;
   final List<String> rooms;
   final List<Teacher> teachers;
   final List<LessonNote> notes;
@@ -15,8 +14,7 @@ class Lesson {
   const Lesson({
     required this.nr,
     required this.status,
-    required this.name,
-    required this.shortName,
+    required this.subject,
     required this.rooms,
     required this.teachers,
     required this.notes,
@@ -43,8 +41,7 @@ class Lesson {
     final tempLesson = Lesson(
       nr: json['nr'],
       status: jsonToStatus(json['status']),
-      name: json['subject']['name'] ?? "",
-      shortName: json['subject']['local_id'] ?? "",
+      subject: Subject.fromJson(json['subject']),
       rooms:
           (json['rooms'] as List)
               .map((e) => (e['local_id'] ?? "").toString())
@@ -65,8 +62,7 @@ class Lesson {
     return Lesson(
       nr: tempLesson.nr,
       status: tempLesson.status,
-      name: tempLesson.name,
-      shortName: tempLesson.shortName,
+      subject: tempLesson.subject,
       rooms: tempLesson.rooms,
       teachers: tempLesson.teachers,
       notes: notes,

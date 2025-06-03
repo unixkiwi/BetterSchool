@@ -14,6 +14,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     'Accept': 'application/json',
   };
 
+  //TODO: implement getGrades or something like that
+
   @override
   Future<List<SchoolDay>?> getWeek({required int nr}) async {
     var resp = await http.get(

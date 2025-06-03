@@ -39,7 +39,7 @@ class _OverviewPageState extends State<OverviewPage> {
           TodaysLessonsSection(),
 
           // tasks
-          TasksSection(),
+          //TasksSection(),
         ],
       ),
     );
