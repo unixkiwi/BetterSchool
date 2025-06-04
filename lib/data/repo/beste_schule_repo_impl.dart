@@ -8,7 +8,7 @@ import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 
 class BesteSchuleRepoImpl implements BesteSchuleRepo {
-  final String _BASE_URL = "beste.schule/";
+  final String _BASE_URL = "beste.schule";
 
   final Map<String, String> _HEADERS = {
     'Authorization': 'Bearer ${dotenv.get("KEY")}',
@@ -44,10 +44,10 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
   @override
   Future<int?> getCurrentIntervalID() async {
-    var resp = await getFromAPI(route: "api/intervals");
+    var resp = await getFromAPI(route: "/api/intervals");
 
     if (resp != null) {
-      List<Map> data = jsonDecode(resp)['data'];
+      var data = resp['data'];
       if (data.isEmpty) return null;
 
       // sort intervals by their from data
@@ -71,11 +71,11 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       return _calculationRuleCache![subjectId];
     }
 
-    var resp = await getFromAPI(route: "api/finalgrades");
+    var resp = await getFromAPI(route: "/api/finalgrades");
 
     if (resp == null) return null;
 
-    final List data = jsonDecode(resp)['data'];
+    final List data = resp['data'];
 
     int interval_id = await getCurrentIntervalID() ?? 0;
 
@@ -87,7 +87,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
                   item['subject_id'] == subjectId &&
                   item['interval_id'] == interval_id,
             )
-            .first;
+            .firstOrNull;
 
     String? rule;
     if (entry == null) {
@@ -117,10 +117,10 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       return _subjectsCache;
     }
 
-    var resp = await getFromAPI(route: "api/subjects");
+    var resp = await getFromAPI(route: "/api/subjects");
 
     if (resp != null) {
-      final List<Map> data = resp['data'];
+      final data = resp['data'];
       List<Subject> subjects = [];
 
       for (Map subject in data) {
@@ -137,12 +137,12 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   @override
   Future<List<Grade>?> getGrades() async {
     var resp = await getFromAPI(
-      route: "api/grades",
+      route: "/api/grades",
       params: {'include': 'collection', 'sort': 'given_at'},
     );
 
     if (resp != null) {
-      final List<Map> data = resp['data'];
+      final data = resp['data'];
       List<Grade> grades = [];
 
       for (Map grade in data) {
@@ -158,7 +158,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   @override
   Future<List<SchoolDay>?> getWeek({required int nr}) async {
     var resp = await getFromAPI(
-      route: "api/journal/weeks/${DateTime.now().year}-$nr",
+      route: "/api/journal/weeks/${DateTime.now().year}-$nr",
       params: {'include': 'days.lessons', 'interpolate': 'true'},
     );
 

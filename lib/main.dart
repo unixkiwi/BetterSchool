@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
-import 'package:school_app/presentation/pages/overview_page/overview_page.dart';
-import 'package:school_app/presentation/viewmodels/overview_page_viewmodel.dart';
+import 'package:school_app/presentation/pages/lessons_week_page/lessons_week_page.dart';
+import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 
 void main() async {
   // load .env file for env variables
@@ -36,10 +36,10 @@ class SchoolApp extends StatelessWidget {
             providers: [
               ChangeNotifierProvider(
                 create:
-                    (ctx) => OverviewPageViewmodel(repo: BesteSchuleRepoImpl()),
+                    (ctx) => GradesPageViewmodel(repo: BesteSchuleRepoImpl()),
               ),
             ],
-            child: OverviewPage(),
+            child: GradesPage(),
           ),
         );
       },

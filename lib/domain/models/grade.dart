@@ -31,7 +31,7 @@ class Grade {
       value: gradeToNumber(json['value']),
       type: json['collection']['type'] ?? "",
       date: DateTime.parse(json['given_at']),
-      subject: Subject.fromJson(json['collection']['subject']),
+      subject: Subject.fromJson(json['subject']),
     );
   }
 }
