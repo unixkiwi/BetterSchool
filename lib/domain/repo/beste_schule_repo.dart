@@ -6,5 +6,6 @@ abstract class BesteSchuleRepo {
   Future<List<SchoolDay>?> getWeek({required int nr});
   Future<List<Subject>?> getSubjects();
   Future<List<Grade>?> getGrades();
-  //TODO: add getGrades or something like that
+  Future<int?> getCurrentIntervalID();
+  Future<String?> getCalculationRuleForSubject(int subjectID);
 }

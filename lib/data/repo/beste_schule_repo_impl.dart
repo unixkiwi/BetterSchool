@@ -16,7 +16,15 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     'Accept': 'application/json',
   };
 
-  //TODO: implement getGrades or something like that
+  // Simple in-memory cache
+  List<Subject>? _subjectsCache;
+  Map<int, String?>? _calculationRuleCache;
+
+  // Optionally, add a method to clear cache (for logout, refresh, etc.)
+  void clearCache() {
+    _subjectsCache = null;
+    _calculationRuleCache = null;
+  }
 
   Future<dynamic> getFromAPI({
     required String route,
@@ -35,7 +43,80 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   }
 
   @override
+  Future<int?> getCurrentIntervalID() async {
+    var resp = await getFromAPI(route: "api/intervals");
+
+    if (resp != null) {
+      List<Map> data = jsonDecode(resp)['data'];
+      if (data.isEmpty) return null;
+
+      // sort intervals by their from data
+      data.sort(
+        (a, b) =>
+            DateTime.parse(b['from']).compareTo(DateTime.parse(a['from'])),
+      );
+
+      // return first -> latest
+      return data.first['id'] as int;
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> getCalculationRuleForSubject(int subjectId) async {
+    // Use cache if available
+    _calculationRuleCache ??= {};
+    if (_calculationRuleCache!.containsKey(subjectId)) {
+      return _calculationRuleCache![subjectId];
+    }
+
+    var resp = await getFromAPI(route: "api/finalgrades");
+
+    if (resp == null) return null;
+
+    final List data = jsonDecode(resp)['data'];
+
+    int interval_id = await getCurrentIntervalID() ?? 0;
+
+    // find entry with the given subject
+    final entry =
+        data
+            .where(
+              (item) =>
+                  item['subject_id'] == subjectId &&
+                  item['interval_id'] == interval_id,
+            )
+            .first;
+
+    String? rule;
+    if (entry == null) {
+      final entries =
+          data.where((item) => item['subject_id'] == subjectId).toList();
+      
+      if (entries.isEmpty) return null;
+      
+      // get the one with the highest interval_id
+      entries.sort(
+        (a, b) => b['interval_id'].compareTo(a['interval_id']),
+      );
+      rule = entries.first['calculation_rule'];
+    } else {
+      rule = entry['calculation_rule'];
+    }
+
+    // Cache the result
+    _calculationRuleCache![subjectId] = rule;
+    return rule;
+  }
+
+  @override
   Future<List<Subject>?> getSubjects() async {
+    // Use cache if available
+    if (_subjectsCache != null) {
+      return _subjectsCache;
+    }
+
     var resp = await getFromAPI(route: "api/subjects");
 
     if (resp != null) {
@@ -46,6 +127,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
         subjects.add(Subject.fromJson(subject));
       }
 
+      _subjectsCache = subjects; // Cache the result
       return subjects;
     } else {
       return null;
