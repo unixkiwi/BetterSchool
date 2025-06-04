@@ -4,12 +4,68 @@ import 'package:math_expressions/math_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/grade.dart';
+import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 
 class GradesPageViewmodel extends ChangeNotifier {
   final BesteSchuleRepo repo;
+  
+  bool _isLoading = false;
+  bool _dataFetched = false;
+
+  List<Grade> _grades = [];
+  List<Subject> _subjects = [];
+  Map<Subject, double> _averages = {};
+
+  bool get isLoading => _isLoading;
+  bool get dataFetched => _dataFetched;
+  List<Grade> get grades => _grades;
+  Map<Subject, double> get averages => _averages;
 
   GradesPageViewmodel({required this.repo});
+
+  Future<void> fetchData() async {
+    if (_isLoading) return;
+
+    // set meta variables
+    _isLoading = true;
+
+    // Fetch all grades
+    final grades = await repo.getGrades();
+    if (grades != null) {
+      _grades = grades;
+    }
+
+    final subjects = await repo.getSubjects();
+    if (subjects != null) {
+      _subjects = subjects;
+    }
+
+    _averages = await getAveragesForAllSubjects();
+
+    // set meta variables
+    _dataFetched = true;
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<Map<Subject, double>> getAveragesForAllSubjects() async {
+    Map<Subject, double> averages = {};
+
+    for (final subject in _subjects) {
+      // get grades for the subject
+      final subjectGrades = _grades.where((g) => g.subject == subject).toList();
+
+      // get calculation_rule for the subject
+      final rule = await repo.getCalculationRuleForSubject(subject.id);
+      
+      // calculate avg
+      final avg = calculateAverage(subjectGrades, rule);
+      averages[subject] = avg;
+    }
+
+    return averages;
+  }
 
   // CALCULATE AVERATE -START-
   Set<String> extractTypesFromRule(String? rule) {

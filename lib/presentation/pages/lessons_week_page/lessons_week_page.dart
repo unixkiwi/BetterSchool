@@ -1,48 +1,29 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 
-import '../../../data/repo/beste_schule_repo_impl.dart';
-import 'overview_lesson_tile.dart';
+class GradesPage extends StatefulWidget {
+  const GradesPage({super.key});
 
-class LessonsWeekPage extends StatelessWidget {
-  const LessonsWeekPage({super.key});
+  @override
+  State<GradesPage> createState() => _GradesPageState();
+}
+
+class _GradesPageState extends State<GradesPage> {
+  void initState() {
+    super.initState();
+    // trigger fetch when page was opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      log("Fetching grades data...");
+      context.read<GradesPageViewmodel>().fetchData();
+      log("Done fetching grades data.");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Lessons")),
-      body: FutureBuilder(
-        future: context.watch<BesteSchuleRepoImpl>().getWeek(nr: 16),
-        builder: (context, snap) {
-          if (snap.hasData) {
-            return ListView.builder(
-              padding: EdgeInsets.all(8.0),
-              itemCount: snap.data!.length,
-              itemBuilder: (context, rowIndex) {
-                return Row(
-                  children: List.generate(snap.data![rowIndex].lessons.length, (
-                    colIndex,
-                  ) {
-                    return Expanded(
-                      child: OverviewLessonTile(
-                        lesson: snap.data![rowIndex].lessons[colIndex],
-                      ),
-                    );
-                  }),
-                );
-              },
-            );
-          }
-
-          if (snap.hasError) {
-            print(snap.stackTrace);
-
-            return ListView(children: [Text(snap.stackTrace!.toString())]);
-          }
-
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
+    return const Placeholder();
   }
 }
