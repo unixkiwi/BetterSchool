@@ -16,7 +16,7 @@ See things like you timetable, grades and homeworks from beste.schule in one app
   - [ ] widget
   - [ ] parse specs like subject
 - [ ] Show Grades of the student
-  - [ ] calculate average
+  - [x] calculate average
 
 ## Personal Goals
 - Use MVVM

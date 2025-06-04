@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:school_app/domain/models/subject.dart';
 
 class Grade {
@@ -25,7 +23,7 @@ class Grade {
         return double.parse(grade[0]) + 0.3;
       } else {
         return double.parse(grade);
-      }
+      } 
     }
 
     return Grade(
