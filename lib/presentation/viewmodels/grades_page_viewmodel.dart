@@ -35,14 +35,17 @@ class GradesPageViewmodel extends ChangeNotifier {
     // Fetch all grades
     final grades = await repo.getGrades();
     if (grades != null) {
+      logger.i("Fetched all grades from repo!");
       _grades = grades;
     }
 
     final subjects = await repo.getSubjects();
     if (subjects != null) {
+      logger.i("Fetched all subjects from repo!");
       _subjects = subjects;
     }
 
+    logger.i("Calculating averages!");
     _averages = await getAveragesForAllSubjects();
 
     // set meta variables

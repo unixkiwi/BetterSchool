@@ -16,4 +16,16 @@ class Subject {
       shortName: json['local_id'] ?? "",
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Subject &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          shortName == other.shortName;
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode ^ shortName.hashCode;
 }
