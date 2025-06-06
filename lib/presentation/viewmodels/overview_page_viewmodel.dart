@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
+import 'package:school_app/utils/logger.dart';
 import 'package:school_app/utils/time_utils.dart';
 
 class OverviewPageViewmodel extends ChangeNotifier {
@@ -38,7 +37,7 @@ class OverviewPageViewmodel extends ChangeNotifier {
     // return when an error occurred while fetching the api,
     // (getWeek() returns null when an error occurred)
     if (days == null) {
-      log("Fetched days were null!");
+      logger.i("Fetched days were null!");
       return;
     }
 

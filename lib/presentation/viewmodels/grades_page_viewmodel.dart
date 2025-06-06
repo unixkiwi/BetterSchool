@@ -1,15 +1,14 @@
-import 'dart:developer';
-
 import 'package:math_expressions/math_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
+import 'package:school_app/utils/logger.dart';
 
 class GradesPageViewmodel extends ChangeNotifier {
   final BesteSchuleRepo repo;
-  
+
   bool _isLoading = false;
   bool _dataFetched = false;
 
@@ -25,8 +24,8 @@ class GradesPageViewmodel extends ChangeNotifier {
   GradesPageViewmodel({required this.repo});
 
   Future<void> fetchData() async {
-    log("[Grades ViewModel] Called fetchData()");
-    
+    logger.d("[Grades ViewModel] Called fetchData()");
+
     // check if not already loading
     if (_isLoading) return;
 
@@ -53,7 +52,7 @@ class GradesPageViewmodel extends ChangeNotifier {
   }
 
   Future<Map<Subject, double>> getAveragesForAllSubjects() async {
-    log("[Grades ViewModel] Called getAveragesForAllSubjects()");
+    logger.d("[Grades ViewModel] Called getAveragesForAllSubjects()");
 
     Map<Subject, double> averages = {};
 
@@ -63,11 +62,14 @@ class GradesPageViewmodel extends ChangeNotifier {
 
       // get calculation_rule for the subject
       final rule = await repo.getCalculationRuleForSubject(subject.id);
-      
+
       // calculate avg
       final avg = calculateAverage(subjectGrades, rule);
       averages[subject] = avg;
     }
+
+    logger.i("[Grades ViewModel] Calculated all averages!");
+    notifyListeners();
 
     return averages;
   }
@@ -75,7 +77,10 @@ class GradesPageViewmodel extends ChangeNotifier {
   // CALCULATE AVERATE -START-
   Set<String> extractTypesFromRule(String? rule) {
     if (rule == null) return {};
-    final regex = RegExp(r'([A-Za-z]+)_sum|([A-Za-z]+)_count', caseSensitive: false);
+    final regex = RegExp(
+      r'([A-Za-z]+)_sum|([A-Za-z]+)_count',
+      caseSensitive: false,
+    );
     final matches = regex.allMatches(rule);
     final types = <String>{};
     for (final match in matches) {
@@ -105,11 +110,12 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     for (final type in types) {
       // get all grades with a specific type
-      final matching = grades.where((g) =>
-        g.type.toLowerCase() == type.toLowerCase()
-      ).toList();
+      final matching =
+          grades
+              .where((g) => g.type.toLowerCase() == type.toLowerCase())
+              .toList();
 
-      // iterates over mathing and sums values 
+      // iterates over mathing and sums values
       // starts at 0.0, value is the current summed up value
       final sum = matching.fold(0.0, (value, g) => value + g.value);
       final count = matching.length;
@@ -129,7 +135,7 @@ class GradesPageViewmodel extends ChangeNotifier {
       rule = rule.replaceAll('${type}_count', count.toString());
     });
 
-    log("Rule: $rule");
+    logger.d("Rule: $rule");
 
     // evaluate the grade
     GrammarParser parser = GrammarParser();
@@ -138,6 +144,4 @@ class GradesPageViewmodel extends ChangeNotifier {
     return result;
   }
   // CALCULATE AVERATE -END-
-
-  
 }

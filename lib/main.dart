@@ -1,12 +1,11 @@
-import 'dart:developer';
-
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
-import 'package:school_app/presentation/pages/lessons_week_page/lessons_week_page.dart';
+import 'package:school_app/presentation/pages/grades_page/grades_page.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
+import 'package:school_app/utils/logger.dart';
 
 void main() async {
   // load .env file for env variables
@@ -21,7 +20,7 @@ class SchoolApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("[UI] Called main build method.");
+    logger.d("[UI] Called main build method.");
 
     // dynamically style page by system color such as material you
     return DynamicColorBuilder(

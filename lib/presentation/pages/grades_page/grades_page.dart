@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
+import 'package:school_app/utils/logger.dart';
 
 class GradesPage extends StatefulWidget {
   const GradesPage({super.key});
@@ -14,19 +13,22 @@ class GradesPage extends StatefulWidget {
 class _GradesPageState extends State<GradesPage> {
   @override
   void initState() {
-    log("[UI] Called initState from grades page.");
+    logger.d("[Grades Page] Called initState()");
 
     super.initState();
+
     // trigger fetch when page was opened
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      log("[Grades Page] Fetching grades...");
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      logger.i("[Grades Page] Fetching grades...");
       context.read<GradesPageViewmodel>().fetchData();
-      log("[Grades Page] Done fetching grades.");
+      logger.i("[Grades Page] Done fetching grades.");
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    logger.d("[Grades Page] Called build() method");
+
     return Scaffold(
       appBar: AppBar(title: Text("Grades"), elevation: 1),
       body: Consumer<GradesPageViewmodel>(
@@ -46,7 +48,8 @@ class _GradesPageState extends State<GradesPage> {
                   ),
                 ),
               ),
-              viewModel.isLoading && !viewModel.dataFetched
+              (viewModel.isLoading && !viewModel.dataFetched) ||
+                      viewModel.averages.isEmpty
                   ? Center(child: CircularProgressIndicator())
                   : Column(
                     children: [
