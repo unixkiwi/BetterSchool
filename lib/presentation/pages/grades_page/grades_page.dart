@@ -14,12 +14,14 @@ class GradesPage extends StatefulWidget {
 class _GradesPageState extends State<GradesPage> {
   @override
   void initState() {
+    log("[UI] Called initState from grades page.");
+
     super.initState();
     // trigger fetch when page was opened
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      log("Fetching grades...");
+      log("[Grades Page] Fetching grades...");
       context.read<GradesPageViewmodel>().fetchData();
-      log("Done fetching grades.");
+      log("[Grades Page] Done fetching grades.");
     });
   }
 
@@ -47,20 +49,20 @@ class _GradesPageState extends State<GradesPage> {
               viewModel.isLoading && !viewModel.dataFetched
                   ? Center(child: CircularProgressIndicator())
                   : Column(
-                children: [
-                  for (final entry in viewModel.averages.entries)
-                    ListTile(
-                      title: Text(entry.key.shortName),
-                      trailing: Text(
-                        entry.value.toStringAsFixed(2),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
+                    children: [
+                      for (final entry in viewModel.averages.entries)
+                        ListTile(
+                          title: Text(entry.key.shortName),
+                          trailing: Text(
+                            entry.value.toStringAsFixed(2),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                ],
-              ),
+                    ],
+                  ),
             ],
           );
         },

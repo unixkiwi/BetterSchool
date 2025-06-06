@@ -25,6 +25,9 @@ class GradesPageViewmodel extends ChangeNotifier {
   GradesPageViewmodel({required this.repo});
 
   Future<void> fetchData() async {
+    log("[Grades ViewModel] Called fetchData()");
+    
+    // check if not already loading
     if (_isLoading) return;
 
     // set meta variables
@@ -50,6 +53,8 @@ class GradesPageViewmodel extends ChangeNotifier {
   }
 
   Future<Map<Subject, double>> getAveragesForAllSubjects() async {
+    log("[Grades ViewModel] Called getAveragesForAllSubjects()");
+
     Map<Subject, double> averages = {};
 
     for (final subject in _subjects) {

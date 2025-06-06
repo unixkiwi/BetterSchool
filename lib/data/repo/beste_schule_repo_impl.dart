@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -24,6 +25,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   void clearCache() {
     _subjectsCache = null;
     _calculationRuleCache = null;
+
+    log("[API] Cleared cache.");
   }
 
   Future<dynamic> getFromAPI({
@@ -38,6 +41,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     if (resp.statusCode == 200) {
       return jsonDecode(resp.body);
     } else {
+      log("[API] ERROR: Error fetching $route from API, with these arguments: ${params.toString()}");
+
       return null;
     }
   }
@@ -47,6 +52,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     var resp = await getFromAPI(route: "/api/intervals");
 
     if (resp != null) {
+      log("[Interval API] Received -interval- from the api wasn't null.");
+
       var data = resp['data'];
       if (data.isEmpty) return null;
 
@@ -59,6 +66,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       // return first -> latest
       return data.first['id'] as int;
     } else {
+      log("[Interval API] Received -interval- from the api was null.");
+
       return null;
     }
   }
@@ -68,6 +77,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     // Use cache if available
     _calculationRuleCache ??= {};
     if (_calculationRuleCache!.containsKey(subjectId)) {
+      log("[Calc Rule API] Cache for calculation rules was available.");
       return _calculationRuleCache![subjectId];
     }
 
@@ -100,8 +110,12 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       entries.sort(
         (a, b) => b['interval_id'].compareTo(a['interval_id']),
       );
+
+      log("[Calc Rule API] Found -calc rule- without correct year which was${entries.first['calculation_rule'] == null ? "" : "n't"} null.");
       rule = entries.first['calculation_rule'];
     } else {
+      log("[Calc Rule API] Found -calc rule- which wasn't null.");
+
       rule = entry['calculation_rule'];
     }
 
@@ -114,12 +128,15 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   Future<List<Subject>?> getSubjects() async {
     // Use cache if available
     if (_subjectsCache != null) {
+      log("[Subject API] Cache for subjects was available.");
       return _subjectsCache;
     }
 
     var resp = await getFromAPI(route: "/api/subjects");
 
     if (resp != null) {
+      log("[Subject API] Received -subjects- from the api weren't null.");
+
       final data = resp['data'];
       List<Subject> subjects = [];
 
@@ -130,6 +147,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       _subjectsCache = subjects; // Cache the result
       return subjects;
     } else {
+      log("[Subject API] Received -subjects- from the api were null.");
+
       return null;
     }
   }
@@ -142,6 +161,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     );
 
     if (resp != null) {
+      log("[Grade API] Received -grades- from the api weren't null.");
+
       final data = resp['data'];
       List<Grade> grades = [];
 
@@ -151,6 +172,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
       return grades;
     } else {
+      log("[Grade API] Received -grades- from the api were null.");
+
       return null;
     }
   }
@@ -163,6 +186,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     );
 
     if (resp != null) {
+      log("[Lesson API] Received -lessons- from the api weren't null.");
+
       List<SchoolDay> days;
       List daysRaw = resp['data']['days'];
 
@@ -172,6 +197,8 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
       return days;
     } else {
+      log("[Lesson API] Received -lessons- from the api were null.");
+
       return null;
     }
   }

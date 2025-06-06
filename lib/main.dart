@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -19,6 +21,8 @@ class SchoolApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log("[UI] Called main build method.");
+
     // dynamically style page by system color such as material you
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
@@ -32,6 +36,8 @@ class SchoolApp extends StatelessWidget {
             colorScheme: darkDynamic ?? ColorScheme.dark(),
             useMaterial3: true,
           ),
+
+          // app and provider
           home: MultiProvider(
             providers: [
               ChangeNotifierProvider(
@@ -39,6 +45,7 @@ class SchoolApp extends StatelessWidget {
                     (ctx) => GradesPageViewmodel(repo: BesteSchuleRepoImpl()),
               ),
             ],
+            // app
             child: GradesPage(),
           ),
         );
