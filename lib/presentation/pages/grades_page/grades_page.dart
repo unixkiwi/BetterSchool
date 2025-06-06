@@ -35,19 +35,6 @@ class _GradesPageState extends State<GradesPage> {
         builder: (context, viewModel, child) {
           return ListView(
             children: [
-              // heading for this section
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16.0,
-                  horizontal: 8.0,
-                ),
-                child: Text(
-                  "Grades",
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
               (viewModel.isLoading && !viewModel.dataFetched) ||
                       viewModel.averages.isEmpty
                   ? Center(child: CircularProgressIndicator())
@@ -56,13 +43,17 @@ class _GradesPageState extends State<GradesPage> {
                       for (final entry in viewModel.averages.entries)
                         ListTile(
                           title: Text(entry.key.shortName),
-                          trailing: Text(
-                            entry.value.toStringAsFixed(2),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
+                          trailing:
+                              entry.value == -1
+                                  ? Icon(Icons.block)
+                                  : Text(
+                                    entry.value.toStringAsFixed(2),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
                         ),
                     ],
                   ),

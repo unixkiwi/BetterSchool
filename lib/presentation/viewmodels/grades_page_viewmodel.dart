@@ -90,7 +90,12 @@ class GradesPageViewmodel extends ChangeNotifier {
   }
 
   double calculateAverage(List<Grade> grades, String? calculationRule) {
-    if (grades.isEmpty) return 1.0;
+    if (grades.isEmpty) {
+      logger.i(
+        "[Grades ViewModel] calculateAverage(): given grades list is empty",
+      );
+      return -1;
+    }
 
     if (calculationRule == null) {
       double sum = 0;
@@ -143,5 +148,6 @@ class GradesPageViewmodel extends ChangeNotifier {
     double result = expr.evaluate(EvaluationType.REAL, ContextModel());
     return result;
   }
+
   // CALCULATE AVERATE -END-
 }
