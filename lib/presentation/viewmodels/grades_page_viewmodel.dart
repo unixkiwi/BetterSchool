@@ -28,7 +28,9 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     // check if not already loading
     if (_isLoading) {
-      logger.i("[Grades ViewModel] Could not fetch data again, already fetching data!");
+      logger.i(
+        "[Grades ViewModel] Could not fetch data again, already fetching data!",
+      );
       return;
     }
 
@@ -105,11 +107,16 @@ class GradesPageViewmodel extends ChangeNotifier {
       return -1;
     }
 
+    // no rule, just default sum divided by the count
     if (calculationRule == null) {
-      double sum = 0;
-      for (final g in grades) {
-        sum += g.value;
-      }
+      //TODO remove this logging
+      grades.map((g) {
+        if (g.subject.id == 1317 || g.subject.shortName == "INF") logger.i("${g.value.toString()} ${g.subject.shortName}");
+      });
+
+      final sum = grades.fold<double>(0.0, (prev, g) => prev + g.value);
+
+      logger.i("$sum / ${grades.length}");
 
       return sum / grades.length;
     }
@@ -130,7 +137,7 @@ class GradesPageViewmodel extends ChangeNotifier {
 
       // iterates over mathing and sums values
       // starts at 0.0, value is the current summed up value
-      final sum = matching.fold(0.0, (value, g) => value + g.value);
+      final sum = matching.fold<double>(0.0, (value, g) => value + g.value);
       final count = matching.length;
 
       typeSums[type] = sum;

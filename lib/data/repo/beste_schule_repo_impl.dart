@@ -7,25 +7,30 @@ import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/utils/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class BesteSchuleRepoImpl implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
-
-  final Map<String, String> _HEADERS = {
-    'Authorization': 'Bearer ${dotenv.get("KEY")}',
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
 
   Future<dynamic> getFromAPI({
     required String route,
     Map<String, dynamic>? params,
   }) async {
+    // Construct headers at runtime
+    final key = dotenv.maybeGet("KEY");
+    if (key == null || key.isEmpty) {
+      logger.e("[API] ERROR: API KEY is missing from environment variables.");
+      return null;
+    }
+    final headers = {
+      'Authorization': 'Bearer $key',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
     try {
       var resp = await http.get(
         Uri.https(_BASE_URL, route, params),
-        headers: _HEADERS,
+        headers: headers,
       );
 
       if (resp.statusCode == 200) {
@@ -125,7 +130,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       for (Map subject in data) {
         subjects.add(Subject.fromJson(subject));
       }
-      
+
       return subjects;
     } else {
       logger.i("[Subject API] Received -subjects- from the api were null.");

@@ -17,13 +17,17 @@ class Grade {
 
   factory Grade.fromJson(Map json) {
     double gradeToNumber(String grade) {
+      // special cases
+      if (grade == "1+") return 1.0;
+      if (grade == "6-") return 6.0;
+
       if (grade.endsWith('+')) {
         return double.parse(grade[0]) - 0.3;
       } else if (grade.endsWith('-')) {
         return double.parse(grade[0]) + 0.3;
       } else {
         return double.parse(grade);
-      } 
+      }
     }
 
     return Grade(
