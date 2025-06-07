@@ -33,31 +33,41 @@ class _GradesPageState extends State<GradesPage> {
       appBar: AppBar(title: Text("Grades"), elevation: 1),
       body: Consumer<GradesPageViewmodel>(
         builder: (context, viewModel, child) {
-          return ListView(
-            children: [
-              (viewModel.isLoading && !viewModel.dataFetched) ||
-                      viewModel.averages.isEmpty
-                  ? Center(child: CircularProgressIndicator())
-                  : Column(
-                    children: [
-                      for (final entry in viewModel.averages.entries)
-                        ListTile(
-                          title: Text(entry.key.shortName),
-                          trailing:
-                              entry.value == -1
-                                  ? Icon(Icons.block)
-                                  : Text(
-                                    entry.value.toStringAsFixed(2),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                    ),
-                                  ),
-                        ),
-                    ],
-                  ),
-            ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              logger.i("[Grades Page] Refetching Data");
+              await viewModel.fetchData();
+              logger.i("[Grades Page] Refetched Data");
+            },
+            child: ListView(
+              children: [
+                viewModel.isLoading && !viewModel.dataFetched
+                    ? Center(child: CircularProgressIndicator())
+                    : Column(
+                      children: [
+                        for (final entry in viewModel.averages.entries)
+                          Card(
+                            child: ListTile(
+                              title: Text(entry.key.shortName),
+                              trailing:
+                                  entry.value == -1
+                                      ? Icon(Icons.block)
+                                      : Text(
+                                        entry.value.toStringAsFixed(2),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
+                                        ),
+                                      ),
+                            ),
+                          ),
+                      ],
+                    ),
+              ],
+            ),
           );
         },
       ),

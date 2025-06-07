@@ -20,6 +20,7 @@ dependencies:
   provider: ^6.1.5
   math_expressions: ^2.7.0
   logger: ^2.5.0
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

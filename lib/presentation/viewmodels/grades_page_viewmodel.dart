@@ -27,7 +27,10 @@ class GradesPageViewmodel extends ChangeNotifier {
     logger.d("[Grades ViewModel] Called fetchData()");
 
     // check if not already loading
-    if (_isLoading) return;
+    if (_isLoading) {
+      logger.i("[Grades ViewModel] Could not fetch data again, already fetching data!");
+      return;
+    }
 
     // set meta variables
     _isLoading = true;
@@ -63,6 +66,9 @@ class GradesPageViewmodel extends ChangeNotifier {
       // get grades for the subject
       final subjectGrades = _grades.where((g) => g.subject == subject).toList();
 
+      // skip subjects with no grades
+      if (subjectGrades.isEmpty) continue;
+
       // get calculation_rule for the subject
       final rule = await repo.getCalculationRuleForSubject(subject.id);
 
@@ -72,7 +78,6 @@ class GradesPageViewmodel extends ChangeNotifier {
     }
 
     logger.i("[Grades ViewModel] Calculated all averages!");
-    notifyListeners();
 
     return averages;
   }

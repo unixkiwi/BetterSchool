@@ -7,6 +7,7 @@ import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/utils/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BesteSchuleRepoImpl implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
@@ -17,33 +18,28 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     'Accept': 'application/json',
   };
 
-  // Simple in-memory cache
-  List<Subject>? _subjectsCache;
-  Map<int, String?>? _calculationRuleCache;
-
-  // Optionally, add a method to clear cache (for logout, refresh, etc.)
-  void clearCache() {
-    _subjectsCache = null;
-    _calculationRuleCache = null;
-    logger.d("[API] Cleared cache.");
-  }
-
   Future<dynamic> getFromAPI({
     required String route,
     Map<String, dynamic>? params,
   }) async {
-    var resp = await http.get(
-      Uri.https(_BASE_URL, route, params),
-      headers: _HEADERS,
-    );
-
-    if (resp.statusCode == 200) {
-      return jsonDecode(resp.body);
-    } else {
-      logger.e(
-        "[API] ERROR: Error fetching $route from API, with these arguments: ${params.toString()}",
+    try {
+      var resp = await http.get(
+        Uri.https(_BASE_URL, route, params),
+        headers: _HEADERS,
       );
 
+      if (resp.statusCode == 200) {
+        return jsonDecode(resp.body);
+      } else {
+        logger.e(
+          "[API] ERROR: Error fetching $route from API, with these arguments: ${params.toString()}",
+        );
+        return null;
+      }
+    } catch (e) {
+      logger.e(
+        "[API] ERROR: Exception occurred while fetching $route from API: $e",
+      );
       return null;
     }
   }
@@ -75,13 +71,6 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
   @override
   Future<String?> getCalculationRuleForSubject(int subjectId) async {
-    // Use cache if available
-    _calculationRuleCache ??= {};
-    if (_calculationRuleCache!.containsKey(subjectId)) {
-      logger.d("[Calc Rule API] Cache for calculation rules was available.");
-      return _calculationRuleCache![subjectId];
-    }
-
     var resp = await getFromAPI(route: "/api/finalgrades");
 
     if (resp == null) return null;
@@ -120,19 +109,11 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       rule = entry['calculation_rule'];
     }
 
-    // Cache the result
-    _calculationRuleCache![subjectId] = rule;
     return rule;
   }
 
   @override
   Future<List<Subject>?> getSubjects() async {
-    // Use cache if available
-    if (_subjectsCache != null) {
-      logger.d("[Subject API] Cache for subjects was available.");
-      return _subjectsCache;
-    }
-
     var resp = await getFromAPI(route: "/api/subjects");
 
     if (resp != null) {
@@ -144,8 +125,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       for (Map subject in data) {
         subjects.add(Subject.fromJson(subject));
       }
-
-      _subjectsCache = subjects; // Cache the result
+      
       return subjects;
     } else {
       logger.i("[Subject API] Received -subjects- from the api were null.");

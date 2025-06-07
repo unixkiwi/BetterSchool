@@ -17,6 +17,14 @@ class Subject {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'shortName': shortName,
+    };
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
