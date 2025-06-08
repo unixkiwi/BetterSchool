@@ -21,6 +21,7 @@ dependencies:
   math_expressions: ^2.7.0
   logger: ^2.5.0
   shared_preferences: ^2.5.3
+  oauth2_client: ^4.2.0
 
 dev_dependencies:
   flutter_test:

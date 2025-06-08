@@ -15,11 +15,13 @@ class GradesPageViewmodel extends ChangeNotifier {
   List<Grade> _grades = [];
   List<Subject> _subjects = [];
   Map<Subject, double> _averages = {};
+  Map<Subject, String> _calcRules = {};
 
   bool get isLoading => _isLoading;
   bool get dataFetched => _dataFetched;
   List<Grade> get grades => _grades;
   Map<Subject, double> get averages => _averages;
+  Map<Subject, String> get calcRules => _calcRules;
 
   GradesPageViewmodel({required this.repo});
 
@@ -50,6 +52,15 @@ class GradesPageViewmodel extends ChangeNotifier {
       _subjects = subjects;
     }
 
+    Map<Subject, String> calcRules = {};
+    for (Subject subject in _subjects) {
+      final String? calcRule = await repo.getCalculationRuleForSubject(subject.id);
+      if (calcRule != null) {
+        calcRules[subject] = calcRule; 
+      }
+    }
+    _calcRules = calcRules;
+
     logger.i("Calculating averages!");
     _averages = await getAveragesForAllSubjects();
 
@@ -72,7 +83,7 @@ class GradesPageViewmodel extends ChangeNotifier {
       if (subjectGrades.isEmpty) continue;
 
       // get calculation_rule for the subject
-      final rule = await repo.getCalculationRuleForSubject(subject.id);
+      final rule = _calcRules[subject];
 
       // calculate avg
       final avg = calculateAverage(subjectGrades, rule);
@@ -110,13 +121,15 @@ class GradesPageViewmodel extends ChangeNotifier {
     // no rule, just default sum divided by the count
     if (calculationRule == null) {
       //TODO remove this logging
-      grades.map((g) {
-        if (g.subject.id == 1317 || g.subject.shortName == "INF") logger.i("${g.value.toString()} ${g.subject.shortName}");
-      });
+      for (Grade g in grades) {
+        if (g.subject.id == 1317 || g.subject.shortName == "INF") {
+          logger.i("${g.value.toString()} ${g.subject.shortName}");
+        }
+      }
 
       final sum = grades.fold<double>(0.0, (prev, g) => prev + g.value);
 
-      logger.i("$sum / ${grades.length}");
+      //logger.i("$sum / ${grades.length}");
 
       return sum / grades.length;
     }

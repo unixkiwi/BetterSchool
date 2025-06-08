@@ -4,7 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
 import 'package:school_app/presentation/pages/grades_page/grades_page.dart';
+import 'package:school_app/presentation/pages/login_page/login_page.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
+import 'package:school_app/presentation/viewmodels/login_page_viewmodel.dart';
 import 'package:school_app/utils/logger.dart';
 
 void main() async {
@@ -41,11 +43,11 @@ class SchoolApp extends StatelessWidget {
             providers: [
               ChangeNotifierProvider(
                 create:
-                    (ctx) => GradesPageViewmodel(repo: BesteSchuleRepoImpl()),
+                    (ctx) => LoginPageViewmodel(repo: BesteSchuleRepoImpl()),
               ),
             ],
             // app
-            child: GradesPage(),
+            child: LoginPage(),
           ),
         );
       },

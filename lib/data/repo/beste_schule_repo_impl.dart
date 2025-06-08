@@ -11,11 +11,15 @@ import 'package:school_app/utils/logger.dart';
 class BesteSchuleRepoImpl implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
 
+  //TODO make use of /api/students/{id}?include=grades,subjects... because for some reason has newer data
+  //TODO use oauth
+
   Future<dynamic> getFromAPI({
     required String route,
     Map<String, dynamic>? params,
   }) async {
     // Construct headers at runtime
+    //TODO remove because no longer exists
     final key = dotenv.maybeGet("KEY");
     if (key == null || key.isEmpty) {
       logger.e("[API] ERROR: API KEY is missing from environment variables.");
