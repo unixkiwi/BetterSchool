@@ -19,7 +19,7 @@ class LoginPageViewmodel extends ChangeNotifier {
     notifyListeners();
 
     logger.i("[LoginViewModel] Awaiting token");
-    _token = await _client.getToken();
+    _token = await _client.getToken(forceRequest: true);
 
     if (_token == null) {
       logger.e("[LoginViewModel] Awaited token is null");

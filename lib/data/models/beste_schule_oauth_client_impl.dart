@@ -14,6 +14,7 @@ class BesteSchuleOauthClientImpl {
 
   late BesteSchuleOauthClient _client;
   late OAuth2Helper _helper;
+  String? _token = "";
 
   BesteSchuleOauthClient get client => _client;
 
@@ -53,21 +54,29 @@ class BesteSchuleOauthClientImpl {
     return token;
   }
 
-  Future<String?> getToken() async {
+  Future<String?> getToken({bool forceRequest = false}) async {
+    if (!forceRequest && _token != null) {
+      return _token;
+    }
+
     AccessTokenResponse? accessTokenResponse = await _helper.getToken();
 
     if (accessTokenResponse == null) {
       logger.e(
         "[BesteSchule OAuth Client Impl] getToken() AccesstokenResp was null!",
       );
+      
+      return null;
     }
 
-    String? token = accessTokenResponse!.accessToken;
+    String? token = accessTokenResponse.accessToken;
 
     if (token == null) {
       logger.e(
         "[BesteSchule OAuth Client Impl] getToken() AccesstokenResp token was null!",
       );
+    } else {
+      _token = token;
     }
 
     return token;

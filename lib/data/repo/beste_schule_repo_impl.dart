@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:school_app/data/models/beste_schule_oauth_client_impl.dart';
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
@@ -10,6 +10,7 @@ import 'package:school_app/utils/logger.dart';
 
 class BesteSchuleRepoImpl implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
+  final BesteSchuleOauthClientImpl clientImpl = BesteSchuleOauthClientImpl();
 
   //TODO make use of /api/students/{id}?include=grades,subjects... because for some reason has newer data
   //TODO use oauth
@@ -18,13 +19,13 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     required String route,
     Map<String, dynamic>? params,
   }) async {
-    // Construct headers at runtime
-    //TODO remove because no longer exists
-    final key = dotenv.maybeGet("KEY");
+    final key = await clientImpl.getToken();
+
     if (key == null || key.isEmpty) {
       logger.e("[API] ERROR: API KEY is missing.");
       return null;
     }
+    
     final headers = {
       'Authorization': 'Bearer $key',
       'Content-Type': 'application/json',

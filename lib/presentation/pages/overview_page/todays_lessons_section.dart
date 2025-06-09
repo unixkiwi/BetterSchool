@@ -32,14 +32,16 @@ class TodaysLessonsSection extends StatelessWidget {
             ? Center(child: CircularProgressIndicator())
             : SizedBox(
               height: 50,
-              child: Row(
+              child: viewModel.lessons.isNotEmpty 
+              ? Row(
                 children: [
                   for (int index = 0; index < viewModel.lessons.length; index++)
                     Expanded(
                       child: LessonTile(index: index, viewModel: viewModel),
                     ),
                 ],
-              ),
+              )
+              : Text("No lessons for today.")
             ),
           ],
         );
