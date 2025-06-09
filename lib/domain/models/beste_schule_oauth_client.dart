@@ -7,8 +7,5 @@ class BesteSchuleOauthClient extends OAuth2Client {
   }) : super(
          authorizeUrl: 'https://beste.schule/oauth/authorize',
          tokenUrl: 'https://beste.schule/oauth/token',
-       ) {
-    // this.accessTokenRequestHeaders = {'Accept': 'application/json'};
-  }
+       );
 }
-
