@@ -24,7 +24,7 @@ class LoginPageViewmodel extends ChangeNotifier {
     if (_token == null) {
       logger.e("[LoginViewModel] Awaited token is null");
     } else {
-      logger.e("[LoginViewModel] Successfully awaited token;");
+      logger.i("[LoginViewModel] Successfully awaited token;");
     }
 
     return _token != null;

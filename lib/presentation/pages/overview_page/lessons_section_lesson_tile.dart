@@ -13,10 +13,10 @@ class LessonTile extends StatelessWidget {
     switch (lesson.status) {
       case LessonStatus.CANCELLED:
         return Theme.of(ctx).colorScheme.errorContainer;
-      case LessonStatus.HOLD:
-        return Theme.of(ctx).colorScheme.secondaryContainer;
+      case LessonStatus.PLANNED:
+          return Theme.of(ctx).colorScheme.primaryContainer;
       default:
-        return Theme.of(ctx).colorScheme.primaryContainer;
+        return Theme.of(ctx).colorScheme.secondaryContainer;
     }
   }
 

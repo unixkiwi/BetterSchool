@@ -13,7 +13,10 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   final BesteSchuleOauthClientImpl clientImpl = BesteSchuleOauthClientImpl();
 
   //TODO make use of /api/students/{id}?include=grades,subjects... because for some reason has newer data
-  //TODO use oauth
+  
+  //TODO check if the user is a student -> only one entry under /api/students else it's a teacher or parent
+
+  //TODO reimplement caching
 
   Future<dynamic> getFromAPI({
     required String route,
@@ -25,7 +28,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       logger.e("[API] ERROR: API KEY is missing.");
       return null;
     }
-    
+
     final headers = {
       'Authorization': 'Bearer $key',
       'Content-Type': 'application/json',

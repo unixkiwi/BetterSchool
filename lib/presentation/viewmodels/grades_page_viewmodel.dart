@@ -120,16 +120,8 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     // no rule, just default sum divided by the count
     if (calculationRule == null) {
-      //TODO remove this logging
-      for (Grade g in grades) {
-        if (g.subject.id == 1317 || g.subject.shortName == "INF") {
-          logger.i("${g.value.toString()} ${g.subject.shortName}");
-        }
-      }
 
       final sum = grades.fold<double>(0.0, (prev, g) => prev + g.value);
-
-      //logger.i("$sum / ${grades.length}");
 
       return sum / grades.length;
     }

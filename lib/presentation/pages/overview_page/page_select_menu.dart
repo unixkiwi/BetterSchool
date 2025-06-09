@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:school_app/presentation/pages/grades_page/grades_page.dart';
+import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
+import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/overview_page/page_select_menu_button.dart';
 
 class PageSelectMenu extends StatelessWidget {
@@ -29,7 +33,20 @@ class PageSelectMenu extends StatelessWidget {
               PageSelectMenuButton(
                 ctx: context,
                 title: "Grades",
-                onClick: () {},
+                onClick: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (context) => ChangeNotifierProvider(
+                            create:
+                                (context) => GradesPageViewmodel(
+                                  repo: context.read<BesteSchuleRepo>(),
+                                ),
+                            child: const GradesPage(),
+                          ),
+                    ),
+                  );
+                },
               ),
               PageSelectMenuButton(
                 ctx: context,

@@ -29,20 +29,28 @@ class TodaysLessonsSection extends StatelessWidget {
 
             // horizontal list of lessons of the day
             viewModel.isLoading && !viewModel.dataFetched
-            ? Center(child: CircularProgressIndicator())
-            : SizedBox(
-              height: 50,
-              child: viewModel.lessons.isNotEmpty 
-              ? Row(
-                children: [
-                  for (int index = 0; index < viewModel.lessons.length; index++)
-                    Expanded(
-                      child: LessonTile(index: index, viewModel: viewModel),
-                    ),
-                ],
-              )
-              : Text("No lessons for today.")
-            ),
+                ? Center(child: CircularProgressIndicator())
+                : SizedBox(
+                  height: 50,
+                  child:
+                      viewModel.lessons.isNotEmpty
+                          ? Row(
+                            children: [
+                              for (
+                                int index = 0;
+                                index < viewModel.lessons.length;
+                                index++
+                              )
+                                Expanded(
+                                  child: LessonTile(
+                                    index: index,
+                                    viewModel: viewModel,
+                                  ),
+                                ),
+                            ],
+                          )
+                          : Text("No lessons for today."),
+                ),
           ],
         );
       },

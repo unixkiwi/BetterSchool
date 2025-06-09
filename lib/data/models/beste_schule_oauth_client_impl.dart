@@ -35,7 +35,8 @@ class BesteSchuleOauthClientImpl {
   }
 
   Future<String?> getTokenFromStorage() async {
-    AccessTokenResponse? accessTokenResponse = await _helper.getTokenFromStorage();
+    AccessTokenResponse? accessTokenResponse =
+        await _helper.getTokenFromStorage();
 
     if (accessTokenResponse == null) {
       logger.e(
@@ -55,8 +56,19 @@ class BesteSchuleOauthClientImpl {
   }
 
   Future<String?> getToken({bool forceRequest = false}) async {
-    if (!forceRequest && _token != null) {
+    if (!forceRequest && (_token != null && _token!.isNotEmpty)) {
+      logger.i("[BesteSchule OAuth Client Impl] Returning token from 'cache'.");
       return _token;
+    }
+
+    // Try to get from storage if not forcing request
+    if (!forceRequest) {
+      var tokenFromStorage = await getTokenFromStorage();
+      if (tokenFromStorage != null) {
+        _token = tokenFromStorage;
+        logger.i("[BesteSchule OAuth Client Impl] Loaded token from storage.");
+        return _token;
+      }
     }
 
     AccessTokenResponse? accessTokenResponse = await _helper.getToken();
@@ -65,7 +77,7 @@ class BesteSchuleOauthClientImpl {
       logger.e(
         "[BesteSchule OAuth Client Impl] getToken() AccesstokenResp was null!",
       );
-      
+
       return null;
     }
 

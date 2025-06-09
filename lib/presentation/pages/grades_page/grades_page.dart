@@ -11,6 +11,8 @@ class GradesPage extends StatefulWidget {
 }
 
 class _GradesPageState extends State<GradesPage> {
+  bool _loading = true;
+
   @override
   void initState() {
     logger.d("[Grades Page] Called initState()");
@@ -20,8 +22,9 @@ class _GradesPageState extends State<GradesPage> {
     // trigger fetch when page was opened
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       logger.i("[Grades Page] Fetching grades...");
-      context.read<GradesPageViewmodel>().fetchData();
+      await context.read<GradesPageViewmodel>().fetchData();
       logger.i("[Grades Page] Done fetching grades.");
+      if (mounted) setState(() => _loading = false);
     });
   }
 
@@ -29,21 +32,28 @@ class _GradesPageState extends State<GradesPage> {
   Widget build(BuildContext context) {
     logger.d("[Grades Page] Called build() method");
 
+    if (_loading) {
+      return Scaffold(
+        appBar: AppBar(title: Text("Grades")),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text("Grades"), elevation: 1),
       body: Consumer<GradesPageViewmodel>(
         builder: (context, viewModel, child) {
-          return RefreshIndicator(
-            onRefresh: () async {
-              logger.i("[Grades Page] Refetching Data");
-              await viewModel.fetchData();
-              logger.i("[Grades Page] Refetched Data");
-            },
-            child: ListView(
-              children: [
-                viewModel.isLoading && !viewModel.dataFetched
-                    ? Center(child: CircularProgressIndicator())
-                    : Column(
+          return viewModel.isLoading && !viewModel.dataFetched
+              ? Center(child: CircularProgressIndicator())
+              : RefreshIndicator(
+                onRefresh: () async {
+                  logger.i("[Grades Page] Refetching Data");
+                  await viewModel.fetchData();
+                  logger.i("[Grades Page] Refetched Data");
+                },
+                child: ListView(
+                  children: [
+                    Column(
                       children: [
                         for (final entry in viewModel.averages.entries)
                           Card(
@@ -66,9 +76,9 @@ class _GradesPageState extends State<GradesPage> {
                           ),
                       ],
                     ),
-              ],
-            ),
-          );
+                  ],
+                ),
+              );
         },
       ),
     );
