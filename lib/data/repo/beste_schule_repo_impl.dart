@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/beste_schule_oauth_client_impl.dart';
+import 'package:school_app/domain/models/beste_schule_user.dart';
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
@@ -12,11 +14,12 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
   final BesteSchuleOauthClientImpl clientImpl = BesteSchuleOauthClientImpl();
 
-  //TODO make use of /api/students/{id}?include=grades,subjects... because for some reason has newer data
-  
-  //TODO check if the user is a student -> only one entry under /api/students else it's a teacher or parent
+  BesteSchuleStudent? _student;
+  Map _allData = {};
 
-  //TODO reimplement caching
+  //TODO make use of /api/students/{id}?include=grades,subjects... because for some reason has newer data
+
+  //TODO reimplement proper caching using shared preferences
 
   Future<dynamic> getFromAPI({
     required String route,
@@ -57,6 +60,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     }
   }
 
+  // START GET IS USER STUDENT
   bool _getIsUserStudent(Map json) {
     if (json['data']['teacher'] == null &&
         json['data']['guardian	null'] == null &&
@@ -67,27 +71,90 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     }
   }
 
-  @override Future<bool?> isUserStudent() async {
+  @override
+  Future<bool?> isUserStudent() async {
     var resp = await getFromAPI(route: "/api/me");
 
     if (resp != null) {
       logger.d("[API] /api/me is not null");
       //TODO store in cache the user profile -> BesteSchuleStudent.dart
-      return _getIsUserStudent(resp);
+      bool isStudent = _getIsUserStudent(resp);
+
+      // save student data
+      if (isStudent) {
+        _student = BesteSchuleStudent.fromJson(resp['data']['students	'][0]);
+      }
+
+      return isStudent;
     } else {
       return null;
     }
   }
+  // END GET IS USER STUDENT
+
+  Future<int?> getStudentId() async {
+    if (_student != null) {
+      return _student!.studentId;
+    } else {
+      var resp = await getFromAPI(route: "/api/students");
+
+      if (resp == null) {
+        logger.e("[API] /api/students was null when calling getStudentId()");
+        return null;
+      } else {
+        return resp['data'][0]['id'];
+      }
+    }
+  }
+
+  @override
+  Future<Map?> getAllData() async {
+    var studentId = await getStudentId();
+    if (studentId == null) return null;
+
+    var resp = await getFromAPI(
+      route: "/api/students/$studentId",
+      params: {'include': 'grades,finalgrades,subjects,intervals'},
+    );
+
+    if (resp == null) {
+      logger.e("[API] getAllData() response was null!");
+      return null;
+    }
+
+    _allData = resp['data'];
+
+    return _allData;
+  }
 
   @override
   Future<int?> getCurrentIntervalID() async {
+    if (_allData['intervals'] != null &&
+        (_allData['intervals'] as List).isNotEmpty) {
+      var intervals = _allData['intervals'] as List;
+
+      intervals.sort(
+        (a, b) =>
+            DateTime.parse(b['from']).compareTo(DateTime.parse(a['from'])),
+      );
+
+      // return first -> latest
+      var currentInterval = intervals.first['id'] as int?;
+
+      logger.i("[API] Returned CurrentInvterval from allData 'cache'.");
+      if (currentInterval != null) return currentInterval;
+    }
+
     var resp = await getFromAPI(route: "/api/intervals");
 
     if (resp != null) {
       logger.d("[Interval API] Received -interval- from the api wasn't null.");
 
       var data = resp['data'];
+
       if (data.isEmpty) return null;
+
+      _allData['intervals'] = data;
 
       // sort intervals by their from data
       data.sort(
@@ -106,11 +173,20 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
   @override
   Future<String?> getCalculationRuleForSubject(int subjectId) async {
-    var resp = await getFromAPI(route: "/api/finalgrades");
+    List data = [];
 
-    if (resp == null) return null;
+    if (_allData['finalgrades'] != null &&
+        (_allData['finalgrades'] as List).isNotEmpty) {
+      data = _allData['finalgrades'];
+    } else {
+      var resp = await getFromAPI(route: "/api/finalgrades");
 
-    final List data = resp['data'];
+      if (resp == null) return null;
+
+      data = resp['data'];
+
+      _allData['finalgrades'] = data;
+    }
 
     int interval_id = await getCurrentIntervalID() ?? 0;
 
@@ -149,12 +225,22 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
   @override
   Future<List<Subject>?> getSubjects() async {
-    var resp = await getFromAPI(route: "/api/subjects");
+    List? data;
 
-    if (resp != null) {
+    if (_allData['subjects'] != null &&
+        (_allData['subjects'] as List).isNotEmpty) {
+      data = _allData['subjects'];
+
+      logger.i("[API] Received subjects from _allData 'cache'");
+    } else {
+      data = (await getFromAPI(route: "/api/subjects") as Map)['data'];
+
+      _allData['subjects'] = data;
+    }
+
+    if (data != null) {
       logger.d("[Subject API] Received -subjects- from the api weren't null.");
 
-      final data = resp['data'];
       List<Subject> subjects = [];
 
       for (Map subject in data) {
@@ -171,26 +257,45 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
   @override
   Future<List<Grade>?> getGrades() async {
-    var resp = await getFromAPI(
-      route: "/api/grades",
-      params: {'include': 'collection', 'sort': 'given_at'},
-    );
+    if (_allData['grades'] != null && (_allData['grades'] as List).isNotEmpty) {
+      var data = _allData['grades'];
 
-    if (resp != null) {
-      logger.d("[Grade API] Received -grades- from the api weren't null.");
+      logger.i("[API] Received grades from _allData 'cache'");
 
-      final data = resp['data'];
+      List<Grade> grades = [];
+
+      for (Map grade in data) {
+        grades.add(
+          Grade(
+            subject: Subject.fromJson(grade['collection']['subject']),
+            title: grade['collection']['name'],
+            type: grade['collection']['type'],
+            date: DateTime.parse(grade['given_at	']),
+            value: Grade.gradeToNumber(grade['value']),
+          ),
+        );
+      }
+
+      return grades;
+    } else {
+      var data =
+          (await getFromAPI(
+                route: "/api/grades",
+                params: {'include': 'collection', 'sort': 'given_at'},
+              )
+              as Map)['data'];
+
+      if (data == null) return null;
+
       List<Grade> grades = [];
 
       for (Map grade in data) {
         grades.add(Grade.fromJson(grade));
       }
 
-      return grades;
-    } else {
-      logger.i("[Grade API] Received -grades- from the api were null.");
+      _allData['grades'] = data;
 
-      return null;
+      return grades;
     }
   }
 

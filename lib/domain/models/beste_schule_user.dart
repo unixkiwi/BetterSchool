@@ -1,12 +1,12 @@
 class BesteSchuleStudent {
-  final int studnetId;
+  final int studentId;
   final String forename;
 
-  const BesteSchuleStudent({required this.studnetId, required this.forename});
+  const BesteSchuleStudent({required this.studentId, required this.forename});
 
   factory BesteSchuleStudent.fromJson(Map json) {
     return BesteSchuleStudent(
-      studnetId: int.parse(json['id']),
+      studentId: int.parse(json['id']),
       forename: json['forename'],
     );
   }
