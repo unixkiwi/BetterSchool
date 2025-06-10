@@ -33,12 +33,12 @@ class TodaysLessonsSection extends StatelessWidget {
                 : SizedBox(
                   height: 50,
                   child:
-                      viewModel.lessons.isNotEmpty
+                      viewModel.lessons != null && viewModel.lessons!.isNotEmpty
                           ? Row(
                             children: [
                               for (
                                 int index = 0;
-                                index < viewModel.lessons.length;
+                                index < viewModel.lessons!.length;
                                 index++
                               )
                                 Expanded(

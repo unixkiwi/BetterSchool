@@ -22,7 +22,7 @@ class LessonTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _lesson = viewModel.lessons[index];
+    _lesson = viewModel.lessons![index];
 
     return InkWell(
       onTap: () {

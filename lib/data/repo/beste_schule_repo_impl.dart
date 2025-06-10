@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/beste_schule_oauth_client_impl.dart';
 import 'package:school_app/domain/models/beste_schule_user.dart';
@@ -270,7 +269,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
             subject: Subject.fromJson(grade['collection']['subject']),
             title: grade['collection']['name'],
             type: grade['collection']['type'],
-            date: DateTime.parse(grade['given_at	']),
+            date: DateTime.parse(grade['given_at']),
             value: Grade.gradeToNumber(grade['value']),
           ),
         );
@@ -278,9 +277,41 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
 
       return grades;
     } else {
+      int? id = await getStudentId();
+
+      if (id != null) {
+        var resp =
+            await getFromAPI(
+              route: "/api/students/$id",
+              params: {'include': 'grades'},
+            );
+
+        if (resp != null) {
+          List<Grade> grades = [];
+
+          var data = resp['data']['grades'];
+
+          for (Map grade in data) {
+            grades.add(
+              Grade(
+                subject: Subject.fromJson(grade['collection']['subject']),
+                title: grade['collection']['name'],
+                type: grade['collection']['type'],
+                date: DateTime.parse(grade['given_at']),
+                value: Grade.gradeToNumber(grade['value']),
+              ),
+            );
+          }
+
+          _allData['grades'] = data;
+
+          return grades;
+        }
+      }
+
       var data =
           (await getFromAPI(
-                route: "/api/grades",
+                route: "/api/students/",
                 params: {'include': 'collection', 'sort': 'given_at'},
               )
               as Map)['data'];
@@ -300,7 +331,7 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
   }
 
   @override
-  Future<List<SchoolDay>?> getWeek({required int nr}) async {
+  Future<List<SchoolDay?>?> getWeek({required int nr}) async {
     var resp = await getFromAPI(
       route: "/api/journal/weeks/${DateTime.now().year}-$nr",
       params: {'include': 'days.lessons', 'interpolate': 'true'},
@@ -309,12 +340,21 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     if (resp != null) {
       logger.d("[Lesson API] Received -lessons- from the api weren't null.");
 
-      List<SchoolDay> days;
       List daysRaw = resp['data']['days'];
 
-      days = daysRaw.map((e) => SchoolDay.fromJson(e)).toList();
+      // Map to SchoolDay? (allowing nulls if fromJson returns null)
+      List<SchoolDay?> days =
+          daysRaw.map((e) {
+            try {
+              return SchoolDay.fromJson(e);
+            } catch (_) {
+              return null;
+            }
+          }).toList();
 
-      days.removeWhere((day) => day.isNull);
+      // Remove days where .isNull is true, but keep nulls
+      days =
+          days.map((day) => (day != null && day.isNull) ? null : day).toList();
 
       return days;
     } else {
