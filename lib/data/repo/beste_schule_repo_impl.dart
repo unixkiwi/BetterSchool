@@ -57,6 +57,28 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
     }
   }
 
+  bool _getIsUserStudent(Map json) {
+    if (json['data']['teacher'] == null &&
+        json['data']['guardian	null'] == null &&
+        json['config']['config']['role'] == "students") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override Future<bool?> isUserStudent() async {
+    var resp = await getFromAPI(route: "/api/me");
+
+    if (resp != null) {
+      logger.d("[API] /api/me is not null");
+      //TODO store in cache the user profile -> BesteSchuleStudent.dart
+      return _getIsUserStudent(resp);
+    } else {
+      return null;
+    }
+  }
+
   @override
   Future<int?> getCurrentIntervalID() async {
     var resp = await getFromAPI(route: "/api/intervals");

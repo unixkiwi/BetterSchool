@@ -14,6 +14,8 @@ class LoginPageViewmodel extends ChangeNotifier {
 
   LoginPageViewmodel({required this.repo});
 
+
+
   Future<bool> login() async {
     logger.i("[LoginViewModel] login() called");
     notifyListeners();
@@ -25,6 +27,16 @@ class LoginPageViewmodel extends ChangeNotifier {
       logger.e("[LoginViewModel] Awaited token is null");
     } else {
       logger.i("[LoginViewModel] Successfully awaited token;");
+
+      logger.i("[LoginViewModel] Checking wether the user is a student...");
+      bool? isStudent = await repo.isUserStudent();
+      
+      if (isStudent != null) {
+        if (!isStudent) {
+          //TODO return something useful
+          return false;
+        }
+      }
     }
 
     return _token != null;

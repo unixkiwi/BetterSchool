@@ -8,4 +8,5 @@ abstract class BesteSchuleRepo {
   Future<List<Grade>?> getGrades();
   Future<int?> getCurrentIntervalID();
   Future<String?> getCalculationRuleForSubject(int subjectID);
+  Future<bool?> isUserStudent();
 }

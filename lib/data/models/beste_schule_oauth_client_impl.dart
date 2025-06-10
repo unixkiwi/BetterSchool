@@ -1,6 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:oauth2_client/access_token_response.dart';
-import 'package:oauth2_client/oauth2_client.dart';
 import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:school_app/domain/models/beste_schule_oauth_client.dart';
 import 'package:school_app/utils/logger.dart';

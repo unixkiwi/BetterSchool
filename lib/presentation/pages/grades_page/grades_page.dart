@@ -57,6 +57,7 @@ class _GradesPageState extends State<GradesPage> {
                       children: [
                         for (final entry in viewModel.averages.entries)
                           Card(
+                            //TODO on click open page with all grades of this subject
                             child: ListTile(
                               title: Text(entry.key.shortName),
                               trailing:

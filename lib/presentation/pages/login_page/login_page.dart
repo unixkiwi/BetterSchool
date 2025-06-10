@@ -33,6 +33,25 @@ class LoginPage extends StatelessWidget {
                           ),
                     ),
                   );
+                } else {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('AlertDialog Title'),
+                        content: Text("You are not a student!"),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Quit'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }
               },
               child: Text("Login with beste.schule"),
