@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/widgets.dart';
 import 'package:school_app/data/models/beste_schule_oauth_client_impl.dart';
 import 'package:school_app/domain/models/beste_schule_user.dart';
 import 'package:school_app/domain/models/day.dart';
@@ -9,16 +11,15 @@ import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/utils/logger.dart';
 
-class BesteSchuleRepoImpl implements BesteSchuleRepo {
+class BesteSchuleRepoImpl extends WidgetsBindingObserver
+    implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
   final BesteSchuleOauthClientImpl clientImpl = BesteSchuleOauthClientImpl();
 
   BesteSchuleStudent? _student;
   Map _allData = {};
 
-  //TODO make use of /api/students/{id}?include=grades,subjects... because for some reason has newer data
-
-  //TODO reimplement proper caching using shared preferences
+  //TODO when reloading manually reload or after specific time
 
   Future<dynamic> getFromAPI({
     required String route,
@@ -280,11 +281,10 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       int? id = await getStudentId();
 
       if (id != null) {
-        var resp =
-            await getFromAPI(
-              route: "/api/students/$id",
-              params: {'include': 'grades'},
-            );
+        var resp = await getFromAPI(
+          route: "/api/students/$id",
+          params: {'include': 'grades'},
+        );
 
         if (resp != null) {
           List<Grade> grades = [];
@@ -361,6 +361,46 @@ class BesteSchuleRepoImpl implements BesteSchuleRepo {
       logger.i("[Lesson API] Received -lessons- from the api were null.");
 
       return null;
+    }
+  }
+
+  // Save _allData to shared preferences
+  Future<void> _saveAllDataToPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      await prefs.setString('_allData', jsonEncode(_allData));
+      logger.i("[Repo] Saved _allData to shared preferences.");
+    } catch (e) {
+      logger.e("[Repo] Failed to save _allData: $e");
+    }
+  }
+
+  // Load _allData from shared preferences
+  Future<void> _loadAllDataFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('_allData');
+    if (jsonString != null) {
+      try {
+        _allData = jsonDecode(jsonString);
+        logger.i("[Repo] Loaded _allData from shared preferences.");
+      } catch (e) {
+        logger.e("[Repo] Failed to load _allData: $e");
+      }
+    }
+  }
+
+  BesteSchuleRepoImpl() {
+    _loadAllDataFromPrefs();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      _saveAllDataToPrefs();
+    } else if (state == AppLifecycleState.resumed) {
+      _loadAllDataFromPrefs();
     }
   }
 }
