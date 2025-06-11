@@ -18,6 +18,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   BesteSchuleStudent? _student;
   Map _allData = {};
+  Map<int, Map> _weekData = {};
 
   //TODO when reloading manually reload or after specific time
 
@@ -287,6 +288,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         );
 
         if (resp != null) {
+          logger.i("[API] Grades from API weren't null");
+
           List<Grade> grades = [];
 
           var data = resp['data']['grades'];
@@ -309,7 +312,11 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         }
       }
 
-      var data =
+      return null;
+
+      //logger.i("[API] Sending deprecated /api/students")
+
+      /*var data =
           (await getFromAPI(
                 route: "/api/students/",
                 params: {'include': 'collection', 'sort': 'given_at'},
@@ -326,12 +333,14 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       _allData['grades'] = data;
 
-      return grades;
+      return grades;*/
     }
   }
 
   @override
-  Future<List<SchoolDay?>?> getWeek({required int nr}) async {
+  Future<List<SchoolDay?>?> getWeek({required int nr, bool force = false}) async {
+    //TODO implement caching
+
     var resp = await getFromAPI(
       route: "/api/journal/weeks/${DateTime.now().year}-$nr",
       params: {'include': 'days.lessons', 'interpolate': 'true'},

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/presentation/pages/grades_page/grades_page.dart';
+import 'package:school_app/presentation/pages/timetable_page/lessons_week_page.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/overview_page/page_select_menu_button.dart';
+import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
 
 class PageSelectMenu extends StatelessWidget {
   const PageSelectMenu({super.key});
@@ -15,11 +17,27 @@ class PageSelectMenu extends StatelessWidget {
       child: Column(
         spacing: 25,
         children: [
-          //TODO: implement the onclick and navigation to other pages
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              PageSelectMenuButton(ctx: context, title: "Plan", onClick: () {}),
+              PageSelectMenuButton(
+                ctx: context,
+                title: "Timetable",
+                onClick: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder:
+                          (context) => ChangeNotifierProvider(
+                            create:
+                                (context) => TimetablePageViewmodel(
+                                  repo: context.read<BesteSchuleRepo>(),
+                                ),
+                            child: const TimetablePage(),
+                          ),
+                    ),
+                  );
+                },
+              ),
               PageSelectMenuButton(
                 ctx: context,
                 title: "ToDo's",
