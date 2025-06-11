@@ -23,6 +23,7 @@ class _GradesPageState extends State<GradesPage> {
     // trigger fetch when page was opened
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       logger.i("[Grades Page] Fetching grades...");
+      setState(() => _loading = true);
       await context.read<GradesPageViewmodel>().fetchData();
       logger.i("[Grades Page] Done fetching grades.");
       if (mounted) setState(() => _loading = false);

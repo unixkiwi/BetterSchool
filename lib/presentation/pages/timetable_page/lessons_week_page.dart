@@ -15,20 +15,34 @@ class TimetablePage extends StatefulWidget {
 }
 
 class _TimetablePageState extends State<TimetablePage> {
+  bool _loading = true;
+
   @override
   void initState() {
     super.initState();
+
     // trigger fetch when page was opened
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       log("Fetching grades data...");
-      context.read<TimetablePageViewmodel>().fetchData();
+      setState(() => _loading = true);
+      await context.read<TimetablePageViewmodel>().fetchData();
       log("Done fetching grades data.");
+      if (mounted) setState(() => _loading = false);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final CarouselController controller = CarouselController();
+    final CarouselController controller = CarouselController(
+      initialItem: DateTime.now().weekday - 1,
+    );
+
+    if (_loading) {
+      return Scaffold(
+        appBar: AppBar(title: Text("Timetable")),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text("Timetable")),

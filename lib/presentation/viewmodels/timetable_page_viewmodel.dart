@@ -37,6 +37,9 @@ class TimetablePageViewmodel extends ChangeNotifier {
       return;
     }
 
+    // remove saturday and sunday
+    days.removeRange(days.length-2, days.length);
+
     // set data
     _schoolDays = days;
 
