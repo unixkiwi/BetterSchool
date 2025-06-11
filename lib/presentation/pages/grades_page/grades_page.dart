@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:school_app/presentation/pages/grades_page/avg_grade_tile.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 import 'package:school_app/utils/logger.dart';
 
@@ -48,7 +49,7 @@ class _GradesPageState extends State<GradesPage> {
               : RefreshIndicator(
                 onRefresh: () async {
                   logger.i("[Grades Page] Refetching Data");
-                  await viewModel.fetchData();
+                  await viewModel.fetchData(force: true);
                   logger.i("[Grades Page] Refetched Data");
                 },
                 child: ListView(
@@ -56,24 +57,14 @@ class _GradesPageState extends State<GradesPage> {
                     Column(
                       children: [
                         for (final entry in viewModel.averages.entries)
-                          Card(
-                            //TODO on click open page with all grades of this subject
-                            child: ListTile(
-                              title: Text(entry.key.shortName),
-                              trailing:
-                                  entry.value == -1
-                                      ? Icon(Icons.block)
-                                      : Text(
-                                        entry.value.toStringAsFixed(2),
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
-                                        ),
-                                      ),
-                            ),
+                          Column(
+                            children: [
+                              AvgGradeTile(
+                                subject: entry.key,
+                                avgGrade: entry.value,
+                              ),
+                              Divider(height: 0),
+                            ],
                           ),
                       ],
                     ),

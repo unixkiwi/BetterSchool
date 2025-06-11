@@ -256,8 +256,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<List<Grade>?> getGrades() async {
-    if (_allData['grades'] != null && (_allData['grades'] as List).isNotEmpty) {
+  Future<List<Grade>?> getGrades({bool force = false}) async {
+    if (!force && _allData['grades'] != null && (_allData['grades'] as List).isNotEmpty) {
       var data = _allData['grades'];
 
       logger.i("[API] Received grades from _allData 'cache'");
@@ -394,6 +394,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     WidgetsBinding.instance.addObserver(this);
   }
 
+  // load and save on app resume/pause
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||

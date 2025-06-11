@@ -25,7 +25,7 @@ class GradesPageViewmodel extends ChangeNotifier {
 
   GradesPageViewmodel({required this.repo});
 
-  Future<void> fetchData() async {
+  Future<void> fetchData({bool force = false}) async {
     logger.d("[Grades ViewModel] Called fetchData()");
 
     // check if not already loading
@@ -40,7 +40,7 @@ class GradesPageViewmodel extends ChangeNotifier {
     _isLoading = true;
 
     // Fetch all grades
-    final grades = await repo.getGrades();
+    final grades = await repo.getGrades(force: true);
     if (grades != null) {
       logger.i("Fetched all grades from repo!");
       _grades = grades;
