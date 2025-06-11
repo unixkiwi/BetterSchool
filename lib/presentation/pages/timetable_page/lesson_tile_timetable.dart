@@ -11,6 +11,7 @@ class TimetableLessonTile extends StatelessWidget {
   Widget build(BuildContext context) {
     Subject subject = lesson.subject;
 
+    //TODO improve information
     return ListTile(
       title: Text(subject.shortName),
       subtitle: Text(lesson.rooms[0]),

@@ -44,6 +44,7 @@ class _TimetablePageState extends State<TimetablePage> {
       );
     }
 
+    //TODO refresh for force reload
     return Scaffold(
       appBar: AppBar(title: Text("Timetable")),
       body: Consumer<TimetablePageViewmodel>(

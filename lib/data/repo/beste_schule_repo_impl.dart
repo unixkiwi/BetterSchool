@@ -18,7 +18,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   BesteSchuleStudent? _student;
   Map _allData = {};
-  Map<int, Map> _weekData = {};
+  Map<int, List> _weekData = {};
 
   //TODO when reloading manually reload or after specific time
 
@@ -258,7 +258,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   @override
   Future<List<Grade>?> getGrades({bool force = false}) async {
-    if (!force && _allData['grades'] != null && (_allData['grades'] as List).isNotEmpty) {
+    if (!force &&
+        _allData['grades'] != null &&
+        (_allData['grades'] as List).isNotEmpty) {
       var data = _allData['grades'];
 
       logger.i("[API] Received grades from _allData 'cache'");
@@ -338,39 +340,46 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<List<SchoolDay?>?> getWeek({required int nr, bool force = false}) async {
+  Future<List<SchoolDay?>?> getWeek({
+    required int nr,
+    bool force = false,
+  }) async {
     //TODO implement caching
+    List data;
 
-    var resp = await getFromAPI(
-      route: "/api/journal/weeks/${DateTime.now().year}-$nr",
-      params: {'include': 'days.lessons', 'interpolate': 'true'},
-    );
+    if (!force && _weekData[nr] != null) {
+      logger.i("[API] Week info from cache");
 
-    if (resp != null) {
-      logger.d("[Lesson API] Received -lessons- from the api weren't null.");
-
-      List daysRaw = resp['data']['days'];
-
-      // Map to SchoolDay? (allowing nulls if fromJson returns null)
-      List<SchoolDay?> days =
-          daysRaw.map((e) {
-            try {
-              return SchoolDay.fromJson(e);
-            } catch (_) {
-              return null;
-            }
-          }).toList();
-
-      // Remove days where .isNull is true, but keep nulls
-      days =
-          days.map((day) => (day != null && day.isNull) ? null : day).toList();
-
-      return days;
+      data = _weekData[nr]!;
     } else {
-      logger.i("[Lesson API] Received -lessons- from the api were null.");
+      var resp = await getFromAPI(
+        route: "/api/journal/weeks/${DateTime.now().year}-$nr",
+        params: {'include': 'days.lessons', 'interpolate': 'true'},
+      );
 
-      return null;
+      if (resp == null) {
+        logger.i("[Lesson API] Received -lessons- from the api were null.");
+        return null;
+      }
+
+      data = resp['data']['days'];
+      _weekData[nr] = data;
     }
+
+    // Map to SchoolDay? (allowing nulls if fromJson returns null)
+    List<SchoolDay?> days =
+        data.map((e) {
+          try {
+            return SchoolDay.fromJson(e);
+          } catch (_) {
+            return null;
+          }
+        }).toList();
+
+    // Remove days where .isNull is true, but keep nulls
+    days = days.map((day) => (day != null && day.isNull) ? null : day).toList();
+
+    return days;
   }
 
   // Save _allData to shared preferences
@@ -379,21 +388,35 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     try {
       await prefs.setString('_allData', jsonEncode(_allData));
       logger.i("[Repo] Saved _allData to shared preferences.");
+
+      await prefs.setString('_weekData', jsonEncode(_weekData));
+      logger.i("[Repo] Saved _weekData to shared preferences.");
     } catch (e) {
-      logger.e("[Repo] Failed to save _allData: $e");
+      logger.e("[Repo] Failed to save _weekData: $e");
     }
   }
 
   // Load _allData from shared preferences
   Future<void> _loadAllDataFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('_allData');
-    if (jsonString != null) {
+    
+    final allDataJsonString = prefs.getString('_allData');
+    if (allDataJsonString != null) {
       try {
-        _allData = jsonDecode(jsonString);
+        _allData = jsonDecode(allDataJsonString);
         logger.i("[Repo] Loaded _allData from shared preferences.");
       } catch (e) {
         logger.e("[Repo] Failed to load _allData: $e");
+      }
+    }
+
+    final weekDataJsonString = prefs.getString('_weekData');
+    if (weekDataJsonString != null) {
+      try {
+        _weekData = jsonDecode(weekDataJsonString);
+        logger.i("[Repo] Loaded _weekData from shared preferences.");
+      } catch (e) {
+        logger.e("[Repo] Failed to load _weekData: $e");
       }
     }
   }
