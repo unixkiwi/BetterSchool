@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/domain/models/day.dart';
@@ -33,8 +34,8 @@ class _TimetablePageState extends State<TimetablePage> {
 
   @override
   Widget build(BuildContext context) {
-    final CarouselController controller = CarouselController(
-      initialItem: DateTime.now().weekday - 1,
+    final PageController controller = PageController(
+      initialPage: DateTime.now().weekday - 1,
     );
 
     if (_loading) {
@@ -65,13 +66,14 @@ class _TimetablePageState extends State<TimetablePage> {
             }
           }
 
-          return CarouselView.weighted(
-            flexWeights: [1],
+          return PageView.builder(
             controller: controller,
-            itemSnapping: true,
-            enableSplash: false,
-            scrollDirection: Axis.horizontal,
-            children: days,
+            pageSnapping: true,
+            physics: PageScrollPhysics(),
+            itemCount: days.length,
+            itemBuilder: (context, index) {
+              return days[index];
+            },
           );
         },
       ),
