@@ -8,15 +8,19 @@ import 'package:school_app/presentation/pages/login_page/auth_checker.dart';
 import 'package:school_app/utils/logger.dart';
 
 void main() async {
-  // load .env file for env variables
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  // run app
-  runApp(SchoolApp());
+  // Create and initialize the repo, loading cache before runApp
+  final repo = BesteSchuleRepoImpl();
+  await repo.loadCacheOnStartup();
+
+  runApp(SchoolApp(repo: repo));
 }
 
 class SchoolApp extends StatelessWidget {
-  const SchoolApp({super.key});
+  final BesteSchuleRepo repo;
+  const SchoolApp({super.key, required this.repo});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,7 @@ class SchoolApp extends StatelessWidget {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         return Provider<BesteSchuleRepo>(
-          create: (_) => BesteSchuleRepoImpl(),
+          create: (_) => repo,
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(

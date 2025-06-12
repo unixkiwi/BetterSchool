@@ -13,6 +13,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
   List<SchoolDay?> _schoolDays = [];
   bool _isLoading = false;
   bool _dataFetched = false;
+  int? _currentWeekNumber;
 
   List<SchoolDay?> get schoolDays => _schoolDays;
   SchoolDay? get today =>
@@ -23,13 +24,18 @@ class TimetablePageViewmodel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get dataFetched => _dataFetched;
 
-  Future<void> fetchData() async {
+  int? get weekNr => _currentWeekNumber;
+
+  Future<void> fetchData({int? weekNr, bool force = false}) async {
     if (_isLoading) return;
 
     // await the lessons of the current week from the repo
     _isLoading = true;
     final int weekOfYear = DateTime.now().weekOfYear;
-    List<SchoolDay?>? days = await repo.getWeek(nr: weekOfYear);
+
+    _currentWeekNumber = weekNr ?? (_currentWeekNumber ?? weekOfYear);
+
+    List<SchoolDay?>? days = await repo.getWeek(nr: _currentWeekNumber!, force: force);
 
     // return when an error occurred while fetching the api,
     if (days == null) {

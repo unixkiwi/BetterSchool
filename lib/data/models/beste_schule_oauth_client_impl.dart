@@ -56,7 +56,7 @@ class BesteSchuleOauthClientImpl {
 
   Future<String?> getToken({bool forceRequest = false}) async {
     if (!forceRequest && (_token != null && _token!.isNotEmpty)) {
-      logger.i("[BesteSchule OAuth Client Impl] Returning token from 'cache'.");
+      logger.d("[BesteSchule OAuth Client Impl] Returning token from 'cache'.");
       return _token;
     }
 

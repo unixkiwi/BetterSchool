@@ -40,12 +40,15 @@ class _TimetablePageState extends State<TimetablePage> {
 
     if (_loading) {
       return Scaffold(
-        appBar: AppBar(title: Text("Timetable")),
+        appBar: AppBar(          
+          title: Text("Timetable"),
+        ),
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
     //TODO refresh for force reload
+    //TODO week switcher
     return Scaffold(
       appBar: AppBar(title: Text("Timetable")),
       body: Consumer<TimetablePageViewmodel>(
@@ -62,7 +65,7 @@ class _TimetablePageState extends State<TimetablePage> {
                 Center(child: Text("No Lessons for this day. (day is null)")),
               );
             } else {
-              days.add(DayLessonsList(lessons: day.lessons));
+              days.add(DayLessonsList(viewmodel: viewModel, lessons: day.lessons));
             }
           }
 

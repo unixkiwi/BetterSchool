@@ -40,13 +40,13 @@ class GradesPageViewmodel extends ChangeNotifier {
     _isLoading = true;
 
     // Fetch all grades
-    final grades = await repo.getGrades(force: true);
+    final grades = await repo.getGrades(force: force);
     if (grades != null) {
       logger.i("Fetched all grades from repo!");
       _grades = grades;
     }
 
-    final subjects = await repo.getSubjects();
+    final subjects = await repo.getSubjects(force: force);
     if (subjects != null) {
       logger.i("Fetched all subjects from repo!");
       _subjects = subjects;
@@ -54,7 +54,7 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     Map<Subject, String> calcRules = {};
     for (Subject subject in _subjects) {
-      final String? calcRule = await repo.getCalculationRuleForSubject(subject.id);
+      final String? calcRule = await repo.getCalculationRuleForSubject(subject.id, force: force);
       if (calcRule != null) {
         calcRules[subject] = calcRule; 
       }

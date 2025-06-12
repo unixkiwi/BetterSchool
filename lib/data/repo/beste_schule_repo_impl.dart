@@ -20,7 +20,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   Map _allData = {};
   Map<int, List> _weekData = {};
 
-  //TODO when reloading manually reload or after specific time
+  //TODO reload after specific time
 
   Future<dynamic> getFromAPI({
     required String route,
@@ -129,8 +129,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<int?> getCurrentIntervalID() async {
-    if (_allData['intervals'] != null &&
+  Future<int?> getCurrentIntervalID({bool force = false}) async {
+    if (!force &&
+        _allData['intervals'] != null &&
         (_allData['intervals'] as List).isNotEmpty) {
       var intervals = _allData['intervals'] as List;
 
@@ -142,7 +143,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       // return first -> latest
       var currentInterval = intervals.first['id'] as int?;
 
-      logger.i("[API] Returned CurrentInvterval from allData 'cache'.");
+      logger.d("[API] Returned CurrentInvterval from allData 'cache'.");
       if (currentInterval != null) return currentInterval;
     }
 
@@ -151,7 +152,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     if (resp != null) {
       logger.d("[Interval API] Received -interval- from the api wasn't null.");
 
-      var data = resp['data'];
+      List data = resp['data'];
 
       if (data.isEmpty) return null;
 
@@ -166,17 +167,21 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       // return first -> latest
       return data.first['id'] as int;
     } else {
-      logger.i("[Interval API] Received -interval- from the api was null.");
+      logger.e("[Interval API] Received -interval- from the api was null.");
 
       return null;
     }
   }
 
   @override
-  Future<String?> getCalculationRuleForSubject(int subjectId) async {
+  Future<String?> getCalculationRuleForSubject(
+    int subjectId, {
+    bool force = false,
+  }) async {
     List data = [];
 
-    if (_allData['finalgrades'] != null &&
+    if (!force &&
+        _allData['finalgrades'] != null &&
         (_allData['finalgrades'] as List).isNotEmpty) {
       data = _allData['finalgrades'];
     } else {
@@ -225,10 +230,11 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<List<Subject>?> getSubjects() async {
+  Future<List<Subject>?> getSubjects({bool force = false}) async {
     List? data;
 
-    if (_allData['subjects'] != null &&
+    if (!force &&
+        _allData['subjects'] != null &&
         (_allData['subjects'] as List).isNotEmpty) {
       data = _allData['subjects'];
 
@@ -250,7 +256,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       return subjects;
     } else {
-      logger.i("[Subject API] Received -subjects- from the api were null.");
+      logger.e("[Subject API] Received -subjects- from the api were null.");
 
       return null;
     }
@@ -344,7 +350,6 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     required int nr,
     bool force = false,
   }) async {
-    //TODO implement caching
     List data;
 
     if (!force && _weekData[nr] != null) {
@@ -358,12 +363,14 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       );
 
       if (resp == null) {
-        logger.i("[Lesson API] Received -lessons- from the api were null.");
+        logger.e("[Lesson API] Received -lessons- from the api were null.");
         return null;
       }
 
       data = resp['data']['days'];
+
       _weekData[nr] = data;
+      logger.i("[Lesson API] Cached week data");
     }
 
     // Map to SchoolDay? (allowing nulls if fromJson returns null)
@@ -399,7 +406,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   // Load _allData from shared preferences
   Future<void> _loadAllDataFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     final allDataJsonString = prefs.getString('_allData');
     if (allDataJsonString != null) {
       try {
@@ -426,14 +433,20 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     WidgetsBinding.instance.addObserver(this);
   }
 
+  // Call this before runApp to ensure cache is loaded
+  Future<void> loadCacheOnStartup() async {
+    await _loadAllDataFromPrefs();
+  }
+
   // load and save on app resume/pause
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached) {
-      _saveAllDataToPrefs();
-    } else if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed) {
       _loadAllDataFromPrefs();
+      logger.i("[API] Saved data to cache");
+    } else {
+      _saveAllDataToPrefs();
+      logger.i("[API] Loaded data from cache");
     }
   }
 }
