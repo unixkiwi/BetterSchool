@@ -78,7 +78,6 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
     if (resp != null) {
       logger.d("[API] /api/me is not null");
-      //TODO store in cache the user profile -> BesteSchuleStudent.dart
       bool isStudent = _getIsUserStudent(resp);
 
       // save student data
