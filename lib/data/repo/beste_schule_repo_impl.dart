@@ -395,10 +395,29 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       await prefs.setString('_allData', jsonEncode(_allData));
       logger.i("[Repo] Saved _allData to shared preferences.");
 
-      await prefs.setString('_weekData', jsonEncode(_weekData));
+      // Convert _weekData to a serializable map (deep conversion)
+      final serializableWeekData = _weekData.map((key, value) {
+        final serializableList =
+            value.map((e) {
+              // If already Map, return as is
+              if (e is Map) return e;
+              // If SchoolDay, use toJson
+              if (e is SchoolDay) return e.toJson();
+              // If it's a custom object, try toJson, else fallback to string
+              try {
+                return e.toJson();
+              } catch (_) {
+                return e.toString();
+              }
+            }).toList();
+        return MapEntry(key.toString(), serializableList);
+      });
+
+      await prefs.setString('_weekData', jsonEncode(serializableWeekData));
       logger.i("[Repo] Saved _weekData to shared preferences.");
     } catch (e) {
       logger.e("[Repo] Failed to save _weekData: $e");
+      logger.e(_weekData.toString());
     }
   }
 
@@ -419,10 +438,16 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     final weekDataJsonString = prefs.getString('_weekData');
     if (weekDataJsonString != null) {
       try {
-        _weekData = jsonDecode(weekDataJsonString);
+        final decoded = jsonDecode(weekDataJsonString) as Map;
+        // Convert Map<String, dynamic> to Map<int, List>
+        _weekData = {};
+        decoded.forEach((key, value) {
+          _weekData[int.parse(key)] = List.from(value);
+        });
         logger.i("[Repo] Loaded _weekData from shared preferences.");
       } catch (e) {
         logger.e("[Repo] Failed to load _weekData: $e");
+        logger.e(weekDataJsonString.toString());
       }
     }
   }

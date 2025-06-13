@@ -12,4 +12,10 @@ class Teacher {
       short: json['local_id'] ?? "",
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'first': first,
+    'last': last,
+    'short': short
+  };
 }

@@ -83,6 +83,8 @@ class _TimetablePageState extends State<TimetablePage> {
             physics: PageScrollPhysics(),
             itemCount: allDays.length,
             onPageChanged: (index) async {
+
+              //TODO current week added two times
               //TODO check if is valid week -> year change
               if (index == allDays.length - 1) {
                 _currentWeek += 1;

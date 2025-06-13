@@ -25,6 +25,11 @@ class Note {
       type: jsonToNoteType(json['type']['name']),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'description': desc,
+    'type': type.toString().split('.').last,
+  };
 }
 
 enum NoteType { CLASS_TEST, TEST, LESSON_CONTENT, TIMETABLE, NONE }

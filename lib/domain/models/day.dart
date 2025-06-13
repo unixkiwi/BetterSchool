@@ -42,4 +42,11 @@ class SchoolDay {
         .expand((notes) => notes)
         .toList();
   }
+
+  Map<String, dynamic> toJson() => {
+    'date': date.toIso8601String(),
+    'lessons': lessons.map((l) => l.toJson()).toList(),
+    'notes': notes.map((n) => n.toJson()).toList(),
+    'isNull': isNull,
+  };
 }

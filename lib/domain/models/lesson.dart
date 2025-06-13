@@ -54,9 +54,10 @@ class Lesson {
     );
 
     // create the notes list using the generated tempLesson
-    final notes = (json['notes'] as List)
-        .map((e) => LessonNote.fromJson(e, tempLesson))
-        .toList();
+    final notes =
+        (json['notes'] as List)
+            .map((e) => LessonNote.fromJson(e, tempLesson))
+            .toList();
 
     // return final lesson
     return Lesson(
@@ -69,6 +70,16 @@ class Lesson {
       wasPresent: tempLesson.wasPresent,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'nr': nr,
+    'status': status.toString().split('.').last,
+    'subject': subject.toJson(),
+    'rooms': rooms,
+    'teachers': teachers.map((t) => t.toJson()).toList(),
+    'notes': notes.map((n) => n.toJson()).toList(),
+    'wasPresent': wasPresent,
+  };
 }
 
 enum LessonStatus { HOLD, INITIAL, PLANNED, CANCELLED }
