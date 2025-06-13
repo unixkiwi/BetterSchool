@@ -52,6 +52,10 @@ class _GradesPageState extends State<GradesPage> {
                   logger.i("[Grades Page] Refetching Data");
                   await viewModel.fetchData(force: true);
                   logger.i("[Grades Page] Refetched Data");
+                  SnackBar refreshMsg = SnackBar(
+                    content: Text('Refreshed grades!'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(refreshMsg);
                 },
                 child: ListView(
                   children: [

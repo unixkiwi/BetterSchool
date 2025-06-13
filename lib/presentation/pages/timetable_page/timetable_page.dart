@@ -57,7 +57,7 @@ class _TimetablePageState extends State<TimetablePage> {
     final List<SchoolDay?> allDays = _weeks.expand((w) => w).toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text("Timetable")),
+      appBar: AppBar(title: Text("Timetable"), elevation: 1),
       body: Consumer<TimetablePageViewmodel>(
         builder: (context, viewModel, child) {
           if (viewModel.isLoading && !viewModel.dataFetched && _weeks.isEmpty) {
@@ -83,7 +83,6 @@ class _TimetablePageState extends State<TimetablePage> {
             physics: PageScrollPhysics(),
             itemCount: allDays.length,
             onPageChanged: (index) async {
-
               //TODO current week added two times
               //TODO check if is valid week -> year change
               if (index == allDays.length - 1) {

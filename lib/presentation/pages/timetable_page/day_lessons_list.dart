@@ -33,7 +33,7 @@ class DayLessonsList extends StatelessWidget {
             return Column(
               children: [
                 TimetableLessonTile(lesson: lessons[index]!),
-                Divider(height: 0),
+                //Divider(height: 0),
               ],
             );
           }
