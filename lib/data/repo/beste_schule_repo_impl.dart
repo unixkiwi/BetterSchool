@@ -64,8 +64,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   // START GET IS USER STUDENT
   bool _getIsUserStudent(Map json) {
     if (json['data']['teacher'] == null &&
-        json['data']['guardian	null'] == null &&
-        json['config']['config']['role'] == "students") {
+        json['data']['guardian'] == null &&
+        json['data']['config']['role'] == "student") {
       return true;
     } else {
       return false;
@@ -82,7 +82,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       // save student data
       if (isStudent) {
-        _student = BesteSchuleStudent.fromJson(resp['data']['students	'][0]);
+        _student = BesteSchuleStudent.fromJson(resp['data']['students'][0]);
       }
 
       return isStudent;

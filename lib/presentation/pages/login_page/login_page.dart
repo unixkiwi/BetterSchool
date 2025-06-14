@@ -19,10 +19,13 @@ class LoginPage extends StatelessWidget {
               onPressed: () async {
                 final success = await viewModel.login(context);
                 if (success && context.mounted) {
-                  Navigator.of(context).pushReplacement(
+                  // Use pushAndRemoveUntil to clear the navigation stack
+                  Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const MainNavBar()),
+                    (route) => false,
                   );
-                } else {
+                } else if (context.mounted && viewModel.token != null) {
+                  // Not a student
                   showDialog(
                     context: context,
                     barrierDismissible: false,
@@ -40,6 +43,24 @@ class LoginPage extends StatelessWidget {
                         ],
                       );
                     },
+                  );
+                } else if (context.mounted && viewModel.token == null) {
+                  // Login failed
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: const Text('Login failed'),
+                          content: const Text(
+                            "Authentication failed. Please try again.",
+                          ),
+                          actions: [
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        ),
                   );
                 }
               },

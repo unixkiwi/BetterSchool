@@ -6,7 +6,7 @@ class BesteSchuleStudent {
 
   factory BesteSchuleStudent.fromJson(Map json) {
     return BesteSchuleStudent(
-      studentId: int.parse(json['id']),
+      studentId: json['id'],
       forename: json['forename'],
     );
   }
