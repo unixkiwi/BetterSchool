@@ -22,7 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onPressed: () async {
               var webviewOauthImpl = BesteSchuleOauthWebviewRepoImpl();
           
-              String resp = await webviewOauthImpl.loginV2(context);
+              String resp = await webviewOauthImpl.getToken(context: context) ?? "Response was null";
 
               showDialog(context: context, builder: (context) {
                 return Dialog(child: Text(resp),);

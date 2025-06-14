@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/domain/repo/beste_schule_repo.dart';
-import 'package:school_app/presentation/pages/overview_page/overview_page.dart';
+import 'package:school_app/presentation/pages/main_navbar/main_navbar.dart';
 import 'package:school_app/presentation/viewmodels/login_page_viewmodel.dart';
-import 'package:school_app/presentation/viewmodels/overview_page_viewmodel.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -19,19 +17,10 @@ class LoginPage extends StatelessWidget {
             child: MaterialButton(
               color: Theme.of(context).colorScheme.primaryContainer,
               onPressed: () async {
-                final success = await viewModel.login();
+                final success = await viewModel.login(context);
                 if (success && context.mounted) {
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder:
-                          (context) => ChangeNotifierProvider(
-                            create:
-                                (context) => OverviewPageViewmodel(
-                                  repo: context.read<BesteSchuleRepo>(),
-                                ),
-                            child: const OverviewPage(),
-                          ),
-                    ),
+                    MaterialPageRoute(builder: (context) => const MainNavBar()),
                   );
                 } else {
                   showDialog(
