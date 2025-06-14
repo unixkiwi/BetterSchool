@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/widgets.dart';
-import 'package:school_app/data/models/beste_schule_oauth_client_impl.dart';
+import 'package:school_app/data/models/oauth_repo_impl_oauth_client_pkg.dart';
 import 'package:school_app/domain/models/beste_schule_user.dart';
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/grade.dart';
@@ -14,7 +14,7 @@ import 'package:school_app/utils/logger.dart';
 class BesteSchuleRepoImpl extends WidgetsBindingObserver
     implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
-  final BesteSchuleOauthClientImpl clientImpl = BesteSchuleOauthClientImpl();
+  final BesteSchuleOauthRepoImpl clientImpl = BesteSchuleOauthRepoImpl();
 
   BesteSchuleStudent? _student;
   Map _allData = {};

@@ -4,18 +4,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
-import 'package:school_app/presentation/pages/grades_page/grades_page.dart';
 import 'package:school_app/presentation/pages/login_page/auth_checker.dart';
-import 'package:school_app/presentation/pages/timetable_page/timetable_page.dart';
-import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
-import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
 import 'package:school_app/utils/logger.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
-  // Create and initialize the repo, loading cache before runApp
+  // load cache before app starts
   final repo = BesteSchuleRepoImpl();
   await repo.loadCacheOnStartup();
 

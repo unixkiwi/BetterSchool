@@ -18,10 +18,11 @@ dependencies:
   dynamic_color: ^1.7.0
   flutter_dotenv: ^5.2.1
   provider: ^6.1.5
-  math_expressions: ^2.7.0
+  math_expressions: ^3.0.0
   logger: ^2.5.0
   shared_preferences: ^2.5.3
   oauth2_client: ^4.2.0
+  oauth_webauth: ^5.1.0
 
 dev_dependencies:
   flutter_test:

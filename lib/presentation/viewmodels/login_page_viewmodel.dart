@@ -1,27 +1,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:school_app/data/models/beste_schule_oauth_client_impl.dart';
+import 'package:school_app/data/models/oauth_repo_impl_oauth_client_pkg.dart';
+import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/utils/logger.dart';
 
 class LoginPageViewmodel extends ChangeNotifier {
   final BesteSchuleRepo repo;
   String? _token;
-  final BesteSchuleOauthClientImpl _client = BesteSchuleOauthClientImpl();
+  final BesteSchuleOauthWebviewRepoImpl _repo = BesteSchuleOauthWebviewRepoImpl();
 
-  BesteSchuleOauthClientImpl get clientImpl => _client;
+  BesteSchuleOauthWebviewRepoImpl get repoImpl => _repo;
   String? get token => _token;
 
   LoginPageViewmodel({required this.repo});
-
-
 
   Future<bool> login() async {
     logger.i("[LoginViewModel] login() called");
     notifyListeners();
 
     logger.i("[LoginViewModel] Awaiting token");
-    _token = await _client.getToken(forceRequest: true);
+    _token = await _repo.getToken(forceRequest: true);
 
     if (_token == null) {
       logger.e("[LoginViewModel] Awaited token is null");
@@ -30,7 +29,7 @@ class LoginPageViewmodel extends ChangeNotifier {
 
       logger.i("[LoginViewModel] Checking wether the user is a student...");
       bool? isStudent = await repo.isUserStudent();
-      
+
       if (isStudent != null) {
         if (!isStudent) {
           //TODO return something useful

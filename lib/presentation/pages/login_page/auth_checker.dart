@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/data/models/beste_schule_oauth_client_impl.dart';
+import 'package:school_app/data/models/oauth_repo_impl_oauth_client_pkg.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/login_page/login_page.dart';
 import 'package:school_app/presentation/pages/main_navbar/main_navbar.dart';
@@ -14,7 +14,7 @@ class AuthChecker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: BesteSchuleOauthClientImpl().helper.getTokenFromStorage(),
+      future: BesteSchuleOauthRepoImpl().helper.getTokenFromStorage(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());

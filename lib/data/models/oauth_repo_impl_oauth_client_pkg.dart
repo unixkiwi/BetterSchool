@@ -1,38 +1,30 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:oauth2_client/access_token_response.dart';
 import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:school_app/domain/models/beste_schule_oauth_client.dart';
+import 'package:school_app/domain/repo/beste_schule_oauth_repo.dart';
 import 'package:school_app/utils/logger.dart';
 
-class BesteSchuleOauthClientImpl {
-  final String redirectUri = "schoolapp://oauth2redirect";
-  final String customUriScheme = "schoolapp";
-  final String clientId = dotenv.env['BESTE_SCHULE_CLIENT_ID'] ??= "100";
-  final String clientSecret =
-      dotenv.env['BESTE_SCHULE_CLIENT_SECRET'] ??= "1234";
-
-  late BesteSchuleOauthClient _client;
+class BesteSchuleOauthRepoImpl extends BesteSchuleOauthRepo {
   late OAuth2Helper _helper;
   String? _token = "";
 
-  BesteSchuleOauthClient get client => _client;
-
   OAuth2Helper get helper => _helper;
 
-  BesteSchuleOauthClientImpl() {
-    _client = BesteSchuleOauthClient(
+  BesteSchuleOauthRepoImpl() {
+    client = BesteSchuleOauthClient(
       redirectUri: redirectUri,
       customUriScheme: customUriScheme,
     );
 
     _helper = OAuth2Helper(
-      _client,
+      client,
       grantType: OAuth2Helper.authorizationCode,
       clientId: clientId,
       clientSecret: clientSecret,
     );
   }
 
+  @override
   Future<String?> getTokenFromStorage() async {
     AccessTokenResponse? accessTokenResponse =
         await _helper.getTokenFromStorage();
@@ -54,6 +46,7 @@ class BesteSchuleOauthClientImpl {
     return token;
   }
 
+  @override
   Future<String?> getToken({bool forceRequest = false}) async {
     if (!forceRequest && (_token != null && _token!.isNotEmpty)) {
       logger.d("[BesteSchule OAuth Client Impl] Returning token from 'cache'.");

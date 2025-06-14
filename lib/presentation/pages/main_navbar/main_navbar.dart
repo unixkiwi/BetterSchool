@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/grades_page/grades_page.dart';
+import 'package:school_app/presentation/pages/settings_page/settings_page.dart';
 import 'package:school_app/presentation/pages/timetable_page/timetable_page.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
@@ -31,8 +32,8 @@ class _MainNavBarState extends State<MainNavBar> {
           ),
       child: GradesPage(),
     ),
-    // Settings page is not implemented, show a placeholder
-    Center(child: Text('Settings page coming soon')),
+    // Settings page is not implemented and more used for testing
+    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -53,7 +54,7 @@ class _MainNavBarState extends State<MainNavBar> {
             icon: Icon(Icons.calendar_today),
             label: 'Timetable',
           ),
-          NavigationDestination(icon: Icon(Icons.grade), label: 'Grades'),
+          NavigationDestination(icon: Icon(Icons.leaderboard_rounded), label: 'Grades'),
           NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
