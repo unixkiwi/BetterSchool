@@ -28,9 +28,14 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   void initState() {
     super.initState();
-    //TODO weekend -> show next Week
-    _currentWeek = DateTime.now().weekOfYear;
-    _controller = PageController(initialPage: DateTime.now().weekday - 1);
+
+    if (DateTime.now().weekday > 5) {
+      _currentWeek = DateTime.now().weekOfYear + 1;
+      _controller = PageController(initialPage: 0);
+    } else {
+      _currentWeek = DateTime.now().weekOfYear;
+      _controller = PageController(initialPage: DateTime.now().weekday - 1);
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _fetchAndAddWeek(_currentWeek);
