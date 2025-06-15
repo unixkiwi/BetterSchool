@@ -28,6 +28,7 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   void initState() {
     super.initState();
+    //TODO weekend -> show next Week
     _currentWeek = DateTime.now().weekOfYear;
     _controller = PageController(initialPage: DateTime.now().weekday - 1);
 
