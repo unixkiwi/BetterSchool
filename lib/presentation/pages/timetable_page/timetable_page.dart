@@ -1,14 +1,9 @@
-import 'dart:developer';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/domain/models/day.dart';
-import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/presentation/pages/timetable_page/day_lessons_list.dart';
-import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
+import 'package:school_app/presentation/pages/timetable_page/timetable_date_info_bar.dart';
 import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
-import 'package:school_app/utils/logger.dart';
 import 'package:school_app/utils/time_utils.dart';
 
 class TimetablePage extends StatefulWidget {
@@ -30,6 +25,8 @@ class _TimetablePageState extends State<TimetablePage> {
     super.initState();
 
     if (DateTime.now().weekday > 5) {
+      _index = 0;
+
       _currentWeek = DateTime.now().weekOfYear + 1;
       _controller = PageController(initialPage: 0);
     } else {
@@ -62,42 +59,17 @@ class _TimetablePageState extends State<TimetablePage> {
       );
     }
 
-    // Flatten all loaded weeks into a single list for the PageView
+    // convert map into single list of days
     final List<SchoolDay?> allDays = _weeks.expand((w) => w).toList();
-
-    String getFormattedDay(int index) {
-      if (index < 0 || index >= allDays.length) return "";
-      final day = allDays[index];
-      if (day == null) return "No date available!";
-      // Format: Monday, 12 June 2024
-      final date = day.date;
-      return "${_weekdayName(date.weekday)}, ${date.day} ${_monthName(date.month)} ${date.year}";
-    }
 
     return Scaffold(
       appBar: AppBar(title: Text("Timetable"), elevation: 1),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          // Custom day bar below the appbar
-          Material(
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            elevation: 1,
-            child: SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Text(
-                  getFormattedDay(_index),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Main content
+          // date info bar
+          TimetableDateInfoBar(day: allDays[_index]),
+          // main timetable content
           Expanded(
             child: Consumer<TimetablePageViewmodel>(
               builder: (context, viewModel, child) {
@@ -160,36 +132,5 @@ class _TimetablePageState extends State<TimetablePage> {
         ],
       ),
     );
-  }
-
-  String _weekdayName(int weekday) {
-    const names = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ];
-    return names[(weekday - 1).clamp(0, 6)];
-  }
-
-  String _monthName(int month) {
-    const names = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    return names[(month - 1).clamp(0, 11)];
   }
 }
