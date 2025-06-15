@@ -27,7 +27,7 @@ class TimetableLessonTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: ListTile(
-          title: Text(subject.shortName),
+          title: Text(subject.name),
           subtitle: Row(
             children: lesson.rooms.map((room) => Text(room)).toList(),
           ),

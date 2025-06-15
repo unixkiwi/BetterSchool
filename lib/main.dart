@@ -43,7 +43,7 @@ class SchoolApp extends StatelessWidget {
             ),
 
             // auth check page to check wether the token is in storage
-            home:  const AuthChecker(),
+            home: const AuthChecker(),
           ),
         );
       },
