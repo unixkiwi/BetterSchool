@@ -91,7 +91,7 @@ class _TimetablePageState extends State<TimetablePage> {
                     days.add(
                       DayLessonsList(
                         viewmodel: viewModel,
-                        lessons: day.lessons,
+                        lessons: viewModel.getLessonWidgets(day.lessons),
                       ),
                     );
                   }
