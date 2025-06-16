@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/domain/models/subject.dart';
+import 'package:school_app/presentation/pages/timetable_page/lesson_tile_bottom_sheet.dart';
 
 class TimetableLessonTile extends StatelessWidget {
   final Lesson lesson;
@@ -27,17 +28,19 @@ class TimetableLessonTile extends StatelessWidget {
         ),
         child: ListTile(
           onTap: () {
-            //TODO implement timetable lesson tile on click
+            showLessonTileBottomSheet(context, lesson);
           },
           title: Text(subject.name),
           subtitle: Row(
             children: [
-              Row(children: lesson.rooms.map((room) => Text(room)).toList()),
+              Row(
+                children: lesson.rooms.map((room) => Text("$room ")).toList(),
+              ),
               Padding(padding: EdgeInsets.only(right: 8)),
               Row(
                 children:
                     lesson.teachers
-                        .map((teacher) => Text(teacher.short))
+                        .map((teacher) => Text("${teacher.short} "))
                         .toList(),
               ),
             ],
@@ -47,4 +50,6 @@ class TimetableLessonTile extends StatelessWidget {
       ),
     );
   }
+
+  
 }
