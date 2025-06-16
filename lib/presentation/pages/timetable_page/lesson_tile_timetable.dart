@@ -18,7 +18,6 @@ class TimetableLessonTile extends StatelessWidget {
       LessonStatus.INITIAL => Theme.of(context).colorScheme.secondaryContainer,
     });
 
-    //TODO improve information
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -27,9 +26,21 @@ class TimetableLessonTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: ListTile(
+          onTap: () {
+            //TODO implement timetable lesson tile on click
+          },
           title: Text(subject.name),
           subtitle: Row(
-            children: lesson.rooms.map((room) => Text(room)).toList(),
+            children: [
+              Row(children: lesson.rooms.map((room) => Text(room)).toList()),
+              Padding(padding: EdgeInsets.only(right: 8)),
+              Row(
+                children:
+                    lesson.teachers
+                        .map((teacher) => Text(teacher.short))
+                        .toList(),
+              ),
+            ],
           ),
           style: Theme.of(context).listTileTheme.style,
         ),
