@@ -34,9 +34,9 @@ class TimetableLessonTile extends StatelessWidget {
           title: Text(
             subject.name,
             style:
-                Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold) ??
+                Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ) ??
                 TextStyle(fontWeight: FontWeight.bold),
           ),
           trailing:
