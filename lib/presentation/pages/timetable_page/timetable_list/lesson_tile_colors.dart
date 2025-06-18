@@ -31,14 +31,13 @@ Color getInitial(BuildContext context) {
 final Map<String, Color> darkLessonTileTheme = {
   'cancelled': Colors.red.shade900, 
   'hold': Colors.blueGrey.shade900,
-  'planned': Colors.blue.shade800, 
-  'initial': Colors.blue.shade900, 
+  'planned': Colors.blueGrey.shade800, 
+  'initial': Colors.blueGrey.shade900, 
 };
 
-//TODO change light mode colors
 final Map<String, Color> lightLessonTileTheme = {
-  'cancelled': Colors.red.shade900,
-  'hold': Colors.blueGrey.shade900,
-  'planned': Colors.blueGrey.shade900,
-  'initial': Colors.blueGrey.shade800,
+  'cancelled': Colors.redAccent.shade200,
+  'hold': Colors.blueGrey.shade500,
+  'planned': Colors.blueGrey.shade400,
+  'initial': Colors.blueGrey.shade400,
 };
