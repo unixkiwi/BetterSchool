@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/lesson.dart';
+import 'package:school_app/domain/models/note.dart';
+import 'package:school_app/presentation/pages/timetable_page/lesson_bottom_sheet_components/bottom_sheet_lesson_notes.dart';
 
 Future<dynamic> showLessonTileBottomSheet(BuildContext context, Lesson lesson) {
   return showModalBottomSheet(
@@ -32,7 +34,11 @@ Future<dynamic> showLessonTileBottomSheet(BuildContext context, Lesson lesson) {
                     // Lesson name as title
                     Text(
                       lesson.subject.name,
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ) ??
+                          TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
                     // Rooms
@@ -44,7 +50,32 @@ Future<dynamic> showLessonTileBottomSheet(BuildContext context, Lesson lesson) {
                       spacing: 8,
                       children:
                           lesson.rooms
-                              .map((room) => Chip(label: Text(room)))
+                              .map(
+                                (room) => Chip(
+                                  padding: EdgeInsets.all(2),
+                                  label: Text(room),
+                                ),
+                              )
+                              .toList(),
+                    ),
+                    const SizedBox(height: 16),
+                    // Teachers
+                    Text(
+                      "Teachers:",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Wrap(
+                      spacing: 8,
+                      children:
+                          lesson.teachers
+                              .map(
+                                (teacher) => Chip(
+                                  padding: EdgeInsets.all(2),
+                                  label: Text(
+                                    "${teacher.first} ${teacher.last}",
+                                  ),
+                                ),
+                              )
                               .toList(),
                     ),
                     const SizedBox(height: 16),
@@ -53,23 +84,7 @@ Future<dynamic> showLessonTileBottomSheet(BuildContext context, Lesson lesson) {
                       "Notes:",
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    ...lesson.notes.isNotEmpty
-                        ? lesson.notes
-                            .map(
-                              (note) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                ),
-                                child: ListTile(title: Text(note.desc), subtitle: Text(note.type.name),),
-                              ),
-                            )
-                            .toList()
-                        : [
-                          Text(
-                            "No notes.",
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                    LessonBottomSheetNotesSection(lesson: lesson),
                   ],
                 ),
               ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/domain/models/day.dart';
-import 'package:school_app/presentation/pages/timetable_page/day_lessons_list.dart';
-import 'package:school_app/presentation/pages/timetable_page/timetable_date_info_bar.dart';
+import 'package:school_app/presentation/pages/timetable_page/timetable_list/day_lessons_list.dart';
+import 'package:school_app/presentation/pages/timetable_page/timetable_list/timetable_date_info_bar.dart';
 import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
 import 'package:school_app/utils/time_utils.dart';
 

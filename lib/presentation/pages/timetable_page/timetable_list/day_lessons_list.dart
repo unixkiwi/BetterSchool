@@ -11,8 +11,6 @@ class DayLessonsList extends StatelessWidget {
     required this.lessons,
   });
 
-  
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(

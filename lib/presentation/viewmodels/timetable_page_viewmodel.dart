@@ -3,7 +3,7 @@ import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/domain/models/lessons_with_cancelled.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
-import 'package:school_app/presentation/pages/timetable_page/lesson_tile_timetable.dart';
+import 'package:school_app/presentation/pages/timetable_page/timetable_list/lesson_tile_timetable.dart';
 import 'package:school_app/utils/logger.dart';
 import 'package:school_app/utils/time_utils.dart';
 

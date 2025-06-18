@@ -33,3 +33,20 @@ class Note {
 }
 
 enum NoteType { CLASS_TEST, TEST, LESSON_CONTENT, TIMETABLE, NONE }
+
+extension NoteTypeDescription on NoteType {
+  String get description {
+    switch (this) {
+      case NoteType.CLASS_TEST:
+        return "Class test";
+      case NoteType.TEST:
+        return "Other test";
+      case NoteType.LESSON_CONTENT:
+        return "Content of the lesson";
+      case NoteType.TIMETABLE:
+        return "Timetable note";
+      case NoteType.NONE:
+        return "No type";
+    }
+  }
+}

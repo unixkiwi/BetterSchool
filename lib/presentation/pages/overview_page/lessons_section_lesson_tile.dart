@@ -26,9 +26,7 @@ class LessonTile extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        // TODO: Add lesson tile onPress logic
       },
-      //IDEA: show teacher and room
       borderRadius: BorderRadius.circular(7),
       child: Container(
         alignment: Alignment.center,
