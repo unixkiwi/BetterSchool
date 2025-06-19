@@ -70,7 +70,7 @@ class TimetableLessonTile extends StatelessWidget {
           subtitle: Row(
             children: [
               Wrap(
-                spacing: 2,
+                spacing: 4,
                 children:
                     lesson.rooms
                         .map(

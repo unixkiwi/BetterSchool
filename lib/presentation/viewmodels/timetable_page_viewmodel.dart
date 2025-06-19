@@ -3,6 +3,7 @@ import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/domain/models/lessons_with_cancelled.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
+import 'package:school_app/presentation/pages/timetable_page/timetable_list/day_lessons_list.dart';
 import 'package:school_app/presentation/pages/timetable_page/timetable_list/lesson_tile_timetable.dart';
 import 'package:school_app/utils/logger.dart';
 import 'package:school_app/utils/time_utils.dart';
@@ -17,6 +18,28 @@ class TimetablePageViewmodel extends ChangeNotifier {
   bool _dataFetched = false;
   int? _currentWeekNumber;
 
+  // TIMETABLE PAGE LOGIC
+  int _selectedWeekNumber =
+      DateTime.now().weekOfYear;
+  int _selectedIndex =
+      DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday - 1;
+  List<Widget> _pages = [];
+  PageController _controller = PageController(
+    initialPage: DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday - 1,
+  );
+
+  List<Widget> get pages => _pages;
+  int get index => _selectedIndex;
+  SchoolDay? get currentSchoolDay {
+    // -1 because selected index is +1 because of the loading page in the front
+    final dayIndex = _selectedIndex - 1;
+    if (dayIndex < 0 || dayIndex >= _schoolDays.length) return null;
+    return _schoolDays[dayIndex];
+  }
+
+  PageController get controller => _controller;
+  // TIMETABLE PAGE LOGIC END
+
   List<SchoolDay?> get schoolDays => _schoolDays;
   SchoolDay? get today =>
       _schoolDays.length >= DateTime.now().weekday
@@ -28,8 +51,14 @@ class TimetablePageViewmodel extends ChangeNotifier {
 
   int? get weekNr => _currentWeekNumber;
 
-  Future<void> fetchData({int? weekNr, bool force = false}) async {
-    if (_isLoading) return;
+  int getInitialPageIndex() {
+    // Monday = 1, ..., Friday = 5
+    final weekday = DateTime.now().weekday;
+    return (weekday > 5) ? 1 : weekday;
+  }
+
+  Future<bool> fetchData({int? weekNr, bool force = false}) async {
+    if (_isLoading) return false;
 
     // await the lessons of the current week from the repo
     _isLoading = true;
@@ -37,16 +66,20 @@ class TimetablePageViewmodel extends ChangeNotifier {
 
     _currentWeekNumber = weekNr ?? (_currentWeekNumber ?? weekOfYear);
 
-    List<SchoolDay?>? days = await repo.getWeek(nr: _currentWeekNumber!, force: force);
+    List<SchoolDay?>? days = await repo.getWeek(
+      nr: _currentWeekNumber!,
+      force: force,
+    );
 
     // return when an error occurred while fetching the api,
+    // TODO return error when error occured -> network error
     if (days == null) {
       logger.i("[Timetable Viewmodel] Fetched days were null!");
-      return;
+      return false;
     }
 
     // remove saturday and sunday
-    days.removeRange(days.length-2, days.length);
+    days.removeRange(days.length - 2, days.length);
 
     // set data
     _schoolDays = days;
@@ -55,11 +88,112 @@ class TimetablePageViewmodel extends ChangeNotifier {
     _isLoading = false;
     _dataFetched = true;
 
-    // relaod after fetching data
+    // Generate pages and reset controller to correct day
+    getSelectedWeekPages();
+
+    // reset controller to it's right position
+    final initialIndex = getInitialPageIndex();
+    _selectedIndex = initialIndex;
+    if (_controller.hasClients) {
+      _controller.jumpToPage(initialIndex);
+    } else {
+      _controller = PageController(initialPage: initialIndex);
+    }
+
+    notifyListeners();
+
+    return true;
+  }
+
+  // TIMETABLE PAGE
+  Future<bool> _fetchNextWeekNumber(int current) async {
+    //TODO year change check
+    return await fetchData(weekNr: current + 1);
+  }
+
+  Future<bool> _fetchPrevWeekNumber(int current) async {
+    //TODO year change check
+    return await fetchData(weekNr: current - 1);
+  }
+
+  List<Widget> getSelectedWeekPages() {
+    List<Widget> pages = [];
+
+    // add loading page at the start
+    pages.add(Center(child: CircularProgressIndicator()));
+
+    // add school day pages to the pages
+    for (SchoolDay? day in _schoolDays) {
+      pages.add(
+        DayLessonsList(
+          viewmodel: this, // arg for viewModel
+          child: getLessonWidgets(day),
+        ),
+      );
+    }
+
+    // add loading page at the end
+    pages.add(Center(child: CircularProgressIndicator()));
+
+    _pages = pages;
+
+    notifyListeners();
+
+    return pages;
+  }
+
+  Future<void> onPageChange(int index) async {
+    _selectedIndex = index;
+
+    if (_selectedIndex == 0) {
+      // Animate to loading page (if not already there)
+      if (_controller.hasClients && _controller.page != 0) {
+        await _controller.animateToPage(
+          0,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      }
+      // sets _schoolDays for prev week
+      bool requestResult = await _fetchPrevWeekNumber(_selectedWeekNumber);
+      // when fetched and set it can generate pages
+      getSelectedWeekPages();
+
+      // set current Week number to prev week
+      _selectedWeekNumber -= 1;
+      // Instantly jump to Friday (index 5) after loading prev week
+      _selectedIndex = 5;
+      if (_controller.hasClients) {
+        _controller.jumpToPage(_selectedIndex);
+      }
+    } else if (_selectedIndex == _pages.length - 1) {
+      // Animate to loading page (if not already there)
+      if (_controller.hasClients && _controller.page != _pages.length - 1) {
+        await _controller.animateToPage(
+          _pages.length - 1,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      }
+      // sets _schoolDays for next week
+      bool requestResult = await _fetchNextWeekNumber(_selectedWeekNumber);
+      // when fetched and set it can generate pages
+      getSelectedWeekPages();
+      _selectedWeekNumber += 1;
+      // Instantly jump to Monday (index 1) after loading next week
+      _selectedIndex = 1;
+      if (_controller.hasClients) {
+        _controller.jumpToPage(_selectedIndex);
+      }
+    } else {
+      // nothing since the page just switched in one week -> no new week
+    }
+
     notifyListeners();
   }
-  
+  // TIMETABLE PAGE END
 
+  // LESSON LIST
   List<Lesson?> getSortedLessons(List<Lesson?> lessons) {
     final sortedLessons = List<Lesson?>.from(lessons)..sort((a, b) {
       if (a == null && b == null) return 0;
@@ -70,9 +204,13 @@ class TimetablePageViewmodel extends ChangeNotifier {
     return sortedLessons;
   }
 
-  List<Widget> getLessonWidgets(List<Lesson?> lessons) {
+  Widget getLessonWidgets(SchoolDay? day) {
+    if (day == null) {
+      return Center(child: Text("No lessons for today."));
+    }
+
     // filter and sort lessons
-    final sortedLessons = getSortedLessons(lessons);
+    final sortedLessons = getSortedLessons(day.lessons);
 
     // group lessons by nr
     final Map<int, List<Lesson>> lessonsByNr = {};
@@ -202,6 +340,8 @@ class TimetablePageViewmodel extends ChangeNotifier {
       // Fallback
       idx += 2;
     }
-    return widgets;
+    return ListView(children: widgets);
   }
+
+  // LESSON LIST END
 }

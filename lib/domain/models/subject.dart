@@ -12,8 +12,8 @@ class Subject {
   factory Subject.fromJson(Map json) {
     return Subject(
       id: json['id'] ?? 0,
-      name: json['name'] ?? "",
-      shortName: json['local_id'] ?? "",
+      name: json['name'] ?? "Unknown Subject",
+      shortName: json['local_id'] ?? "---",
     );
   }
 

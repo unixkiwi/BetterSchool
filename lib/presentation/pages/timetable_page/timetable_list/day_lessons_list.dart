@@ -3,12 +3,12 @@ import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart
 
 class DayLessonsList extends StatelessWidget {
   final TimetablePageViewmodel viewmodel;
-  final List<Widget> lessons;
+  final Widget child;
 
   const DayLessonsList({
     super.key,
     required this.viewmodel,
-    required this.lessons,
+    required this.child,
   });
 
   @override
@@ -19,7 +19,7 @@ class DayLessonsList extends StatelessWidget {
         SnackBar refreshMsg = SnackBar(content: Text('Updated timetable!'));
         ScaffoldMessenger.of(context).showSnackBar(refreshMsg);
       },
-      child: ListView(children: lessons),
+      child: child,
     );
   }
 }

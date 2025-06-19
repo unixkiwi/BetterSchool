@@ -32,7 +32,7 @@ class PageSelectMenu extends StatelessWidget {
                                 (context) => TimetablePageViewmodel(
                                   repo: context.read<BesteSchuleRepo>(),
                                 ),
-                            child: const TimetablePage(),
+                            child: TimetablePage(),
                           ),
                     ),
                   );
