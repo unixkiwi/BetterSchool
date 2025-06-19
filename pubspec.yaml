@@ -16,7 +16,6 @@ dependencies:
   http: ^1.4.0
   intl: ^0.20.2
   dynamic_color: ^1.7.0
-  flutter_dotenv: ^5.2.1
   provider: ^6.1.5
   math_expressions: ^3.0.0
   logger: ^2.5.0
@@ -35,7 +34,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - .env
     - assets/
 
 flutter_launcher_icons:

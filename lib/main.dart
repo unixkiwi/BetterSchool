@@ -1,6 +1,5 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
@@ -9,7 +8,6 @@ import 'package:school_app/utils/logger.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
 
   // load cache before app starts
   final repo = BesteSchuleRepoImpl();
