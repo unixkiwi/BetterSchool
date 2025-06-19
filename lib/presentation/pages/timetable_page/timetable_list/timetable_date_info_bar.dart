@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
+import 'package:school_app/domain/models/day.dart';
 
-
-import 'package:intl/intl.dart';import 'package:school_app/domain/models/day.dart';class TimetableDateInfoBar extends StatelessWidget {
+class TimetableDateInfoBar extends StatelessWidget {
   final SchoolDay? day;
-  
+
   const TimetableDateInfoBar({super.key, required this.day});
 
   String getDateText() {
     if (day == null) return "No date for this day.";
-    
-    return DateFormat('EEEE, d MMMM y').format(day!.date);
+
+    DateTime date = day!.date;
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    DateTime target = DateTime(date.year, date.month, date.day);
+
+    String prefix;
+    if (target == today) {
+      prefix = "Today";
+    } else if (target == today.subtract(const Duration(days: 1))) {
+      prefix = "Yesterday";
+    } else if (target == today.add(const Duration(days: 1))) {
+      prefix = "Tomorrow";
+    } else {
+      prefix = DateFormat('EEEE').format(date);
+    }
+
+    return "$prefix, ${DateFormat('d MMMM y').format(date)}";
   }
 
   @override
