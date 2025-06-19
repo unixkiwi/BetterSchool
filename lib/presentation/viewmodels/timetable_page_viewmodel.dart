@@ -142,6 +142,23 @@ class TimetablePageViewmodel extends ChangeNotifier {
     return pages;
   }
 
+  Future<void> loadCurrentDay() async {
+    _selectedIndex = getInitialPageIndex();
+
+    if (DateTime.now().weekday > 5) {
+      //TODO year switch shit
+      _selectedWeekNumber = DateTime.now().weekOfYear + 1;
+    } else {
+      _selectedWeekNumber = DateTime.now().weekOfYear;
+    }
+
+    await fetchData(weekNr: _selectedWeekNumber);
+
+    getSelectedWeekPages();
+
+    _controller.animateToPage(_selectedIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
+  }
+
   Future<void> onPageChange(int index) async {
     _selectedIndex = index;
 
@@ -150,7 +167,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
       if (_controller.hasClients && _controller.page != 0) {
         await _controller.animateToPage(
           0,
-          duration: Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 100),
           curve: Curves.ease,
         );
       }
@@ -171,7 +188,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
       if (_controller.hasClients && _controller.page != _pages.length - 1) {
         await _controller.animateToPage(
           _pages.length - 1,
-          duration: Duration(milliseconds: 300),
+          duration: Duration(milliseconds: 100),
           curve: Curves.ease,
         );
       }

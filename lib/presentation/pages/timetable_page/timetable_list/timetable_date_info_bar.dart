@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 import 'package:school_app/domain/models/day.dart';
+import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
 
 class TimetableDateInfoBar extends StatelessWidget {
   final SchoolDay? day;
+  final TimetablePageViewmodel viewModel;
 
-  const TimetableDateInfoBar({super.key, required this.day});
+  const TimetableDateInfoBar({
+    super.key,
+    required this.day,
+    required this.viewModel,
+  });
 
   String getDateText() {
     if (day == null) return "No date for this day.";
@@ -39,12 +45,24 @@ class TimetableDateInfoBar extends StatelessWidget {
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(
-            getDateText(),
-            textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  getDateText(),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                iconSize: 324,
+                icon: const Icon(Icons.today),
+                tooltip: "Go to Today",
+                onPressed: () => viewModel.loadCurrentDay(),
+              ),
+            ],
           ),
         ),
       ),

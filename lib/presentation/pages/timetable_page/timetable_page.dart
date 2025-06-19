@@ -37,7 +37,7 @@ class TimetablePage extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               // date info bar
-              TimetableDateInfoBar(day: viewModel.currentSchoolDay),
+              TimetableDateInfoBar(day: viewModel.currentSchoolDay, viewModel: viewModel,),
               // main timetable content
               Expanded(
                 child: PageView.builder(
