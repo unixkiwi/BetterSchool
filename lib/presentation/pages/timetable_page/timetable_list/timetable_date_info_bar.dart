@@ -44,23 +44,27 @@ class TimetableDateInfoBar extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 6.0),
           child: Row(
             children: [
+              Expanded(child: SizedBox()),
               Expanded(
+                flex: 5,
                 child: Text(
                   getDateText(),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
-              IconButton(
-                iconSize: 24,
-                icon: const Icon(Icons.today),
-                tooltip: "Go to Today",
-                onPressed: () => viewModel.loadCurrentDay(),
+              Expanded(
+                child: IconButton(
+                  iconSize: 24,
+                  icon: const Icon(Icons.today),
+                  tooltip: "Go to Today",
+                  onPressed: () => viewModel.loadCurrentDay(),
+                ),
               ),
             ],
           ),
