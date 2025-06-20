@@ -67,8 +67,8 @@ class _GradesPageState extends State<GradesPage> {
                               AvgGradeTile(
                                 subject: entry.key,
                                 avgGrade: entry.value,
+                                viewModel: viewModel,
                               ),
-                              Divider(height: 0),
                             ],
                           ),
                       ],

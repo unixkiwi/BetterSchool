@@ -14,25 +14,11 @@ class DayNoteTile extends StatelessWidget {
         elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                note.type.description,
-                softWrap: true,
-                maxLines: null,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                note.desc,
-                style: Theme.of(context).textTheme.bodyLarge,
-                softWrap: true,
-                maxLines: null,
-              ),
-            ],
+          child: Text(
+            note.desc,
+            style: Theme.of(context).textTheme.bodyLarge,
+            softWrap: true,
+            maxLines: null,
           ),
         ),
       ),

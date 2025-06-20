@@ -54,9 +54,12 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     Map<Subject, String> calcRules = {};
     for (Subject subject in _subjects) {
-      final String? calcRule = await repo.getCalculationRuleForSubject(subject.id, force: force);
+      final String? calcRule = await repo.getCalculationRuleForSubject(
+        subject.id,
+        force: force,
+      );
       if (calcRule != null) {
-        calcRules[subject] = calcRule; 
+        calcRules[subject] = calcRule;
       }
     }
     _calcRules = calcRules;
@@ -68,6 +71,25 @@ class GradesPageViewmodel extends ChangeNotifier {
     _dataFetched = true;
     _isLoading = false;
     notifyListeners();
+  }
+
+  List<Grade> getGradesFromSubject(Subject subject) {
+    logger.d("[Grades ViewModel] Called getGradesFromSubject()");
+
+    for (final subjectIt in _subjects) {
+      if (subjectIt.id == subject.id) {
+        // get grades for the subject
+        final subjectGrades =
+            _grades.where((g) => g.subject == subject).toList();
+
+        // sort by date, newest first
+        subjectGrades.sort((a, b) => b.date.compareTo(a.date));
+
+        return subjectGrades;
+      }
+    }
+
+    return [];
   }
 
   Future<Map<Subject, double>> getAveragesForAllSubjects() async {
@@ -120,7 +142,6 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     // no rule, just default sum divided by the count
     if (calculationRule == null) {
-
       final sum = grades.fold<double>(0.0, (prev, g) => prev + g.value);
 
       return sum / grades.length;
