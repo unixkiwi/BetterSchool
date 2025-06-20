@@ -57,7 +57,7 @@ class TimetableDateInfoBar extends StatelessWidget {
                 ),
               ),
               IconButton(
-                iconSize: 324,
+                iconSize: 24,
                 icon: const Icon(Icons.today),
                 tooltip: "Go to Today",
                 onPressed: () => viewModel.loadCurrentDay(),

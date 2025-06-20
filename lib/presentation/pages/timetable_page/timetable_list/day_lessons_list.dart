@@ -19,7 +19,7 @@ class DayLessonsList extends StatelessWidget {
         SnackBar refreshMsg = SnackBar(content: Text('Updated timetable!'));
         ScaffoldMessenger.of(context).showSnackBar(refreshMsg);
       },
-      child: child,
+      child: child
     );
   }
 }

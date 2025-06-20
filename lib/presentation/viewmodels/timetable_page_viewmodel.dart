@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/lesson.dart';
 import 'package:school_app/domain/models/lessons_with_cancelled.dart';
+import 'package:school_app/domain/models/note.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/timetable_page/timetable_list/day_lessons_list.dart';
+import 'package:school_app/presentation/pages/timetable_page/timetable_list/day_note_tile.dart';
 import 'package:school_app/presentation/pages/timetable_page/timetable_list/lesson_tile_timetable.dart';
 import 'package:school_app/utils/logger.dart';
 import 'package:school_app/utils/time_utils.dart';
@@ -19,8 +21,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
   int? _currentWeekNumber;
 
   // TIMETABLE PAGE LOGIC
-  int _selectedWeekNumber =
-      DateTime.now().weekOfYear;
+  int _selectedWeekNumber = DateTime.now().weekOfYear;
   int _selectedIndex =
       DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday - 1;
   List<Widget> _pages = [];
@@ -124,12 +125,20 @@ class TimetablePageViewmodel extends ChangeNotifier {
 
     // add school day pages to the pages
     for (SchoolDay? day in _schoolDays) {
-      pages.add(
-        DayLessonsList(
-          viewmodel: this, // arg for viewModel
-          child: getLessonWidgets(day),
-        ),
-      );
+      List<Widget> listWidgets = getLessonWidgets(day);
+
+      if (day != null && day.notes.isNotEmpty) {
+        listWidgets.add(Divider(height: 5,));
+        listWidgets.add(SizedBox(height: 5,));
+
+        for (Note note in day.notes) {
+          listWidgets.add(DayNoteTile(note: note));
+        }
+      }
+
+      Widget content = ListView(children: listWidgets);
+
+      pages.add(DayLessonsList(viewmodel: this, child: content));
     }
 
     // add loading page at the end
@@ -156,7 +165,11 @@ class TimetablePageViewmodel extends ChangeNotifier {
 
     getSelectedWeekPages();
 
-    _controller.animateToPage(_selectedIndex, duration: Duration(milliseconds: 300), curve: Curves.ease);
+    _controller.animateToPage(
+      _selectedIndex,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.ease,
+    );
   }
 
   Future<void> onPageChange(int index) async {
@@ -221,9 +234,9 @@ class TimetablePageViewmodel extends ChangeNotifier {
     return sortedLessons;
   }
 
-  Widget getLessonWidgets(SchoolDay? day) {
+  List<Widget> getLessonWidgets(SchoolDay? day) {
     if (day == null) {
-      return Center(child: Text("No lessons for today."));
+      return [Center(child: Text("No lessons for today."))];
     }
 
     // filter and sort lessons
@@ -357,7 +370,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
       // Fallback
       idx += 2;
     }
-    return ListView(children: widgets);
+    return widgets;
   }
 
   // LESSON LIST END
