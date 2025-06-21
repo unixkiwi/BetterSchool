@@ -14,8 +14,10 @@ class LoginPage extends StatelessWidget {
           appBar: AppBar(title: Text("Login"), leading: Icon(Icons.login)),
           extendBody: true,
           body: Center(
-            child: MaterialButton(
-              color: Theme.of(context).colorScheme.primaryContainer,
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              ),
               onPressed: () async {
                 final success = await viewModel.login(context);
                 if (success && context.mounted) {
@@ -64,7 +66,7 @@ class LoginPage extends StatelessWidget {
                   );
                 }
               },
-              child: Text("Login with beste.schule"),
+              child: const Text('Login'),
             ),
           ),
         );

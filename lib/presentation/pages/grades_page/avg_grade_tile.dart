@@ -16,7 +16,7 @@ class AvgGradeTile extends StatelessWidget {
   });
 
   double roundGrade(double avg) {
-    return ((avg * 100).round())/100;
+    return ((avg * 100).round()) / 100;
   }
 
   @override
@@ -24,6 +24,7 @@ class AvgGradeTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3),
       child: Card.filled(
+        elevation: 3,
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: ListTile(
           onTap: () {

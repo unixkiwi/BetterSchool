@@ -30,13 +30,23 @@ class SchoolApp extends StatelessWidget {
         return Provider<BesteSchuleRepo>(
           create: (_) => repo,
           child: MaterialApp(
-            debugShowCheckedModeBanner: false,
+            debugShowCheckedModeBanner: false, 
             theme: ThemeData(
-              colorScheme: lightDynamic ?? ColorScheme.light(),
+              colorScheme:
+                  lightDynamic ??
+                  ColorScheme.fromSeed(
+                    seedColor: Colors.green,
+                    brightness: Brightness.light,
+                  ),
               useMaterial3: true,
             ),
             darkTheme: ThemeData(
-              colorScheme: darkDynamic ?? ColorScheme.dark(),
+              colorScheme:
+                  darkDynamic ??
+                  ColorScheme.fromSeed(
+                    seedColor: Colors.green,
+                    brightness: Brightness.light,
+                  ),
               useMaterial3: true,
             ),
 

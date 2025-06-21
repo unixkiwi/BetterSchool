@@ -21,7 +21,10 @@ class TimetablePageViewmodel extends ChangeNotifier {
   int? _currentWeekNumber;
 
   // TIMETABLE PAGE LOGIC
-  int _selectedWeekNumber = DateTime.now().weekOfYear;
+  int _selectedWeekNumber =
+      DateTime.now().weekday > 5
+          ? DateTime.now().weekOfYear + 1
+          : DateTime.now().weekOfYear;
   int _selectedIndex =
       DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday - 1;
   List<Widget> _pages = [];
@@ -58,14 +61,20 @@ class TimetablePageViewmodel extends ChangeNotifier {
     return (weekday > 5) ? 1 : weekday;
   }
 
+  int getWeekOfYear() {
+    // Monday = 1, ..., Friday = 5
+    final weekday = DateTime.now().weekday;
+    final week = DateTime.now().weekOfYear;
+    return weekday > 5 ? week + 1 : week;
+  }
+
   Future<bool> fetchData({int? weekNr, bool force = false}) async {
     if (_isLoading) return false;
 
     // await the lessons of the current week from the repo
     _isLoading = true;
-    final int weekOfYear = DateTime.now().weekOfYear;
 
-    _currentWeekNumber = weekNr ?? (_currentWeekNumber ?? weekOfYear);
+    _currentWeekNumber = weekNr ?? (_currentWeekNumber ?? getWeekOfYear());
 
     List<SchoolDay?>? days = await repo.getWeek(
       nr: _currentWeekNumber!,
@@ -128,8 +137,8 @@ class TimetablePageViewmodel extends ChangeNotifier {
       List<Widget> listWidgets = getLessonWidgets(day);
 
       if (day != null && day.notes.isNotEmpty) {
-        listWidgets.add(Divider(height: 5,));
-        listWidgets.add(SizedBox(height: 5,));
+        listWidgets.add(Divider(height: 5));
+        listWidgets.add(SizedBox(height: 5));
 
         for (Note note in day.notes) {
           listWidgets.add(DayNoteTile(note: note));

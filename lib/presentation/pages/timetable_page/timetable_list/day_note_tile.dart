@@ -12,6 +12,7 @@ class DayNoteTile extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: Card.outlined(
         elevation: 0,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
