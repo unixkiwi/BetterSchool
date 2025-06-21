@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/login_page/auth_checker.dart';
-import 'package:school_app/domain/settings/theme_provider.dart';
+import 'package:school_app/domain/settings/theme/theme_provider.dart';
 import 'package:school_app/utils/logger.dart';
 
 void main() async {
