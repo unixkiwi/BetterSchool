@@ -15,22 +15,25 @@ class AvgGradeTile extends StatelessWidget {
     required this.viewModel,
   });
 
+  double roundGrade(double avg) {
+    return ((avg * 100).round())/100;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 3),
       child: Card.filled(
-        elevation: 3,
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: ListTile(
           onTap: () {
-            //TODO on click open page with all grades of this subject
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder:
                     (context) => SubjectGradesPage(
                       subject: subject,
                       grades: viewModel.getGradesFromSubject(subject),
+                      avg: roundGrade(avgGrade),
                     ),
               ),
             );
@@ -41,7 +44,7 @@ class AvgGradeTile extends StatelessWidget {
               avgGrade == -1
                   ? Icon(Icons.block)
                   : Text(
-                    "Ø ${avgGrade.toStringAsFixed(2)}",
+                    "Ø ${roundGrade(avgGrade).toStringAsFixed(2)}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.onSecondaryContainer,

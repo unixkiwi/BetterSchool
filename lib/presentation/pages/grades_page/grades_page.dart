@@ -41,43 +41,58 @@ class _GradesPageState extends State<GradesPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text("Grades"), elevation: 1),
-      body: Consumer<GradesPageViewmodel>(
-        builder: (context, viewModel, child) {
-          return viewModel.isLoading && !viewModel.dataFetched
-              ? Center(child: CircularProgressIndicator())
-              : RefreshIndicator(
-                onRefresh: () async {
-                  logger.i("[Grades Page] Refetching Data");
-                  await viewModel.fetchData(force: true);
-                  logger.i("[Grades Page] Refetched Data");
-                  SnackBar refreshMsg = SnackBar(
-                    content: Text('Refreshed grades!'),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(refreshMsg);
-                },
-                child: ListView(
-                  children: [
-                    Column(
+    return Consumer<GradesPageViewmodel>(
+      builder: (context, viewModel, child) {
+        double avg = ((viewModel.totalAvg * 100).round() / 100);
+        String avgDisplay =
+            avg == -1
+                ? String.fromCharCode(Icons.block.codePoint)
+                : "Ø ${avg.toStringAsFixed(2)}";
+        return Scaffold(
+          appBar: AppBar(
+            title: Text("Grades"),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Center(child: Text(avgDisplay)),
+              ),
+            ],
+            elevation: 1,
+          ),
+          body:
+              viewModel.isLoading && !viewModel.dataFetched
+                  ? Center(child: CircularProgressIndicator())
+                  : RefreshIndicator(
+                    onRefresh: () async {
+                      logger.i("[Grades Page] Refetching Data");
+                      await viewModel.fetchData(force: true);
+                      logger.i("[Grades Page] Refetched Data");
+                      SnackBar refreshMsg = SnackBar(
+                        content: Text('Refreshed grades!'),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(refreshMsg);
+                    },
+                    child: ListView(
                       children: [
-                        for (final entry in viewModel.averages.entries)
-                          Column(
-                            children: [
-                              AvgGradeTile(
-                                subject: entry.key,
-                                avgGrade: entry.value,
-                                viewModel: viewModel,
+                        Column(
+                          children: [
+                            for (final entry in viewModel.averages.entries)
+                              Column(
+                                children: [
+                                  AvgGradeTile(
+                                    subject: entry.key,
+                                    avgGrade: entry.value,
+                                    viewModel: viewModel,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              );
-        },
-      ),
+                  ),
+        );
+      },
     );
   }
 }

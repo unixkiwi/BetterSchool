@@ -23,6 +23,9 @@ class GradesPageViewmodel extends ChangeNotifier {
   Map<Subject, double> get averages => _averages;
   Map<Subject, String> get calcRules => _calcRules;
 
+  double _totalAvg = -1;
+  double get totalAvg => _totalAvg;
+
   GradesPageViewmodel({required this.repo});
 
   Future<void> fetchData({bool force = false}) async {
@@ -66,6 +69,7 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     logger.i("Calculating averages!");
     _averages = await getAveragesForAllSubjects();
+    _totalAvg = _calculateTotalAvg();
 
     // set meta variables
     _dataFetched = true;
@@ -90,6 +94,27 @@ class GradesPageViewmodel extends ChangeNotifier {
     }
 
     return [];
+  }
+
+  Future<double> getTotalAvg() async {
+    logger.d("[Grades ViewModel] Called getTotalAvg()");
+
+    if (_averages.isEmpty) {
+      await getAveragesForAllSubjects();
+    }
+
+    if (_averages.isEmpty) return -1;
+
+    return _calculateTotalAvg();
+  }
+
+  double _calculateTotalAvg() {
+    if (_averages.isEmpty) return -1;
+    double sum = 0;
+    for (MapEntry<Subject, double> entry in _averages.entries) {
+      sum += entry.value;
+    }
+    return sum / _averages.values.length;
   }
 
   Future<Map<Subject, double>> getAveragesForAllSubjects() async {
@@ -185,8 +210,9 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     // evaluate the grade
     GrammarParser parser = GrammarParser();
+    RealEvaluator realEvaluator = RealEvaluator();
     Expression expr = parser.parse(rule);
-    double result = expr.evaluate(EvaluationType.REAL, ContextModel());
+    double result = realEvaluator.evaluate(expr).toDouble();
     return result;
   }
 
