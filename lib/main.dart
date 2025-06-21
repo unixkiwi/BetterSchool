@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/login_page/auth_checker.dart';
+import 'package:school_app/domain/settings/theme_provider.dart';
 import 'package:school_app/utils/logger.dart';
 
 void main() async {
@@ -27,31 +28,38 @@ class SchoolApp extends StatelessWidget {
     // dynamically style page by system color such as material you
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        return Provider<BesteSchuleRepo>(
-          create: (_) => repo,
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false, 
-            theme: ThemeData(
-              colorScheme:
-                  lightDynamic ??
-                  ColorScheme.fromSeed(
-                    seedColor: Colors.green,
-                    brightness: Brightness.light,
+        return ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+          child: Consumer<ThemeProvider>(
+            builder: (context, themeProvider, _) {
+              return Provider<BesteSchuleRepo>(
+                create: (_) => repo,
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: ThemeData(
+                    colorScheme:
+                        lightDynamic ??
+                        ColorScheme.fromSeed(
+                          seedColor: Colors.green,
+                          brightness: Brightness.light,
+                        ),
+                    useMaterial3: true,
                   ),
-              useMaterial3: true,
-            ),
-            darkTheme: ThemeData(
-              colorScheme:
-                  darkDynamic ??
-                  ColorScheme.fromSeed(
-                    seedColor: Colors.green,
-                    brightness: Brightness.light,
+                  darkTheme: ThemeData(
+                    colorScheme:
+                        darkDynamic ??
+                        ColorScheme.fromSeed(
+                          seedColor: Colors.green,
+                          brightness: Brightness.light,
+                        ),
+                    useMaterial3: true,
                   ),
-              useMaterial3: true,
-            ),
-
-            // auth check page to check wether the token is in storage
-            home: const AuthChecker(),
+                  themeMode: themeProvider.themeMode,
+                  // auth check page to check wether the token is in storage
+                  home: const AuthChecker(),
+                ),
+              );
+            },
           ),
         );
       },
