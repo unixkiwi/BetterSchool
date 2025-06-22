@@ -14,12 +14,59 @@ void main() async {
   final repo = BesteSchuleRepoImpl();
   await repo.loadCacheOnStartup();
 
-  runApp(SchoolApp(repo: repo));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: SchoolApp(repo: repo),
+    ),
+  );
 }
 
 class SchoolApp extends StatelessWidget {
   final BesteSchuleRepo repo;
   const SchoolApp({super.key, required this.repo});
+
+  final Color defaultFallbackColor = Colors.green;
+
+  ThemeData getLightTheme(
+    ColorScheme? lightDynamic,
+    ThemeProvider themeProvider,
+  ) {
+    return ThemeData(
+      colorScheme:
+          themeProvider.themeColor == null
+              ? lightDynamic ??
+                  ColorScheme.fromSeed(
+                    seedColor: defaultFallbackColor,
+                    brightness: Brightness.light,
+                  )
+              : ColorScheme.fromSeed(
+                seedColor: themeProvider.themeColor!,
+                brightness: Brightness.light,
+              ),
+      useMaterial3: true,
+    );
+  }
+
+  ThemeData getDarkTheme(
+    ColorScheme? darkDynamic,
+    ThemeProvider themeProvider,
+  ) {
+    return ThemeData(
+      colorScheme:
+          themeProvider.themeColor == null
+              ? darkDynamic ??
+                  ColorScheme.fromSeed(
+                    seedColor: defaultFallbackColor,
+                    brightness: Brightness.dark,
+                  )
+              : ColorScheme.fromSeed(
+                seedColor: themeProvider.themeColor!,
+                brightness: Brightness.dark,
+              ),
+      useMaterial3: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,38 +75,16 @@ class SchoolApp extends StatelessWidget {
     // dynamically style page by system color such as material you
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        return ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
-          child: Consumer<ThemeProvider>(
-            builder: (context, themeProvider, _) {
-              return Provider<BesteSchuleRepo>(
-                create: (_) => repo,
-                child: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  theme: ThemeData(
-                    colorScheme:
-                        lightDynamic ??
-                        ColorScheme.fromSeed(
-                          seedColor: Colors.green,
-                          brightness: Brightness.light,
-                        ),
-                    useMaterial3: true,
-                  ),
-                  darkTheme: ThemeData(
-                    colorScheme:
-                        darkDynamic ??
-                        ColorScheme.fromSeed(
-                          seedColor: Colors.green,
-                          brightness: Brightness.light,
-                        ),
-                    useMaterial3: true,
-                  ),
-                  themeMode: themeProvider.themeMode,
-                  // auth check page to check wether the token is in storage
-                  home: const AuthChecker(),
-                ),
-              );
-            },
+        final themeProvider = Provider.of<ThemeProvider>(context);
+        return Provider<BesteSchuleRepo>(
+          create: (_) => repo,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: getLightTheme(lightDynamic, themeProvider),
+            darkTheme: getDarkTheme(darkDynamic, themeProvider),
+            themeMode: themeProvider.themeMode,
+            // auth check page to check wether the token is in storage
+            home: const AuthChecker(),
           ),
         );
       },
