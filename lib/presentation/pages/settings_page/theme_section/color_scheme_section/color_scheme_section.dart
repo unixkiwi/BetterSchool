@@ -23,6 +23,8 @@ class ColorSchemeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //FIXME button isn't selected when opening page
+    
     List<Widget> getColorButtons() {
       List<Widget> buttons = [];
 

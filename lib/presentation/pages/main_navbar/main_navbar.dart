@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
-import 'package:school_app/domain/settings/theme/theme_provider.dart';
 import 'package:school_app/presentation/pages/grades_page/grades_page.dart';
 import 'package:school_app/presentation/pages/settings_page/settings_page.dart';
 import 'package:school_app/presentation/pages/timetable_page/timetable_page.dart';

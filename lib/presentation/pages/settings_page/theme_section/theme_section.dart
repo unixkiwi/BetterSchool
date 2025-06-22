@@ -19,7 +19,7 @@ class SettingsThemeSection extends StatelessWidget {
               themeProvider: themeProvider,
             ),
             const SizedBox(height: 24),
-            ColorSchemeSection(themeProvider: themeProvider), //TODO implement viewmodel recursively
+            ColorSchemeSection(themeProvider: themeProvider),
           ],
         );
       },
