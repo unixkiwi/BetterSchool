@@ -6,11 +6,7 @@ class ColorButton extends StatelessWidget {
   final Color color;
   ThemeProvider themeProvider;
 
-  ColorButton({
-    super.key,
-    required this.color,
-    required this.themeProvider,
-  });
+  ColorButton({super.key, required this.color, required this.themeProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -19,21 +15,24 @@ class ColorButton extends StatelessWidget {
         logger.i("[Color BTN] Color buttton with color $color was pressed");
         themeProvider.setThemeColor(color);
       },
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color:
-                themeProvider.themeColor == color
-                    ? Theme.of(context).colorScheme.outline
-                    : Colors.transparent,
-            width: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color:
+                  themeProvider.themeColor == color
+                      ? Theme.of(context).colorScheme.onSecondaryContainer
+                      : Colors.transparent,
+              width: 3,
+            ),
           ),
+          child: null,
         ),
-        child: null,
       ),
     );
   }

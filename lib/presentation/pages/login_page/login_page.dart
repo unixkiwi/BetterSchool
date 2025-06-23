@@ -16,7 +16,7 @@ class LoginPage extends StatelessWidget {
           body: Center(
             child: FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.primary,
               ),
               onPressed: () async {
                 final success = await viewModel.login(context);
@@ -66,7 +66,13 @@ class LoginPage extends StatelessWidget {
                   );
                 }
               },
-              child: const Text('Login'),
+              child: Text(
+                'Login with beste.schule',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize,
+                ),
+              ),
             ),
           ),
         );

@@ -5,10 +5,7 @@ import 'package:school_app/utils/logger.dart';
 class MaterialYouColorSchemeButton extends StatelessWidget {
   ThemeProvider themeProvider;
 
-  MaterialYouColorSchemeButton({
-    super.key,
-    required this.themeProvider,
-  });
+  MaterialYouColorSchemeButton({super.key, required this.themeProvider});
 
   @override
   Widget build(BuildContext context) {
@@ -17,20 +14,26 @@ class MaterialYouColorSchemeButton extends StatelessWidget {
         logger.i("[Color BTN] Material You BTN was pressed");
         themeProvider.setThemeColor(null);
       },
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color:
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border:
                 themeProvider.themeColor == null
-                    ? Theme.of(context).colorScheme.outline
-                    : Colors.transparent,
-            width: 2,
+                    ? Border.all(
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      width: 3,
+                    )
+                    : Border.all(
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      width: 1,
+                    ),
           ),
+          child: Icon(Icons.colorize_rounded, size: 32),
         ),
-        child: Icon(Icons.settings_suggest_rounded),
       ),
     );
   }
