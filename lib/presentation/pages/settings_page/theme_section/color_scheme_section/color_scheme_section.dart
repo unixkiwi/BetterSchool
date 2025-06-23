@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/domain/settings/theme/theme_provider.dart';
+import 'package:school_app/domain/settings/settings_provider.dart';
 import 'package:school_app/presentation/pages/settings_page/theme_section/color_scheme_section/color_button.dart';
 import 'package:school_app/presentation/pages/settings_page/theme_section/color_scheme_section/material_you_btn.dart';
 import 'package:school_app/utils/logger.dart';
 
 class ColorSchemeSection extends StatelessWidget {
-  final ThemeProvider themeProvider;
+  final SettingsProvider settingsProvider;
 
-  ColorSchemeSection({super.key, required this.themeProvider});
+  ColorSchemeSection({super.key, required this.settingsProvider});
 
   // .shade500 so that the value is a Color and not a MaterialColor
   final List<Color> colors = [
@@ -26,16 +26,20 @@ class ColorSchemeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> getColorButtons() {
-      logger.i(themeProvider.themeColor);
+      logger.i(settingsProvider.themeColor);
 
       List<Widget> buttons = [];
 
       // add material you color with null as the material you color
-      buttons.add(MaterialYouColorSchemeButton(themeProvider: themeProvider));
+      buttons.add(
+        MaterialYouColorSchemeButton(settingsProvider: settingsProvider),
+      );
 
       // add color buttons
       for (Color color in colors) {
-        buttons.add(ColorButton(color: color, themeProvider: themeProvider));
+        buttons.add(
+          ColorButton(color: color, settingsProvider: settingsProvider),
+        );
       }
 
       return buttons;
@@ -55,7 +59,12 @@ class ColorSchemeSection extends StatelessWidget {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Padding(
-                padding: const EdgeInsets.only(right: 1, left: 1, top: 4, bottom: 4),
+                padding: const EdgeInsets.only(
+                  right: 1,
+                  left: 1,
+                  top: 4,
+                  bottom: 4,
+                ),
                 child: Row(children: getColorButtons()),
               ),
             ),

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/presentation/viewmodels/settings_page_viewmodel.dart';
 import 'package:school_app/domain/settings/theme/theme_prefs.dart';
+import 'package:school_app/presentation/viewmodels/settings_page_viewmodel.dart';
 
-class ThemeProvider extends ChangeNotifier {
+class SettingsProvider extends ChangeNotifier {
   ThemeMode _themeMode = SettingsPageViewmodel.mode;
   Color? _themeColor;
 
-  ThemeProvider() {
+  SettingsProvider() {
     _loadTheme();
   }
 
+  // THEMES
   ThemeMode get themeMode => _themeMode;
   Color? get themeColor => _themeColor;
 
@@ -34,4 +35,5 @@ class ThemeProvider extends ChangeNotifier {
     ThemePrefs.saveThemeColor(color);
     notifyListeners();
   }
+  // THEMES END
 }

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/domain/settings/theme/theme_provider.dart';
+import 'package:school_app/domain/settings/settings_provider.dart';
 import 'package:school_app/utils/logger.dart';
 
 class ColorButton extends StatelessWidget {
   final Color color;
-  ThemeProvider themeProvider;
+  final SettingsProvider settingsProvider;
 
-  ColorButton({super.key, required this.color, required this.themeProvider});
+  ColorButton({super.key, required this.color, required this.settingsProvider});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         logger.i("[Color BTN] Color buttton with color $color was pressed");
-        themeProvider.setThemeColor(color);
+        settingsProvider.setThemeColor(color);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -24,10 +24,9 @@ class ColorButton extends StatelessWidget {
             color: color,
             shape: BoxShape.circle,
             border: Border.all(
-              color:
-                  themeProvider.themeColor == color
-                      ? Theme.of(context).colorScheme.onSecondaryContainer
-                      : Colors.transparent,
+              color: settingsProvider.themeColor == color
+                  ? Theme.of(context).colorScheme.onSecondaryContainer
+                  : Colors.transparent,
               width: 3,
             ),
           ),

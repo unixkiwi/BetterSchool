@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/domain/settings/theme/theme_provider.dart';
+import 'package:school_app/domain/settings/settings_provider.dart';
 
 class BrightnessSection extends StatelessWidget {
-  ThemeMode currentMode;
-  ThemeProvider themeProvider;
+  final ThemeMode currentMode;
+  final SettingsProvider settingsProvider;
 
   BrightnessSection({
     super.key,
     required this.currentMode,
-    required this.themeProvider,
+    required this.settingsProvider,
   });
 
   @override
@@ -42,7 +42,7 @@ class BrightnessSection extends StatelessWidget {
           selected: <ThemeMode>{currentMode},
           onSelectionChanged: (modes) {
             if (modes.isNotEmpty) {
-              themeProvider.setThemeMode(modes.first);
+              settingsProvider.setThemeMode(modes.first);
             }
           },
           showSelectedIcon: false,
