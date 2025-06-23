@@ -9,10 +9,10 @@ class GradesSettingsSection extends StatefulWidget {
 }
 
 class _GradesSettingsSectionState extends State<GradesSettingsSection> {
-  bool get _usePlainGradeValue => SettingsProvider.instance.usePlainGradeValue;
+  bool get _usePlainGradeValue => (!SettingsProvider.instance.usePlainGradeValue);
 
   void _onSwitchChanged(bool value) {
-    SettingsProvider.instance.setUsePlainGradeValue(value);
+    SettingsProvider.instance.setUsePlainGradeValue(!value);
     setState(() {});
   }
 
@@ -23,7 +23,7 @@ class _GradesSettingsSectionState extends State<GradesSettingsSection> {
         Text('Grades Settings', style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 12),
         SwitchListTile(
-          value: !_usePlainGradeValue,
+          value: _usePlainGradeValue,
           onChanged: _onSwitchChanged,
           title: Text("Use Grade Modifiers"),
           subtitle: Text(
