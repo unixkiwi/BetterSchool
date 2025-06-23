@@ -22,7 +22,15 @@ class ThemePrefs {
 
   static Future<void> saveThemeColor(Color? color) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_themeKey, color == null ? -1 : color.toARGB32());
+    final int colorValue;
+    if (color == null) {
+      colorValue = -1;
+    } else if (color is MaterialColor) {
+      colorValue = color.toARGB32();
+    } else {
+      colorValue = color.toARGB32();
+    }
+    await prefs.setInt(_themeKey, colorValue);
 
     logger.d("[Theme Pref] theme was saved with color $color");
   }
@@ -31,6 +39,7 @@ class ThemePrefs {
     final prefs = await SharedPreferences.getInstance();
     final value = prefs.getInt(_themeKey);
     if (value == null || value == -1) return null;
+    
     return Color(value);
   }
 }

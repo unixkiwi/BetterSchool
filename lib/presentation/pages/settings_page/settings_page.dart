@@ -11,8 +11,11 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SettingsThemeSection(),
+    return Scaffold(
+      appBar: AppBar(title: Text("Settings"), elevation: 3),
+      body: SingleChildScrollView(
+        child: Column(children: [SettingsThemeSection()]),
+      ),
     );
   }
 }
