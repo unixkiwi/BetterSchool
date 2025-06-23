@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
+import 'package:school_app/domain/settings/settings_provider.dart';
 import 'package:school_app/utils/logger.dart';
 
 class GradesPageViewmodel extends ChangeNotifier {
@@ -99,9 +100,7 @@ class GradesPageViewmodel extends ChangeNotifier {
   Future<double> getTotalAvg() async {
     logger.d("[Grades ViewModel] Called getTotalAvg()");
 
-    if (_averages.isEmpty) {
-      await getAveragesForAllSubjects();
-    }
+    await getAveragesForAllSubjects();
 
     if (_averages.isEmpty) return -1;
 
@@ -133,7 +132,7 @@ class GradesPageViewmodel extends ChangeNotifier {
       final rule = _calcRules[subject];
 
       // calculate avg
-      final avg = calculateAverage(subjectGrades, rule);
+      final avg = calculateAverage(subjectGrades, rule, usePlain: SettingsProvider.instance.usePlainGradeValue);
       averages[subject] = avg;
     }
 
@@ -157,7 +156,7 @@ class GradesPageViewmodel extends ChangeNotifier {
     return types;
   }
 
-  double calculateAverage(List<Grade> grades, String? calculationRule) {
+  double calculateAverage(List<Grade> grades, String? calculationRule, {bool usePlain = false}) {
     if (grades.isEmpty) {
       logger.i(
         "[Grades ViewModel] calculateAverage(): given grades list is empty",
@@ -167,7 +166,7 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     // no rule, just default sum divided by the count
     if (calculationRule == null) {
-      final sum = grades.fold<double>(0.0, (prev, g) => prev + g.value);
+      final sum = grades.fold<double>(0.0, (prev, g) => prev + g.getValue(usePlain));
 
       return sum / grades.length;
     }
@@ -188,7 +187,7 @@ class GradesPageViewmodel extends ChangeNotifier {
 
       // iterates over mathing and sums values
       // starts at 0.0, value is the current summed up value
-      final sum = matching.fold<double>(0.0, (value, g) => value + g.value);
+      final sum = matching.fold<double>(0.0, (value, g) => value + g.getValue(usePlain));
       final count = matching.length;
 
       typeSums[type] = sum;

@@ -280,6 +280,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
             type: grade['collection']['type'],
             date: DateTime.parse(grade['given_at']),
             value: Grade.gradeToNumber(grade['value']),
+            plainValue: Grade.plainValueFromString(grade['value']),
             valueString: grade['value'],
           ),
         );
@@ -310,6 +311,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
                 type: grade['collection']['type'],
                 date: DateTime.parse(grade['given_at']),
                 value: Grade.gradeToNumber(grade['value']),
+                plainValue: Grade.plainValueFromString(grade['value']),
                 valueString: grade['value'],
               ),
             );

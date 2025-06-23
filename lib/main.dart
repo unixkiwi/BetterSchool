@@ -16,7 +16,7 @@ void main() async {
 
   runApp(
     ChangeNotifierProvider(
-      create: (_) => SettingsProvider(),
+      create: (_) => SettingsProvider.instance,
       child: SchoolApp(repo: repo),
     ),
   );

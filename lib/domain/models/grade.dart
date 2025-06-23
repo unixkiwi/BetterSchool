@@ -3,6 +3,7 @@ import 'package:school_app/domain/models/subject.dart';
 class Grade {
   final String title;
   final double value;
+  final int plainValue;
   final String valueString;
   final String type;
   final DateTime date;
@@ -11,11 +12,16 @@ class Grade {
   const Grade({
     required this.title,
     required this.value,
+    required this.plainValue,
     required this.valueString,
     required this.type,
     required this.date,
     required this.subject,
   });
+
+  double getValue(bool usePlain) {
+    return usePlain ? plainValue.toDouble() : value;
+  }
 
   static double gradeToNumber(String grade) {
     // special cases
@@ -31,10 +37,15 @@ class Grade {
     }
   }
 
+  static int plainValueFromString(String grade) {
+    return int.parse(grade[0]);
+  }
+
   factory Grade.fromJson(Map json) {
     return Grade(
       title: json['collection']['name'] ?? "No title found!",
       value: Grade.gradeToNumber(json['value']),
+      plainValue: Grade.plainValueFromString(json['value']),
       valueString: json['value'] ?? "0",
       type: json['collection']['type'] ?? "",
       date: DateTime.parse(json['given_at']),
