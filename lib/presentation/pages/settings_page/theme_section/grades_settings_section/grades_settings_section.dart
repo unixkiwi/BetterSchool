@@ -27,7 +27,7 @@ class _GradesSettingsSectionState extends State<GradesSettingsSection> {
           onChanged: _onSwitchChanged,
           title: Text("Use Grade Modifiers"),
           subtitle: Text(
-            "Include plus and minus of grades when calculating their value.",
+            "Include plus and minus of grades when calculating their value. (beste.schule is not using them)",
           ),
         ),
         const SizedBox(height: 24), 

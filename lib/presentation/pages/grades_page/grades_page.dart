@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/presentation/pages/grades_page/avg_grade_tile.dart';
+import 'package:school_app/presentation/pages/grades_page/charts/grades_count_chart_page.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 import 'package:school_app/utils/logger.dart';
 
@@ -48,10 +49,18 @@ class _GradesPageState extends State<GradesPage> {
             avg == -1
                 ? String.fromCharCode(Icons.block.codePoint)
                 : "Ø ${avg.toStringAsFixed(2)}";
+
         return Scaffold(
           appBar: AppBar(
             title: Text("Grades"),
             actions: [
+              IconButton(
+                icon: Icon(Icons.bar_chart_rounded),
+                tooltip: 'Show Grades Chart',
+                onPressed: () {
+                  showGradesCountChartBottomSheet(context, viewModel.grades);
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Center(child: Text(avgDisplay)),

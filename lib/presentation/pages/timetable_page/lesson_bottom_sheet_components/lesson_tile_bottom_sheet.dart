@@ -29,7 +29,7 @@ Future<dynamic> showLessonTileBottomSheet(BuildContext context, Lesson lesson) {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(2),
-                      color: Colors.grey,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
