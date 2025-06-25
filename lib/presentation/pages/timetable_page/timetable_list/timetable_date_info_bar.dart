@@ -39,7 +39,7 @@ class TimetableDateInfoBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.secondaryContainer,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       elevation: 1,
       child: SizedBox(
         width: double.infinity,

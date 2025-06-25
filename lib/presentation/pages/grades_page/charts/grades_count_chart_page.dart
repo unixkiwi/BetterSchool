@@ -127,7 +127,7 @@ class _GradesCountAnimatedChartState extends State<GradesCountAnimatedChart> {
                   // use real value for tooltip instead of ugly double caused by the animation
                   final realValue = barGroups[groupIndex].barRods[rodIndex].toY;
                   return BarTooltipItem(
-                    realValue.toString(),
+                    realValue.toInt().toString(),
                     TextStyle(
                       color: Theme.of(context).colorScheme.onSecondaryContainer,
                       fontWeight: FontWeight.bold,
