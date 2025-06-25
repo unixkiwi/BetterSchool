@@ -42,52 +42,45 @@ Future<void> showGradesCountChartBottomSheet(
                 if (grades.isEmpty)
                   const Center(child: Text('No data to display'))
                 else
-                //TODO background not showing correctly
                   SizedBox(
                     height: 250,
-                    child: Container(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: BarChart(
-                        BarChartData(
-                          barTouchData: BarTouchData(
-                            enabled: false,
-                            touchTooltipData: BarTouchTooltipData(
-                              getTooltipColor: (group) => Colors.transparent,
-                              tooltipPadding: EdgeInsets.zero,
-                              tooltipMargin: 8,
-                              getTooltipItem:
-                                  (
-                                    BarChartGroupData group,
-                                    int groupIndex,
-                                    BarChartRodData rod,
-                                    int rodIndex,
-                                  ) {
-                                    return BarTooltipItem(
-                                      rod.toY.toString(),
-                                      TextStyle(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSecondaryContainer,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    );
-                                  },
-                            ),
+                    child: BarChart(
+                      BarChartData(
+                        barTouchData: BarTouchData(
+                          enabled: false,
+                          touchTooltipData: BarTouchTooltipData(
+                            getTooltipColor: (group) => Colors.transparent,
+                            tooltipPadding: EdgeInsets.zero,
+                            tooltipMargin: 8,
+                            getTooltipItem:
+                                (
+                                  BarChartGroupData group,
+                                  int groupIndex,
+                                  BarChartRodData rod,
+                                  int rodIndex,
+                                ) {
+                                  return BarTooltipItem(
+                                    rod.toY.toString(),
+                                    TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSecondaryContainer,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                },
                           ),
-                          titlesData: titlesData,
-                          borderData: FlBorderData(show: false),
-                          barGroups:
-                              GradesChartsUtils.getGradesCountBarGroupData(
-                                grades,
-                                context,
-                              ),
-                          gridData: const FlGridData(show: false),
-                          alignment: BarChartAlignment.spaceAround,
-                          maxY: GradesChartsUtils.getMaxY(grades).toDouble(),
                         ),
+                        titlesData: titlesData,
+                        borderData: FlBorderData(show: false),
+                        barGroups:
+                            GradesChartsUtils.getGradesCountBarGroupData(
+                              grades,
+                              context,
+                            ),
+                        gridData: const FlGridData(show: false),
+                        alignment: BarChartAlignment.spaceAround,
+                        maxY: GradesChartsUtils.getMaxY(grades).toDouble(),
                       ),
                     ),
                   ),
