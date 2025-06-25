@@ -3,6 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/grade.dart';
 
 class GradesChartsUtils {
+  static List<String> getTitles(List<Grade> grades) {
+    List<int> sortedGrades = [];
+
+    for (int gradeValue = 1; gradeValue <= 6; gradeValue++) {
+      List<Grade> gradesWithValue = grades
+          .where((grade) => grade.plainValue == gradeValue)
+          .toList();
+
+      if (gradesWithValue.isEmpty) continue;
+
+      sortedGrades.add(gradeValue);
+    }
+
+    return sortedGrades.map((value) => value.toString()).toList();
+  }
+
   static int getMaxY(List<Grade> grades) {
     int maxY = 0;
 
@@ -19,7 +35,7 @@ class GradesChartsUtils {
 
   static List<BarChartGroupData> getGradesCountBarGroupData(
     List<Grade> grades,
-    BuildContext context
+    BuildContext context,
   ) {
     grades.sort((a, b) => a.plainValue.compareTo(b.plainValue));
 

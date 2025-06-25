@@ -42,47 +42,9 @@ Future<void> showGradesCountChartBottomSheet(
                 if (grades.isEmpty)
                   const Center(child: Text('No data to display'))
                 else
-                  SizedBox(
-                    height: 250,
-                    child: BarChart(
-                      BarChartData(
-                        barTouchData: BarTouchData(
-                          enabled: false,
-                          touchTooltipData: BarTouchTooltipData(
-                            getTooltipColor: (group) => Colors.transparent,
-                            tooltipPadding: EdgeInsets.zero,
-                            tooltipMargin: 8,
-                            getTooltipItem:
-                                (
-                                  BarChartGroupData group,
-                                  int groupIndex,
-                                  BarChartRodData rod,
-                                  int rodIndex,
-                                ) {
-                                  return BarTooltipItem(
-                                    rod.toY.toString(),
-                                    TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSecondaryContainer,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  );
-                                },
-                          ),
-                        ),
-                        titlesData: titlesData,
-                        borderData: FlBorderData(show: false),
-                        barGroups:
-                            GradesChartsUtils.getGradesCountBarGroupData(
-                              grades,
-                              context,
-                            ),
-                        gridData: const FlGridData(show: false),
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: GradesChartsUtils.getMaxY(grades).toDouble(),
-                      ),
-                    ),
+                  AspectRatio(
+                    aspectRatio: 1.7,
+                    child: GradesCountAnimatedChart(grades: grades),
                   ),
               ],
             ),
@@ -93,49 +55,131 @@ Future<void> showGradesCountChartBottomSheet(
   );
 }
 
-Widget getTitles(double value, TitleMeta meta) {
-  final style = TextStyle(fontWeight: FontWeight.bold, fontSize: 14);
-  String text;
-  switch (value.toInt()) {
-    case 0:
-      text = '1';
-      break;
-    case 1:
-      text = '2';
-      break;
-    case 2:
-      text = '3';
-      break;
-    case 3:
-      text = '4';
-      break;
-    case 4:
-      text = '5';
-      break;
-    case 5:
-      text = '6';
-      break;
-    default:
-      text = '';
-      break;
-  }
-  return SideTitleWidget(
-    meta: meta,
-    space: 4,
-    child: Text(text, style: style),
-  );
+// Animated chart widget
+class GradesCountAnimatedChart extends StatefulWidget {
+  final List<Grade> grades;
+  const GradesCountAnimatedChart({Key? key, required this.grades})
+    : super(key: key);
+
+  @override
+  State<GradesCountAnimatedChart> createState() =>
+      _GradesCountAnimatedChartState();
 }
 
-FlTitlesData get titlesData => FlTitlesData(
-  show: true,
-  bottomTitles: AxisTitles(
-    sideTitles: SideTitles(
-      showTitles: true,
-      reservedSize: 30,
-      getTitlesWidget: getTitles,
-    ),
-  ),
-  leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-);
+class _GradesCountAnimatedChartState extends State<GradesCountAnimatedChart> {
+  bool animate = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // trigger animation after build
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) setState(() => animate = true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final grades = widget.grades;
+    final barGroups = GradesChartsUtils.getGradesCountBarGroupData(
+      grades,
+      context,
+    );
+
+    // animate from 0 to actual value,
+    // if not from 0 to actual you can't see an animation
+    final animatedBarGroups = animate
+        ? barGroups
+        : barGroups
+              .map(
+                (group) => BarChartGroupData(
+                  x: group.x,
+                  barRods: group.barRods
+                      .map(
+                        (rod) => BarChartRodData(
+                          toY: 0,
+                          color: rod.color,
+                          width: rod.width,
+                          borderRadius: rod.borderRadius,
+                        ),
+                      )
+                      .toList(),
+                ),
+              )
+              .toList();
+
+    return BarChart(
+      BarChartData(
+        barTouchData: BarTouchData(
+          enabled: false,
+          touchTooltipData: BarTouchTooltipData(
+            getTooltipColor: (group) => Colors.transparent,
+            tooltipPadding: EdgeInsets.zero,
+            tooltipMargin: 8,
+            getTooltipItem:
+                (
+                  BarChartGroupData group,
+                  int groupIndex,
+                  BarChartRodData rod,
+                  int rodIndex,
+                ) {
+                  // use real value for tooltip instead of ugly double caused by the animation
+                  final realValue = barGroups[groupIndex].barRods[rodIndex].toY;
+                  return BarTooltipItem(
+                    realValue.toString(),
+                    TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+          ),
+        ),
+        titlesData: FlTitlesData(
+          show: true,
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 30,
+              getTitlesWidget: (value, meta) {
+                var titles = GradesChartsUtils.getTitles(grades);
+                String text = "";
+                int idx = value.toInt();
+                if (idx >= 0 && idx < titles.length) {
+                  text = titles[idx] ?? '';
+                } else {
+                  text = '';
+                }
+                return SideTitleWidget(
+                  meta: meta,
+                  space: 4,
+                  child: Text(
+                    text,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                );
+              },
+            ),
+          ),
+          leftTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        barGroups: animatedBarGroups,
+        gridData: const FlGridData(show: false),
+        alignment: BarChartAlignment.spaceAround,
+        maxY: GradesChartsUtils.getMaxY(grades).toDouble(),
+      ),
+      duration: const Duration(milliseconds: 1200),
+      curve: Curves.easeOutQuart,
+    );
+  }
+}
