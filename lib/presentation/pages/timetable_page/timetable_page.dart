@@ -15,11 +15,7 @@ class TimetablePage extends StatelessWidget {
       builder: (context, viewModel, child) {
         // fetch data just when not already existing
         if (!viewModel.dataFetched && !viewModel.isLoading) {
-          viewModel.fetchData(
-            weekNr: DateTime.now().weekday > 5
-                ? DateTime.now().weekOfYear + 1
-                : DateTime.now().weekOfYear,
-          );
+          viewModel.loadCurrentDay();
         }
 
         // loading page whenever no data is existing

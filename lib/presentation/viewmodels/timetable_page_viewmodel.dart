@@ -176,11 +176,19 @@ class TimetablePageViewmodel extends ChangeNotifier {
 
     getSelectedWeekPages();
 
-    _controller.animateToPage(
-      _selectedIndex,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.ease,
-    );
+    if (_controller.hasClients) {
+      _controller.animateToPage(
+        _selectedIndex,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_controller.hasClients) {
+          _controller.jumpToPage(_selectedIndex);
+        }
+      });
+    }
   }
 
   Future<void> loadCurrentDay() async {
