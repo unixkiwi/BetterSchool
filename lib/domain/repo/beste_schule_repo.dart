@@ -3,7 +3,7 @@ import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
 
 abstract class BesteSchuleRepo {
-  Future<List<SchoolDay?>?> getWeek({required int nr, bool force = false});
+  Future<List<SchoolDay?>?> getWeek({required int nr, required int year, bool force = false});
   Future<List<Subject>?> getSubjects({bool force = false});
   Future<List<Grade>?> getGrades({bool force = false});
   Future<int?> getCurrentIntervalID({bool force = false});

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
+import 'package:school_app/utils/time_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/widgets.dart';
 import 'package:school_app/domain/models/beste_schule_user.dart';
@@ -351,17 +352,18 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   @override
   Future<List<SchoolDay?>?> getWeek({
     required int nr,
+    required int year,
     bool force = false,
   }) async {
     List data;
-
+    //TODO make year stuff also in cache
     if (!force && _weekData[nr] != null) {
       logger.i("[API] Week info from cache");
 
       data = _weekData[nr]!;
     } else {
       var resp = await getFromAPI(
-        route: "/api/journal/weeks/${DateTime.now().year}-$nr",
+        route: "/api/journal/weeks/$year-$nr",
         params: {'include': 'days.lessons', 'interpolate': 'true'},
       );
 

@@ -21,12 +21,12 @@ class TimetablePageViewmodel extends ChangeNotifier {
   int? _currentWeekNumber;
 
   // TIMETABLE PAGE LOGIC
-  int _selectedWeekNumber =
-      DateTime.now().weekday > 5
-          ? DateTime.now().weekOfYear + 1
-          : DateTime.now().weekOfYear;
-  int _selectedIndex =
-      DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday - 1;
+  int _selectedWeekNumber = DateTime.now().weekday > 5
+      ? DateTime.now().weekOfYear + 1
+      : DateTime.now().weekOfYear;
+  int _selectedIndex = DateTime.now().weekday > 5
+      ? 1
+      : DateTime.now().weekday - 1;
   List<Widget> _pages = [];
   PageController _controller = PageController(
     initialPage: DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday - 1,
@@ -45,19 +45,20 @@ class TimetablePageViewmodel extends ChangeNotifier {
   // TIMETABLE PAGE LOGIC END
 
   List<SchoolDay?> get schoolDays => _schoolDays;
-  SchoolDay? get today =>
-      _schoolDays.length >= DateTime.now().weekday
-          ? _schoolDays[DateTime.now().weekday - 1]
-          : null;
+  SchoolDay? get today => _schoolDays.length >= DateTime.now().weekday
+      ? _schoolDays[DateTime.now().weekday - 1]
+      : null;
 
   bool get isLoading => _isLoading;
   bool get dataFetched => _dataFetched;
 
   int? get weekNr => _currentWeekNumber;
 
-  int getInitialPageIndex() {
+  int getInitialPageIndex({DateTime? dateArg}) {
     // Monday = 1, ..., Friday = 5
-    final weekday = DateTime.now().weekday;
+    DateTime date = dateArg ?? DateTime.now();
+
+    final weekday = date.weekday;
     return (weekday > 5) ? 1 : weekday;
   }
 
@@ -68,7 +69,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
     return weekday > 5 ? week + 1 : week;
   }
 
-  Future<bool> fetchData({int? weekNr, bool force = false}) async {
+  Future<bool> fetchData({int? weekNr, int? year, bool force = false}) async {
     if (_isLoading) return false;
 
     // await the lessons of the current week from the repo
@@ -78,6 +79,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
 
     List<SchoolDay?>? days = await repo.getWeek(
       nr: _currentWeekNumber!,
+      year: year ?? DateTime.now().year,
       force: force,
     );
 
@@ -102,12 +104,12 @@ class TimetablePageViewmodel extends ChangeNotifier {
     getSelectedWeekPages();
 
     // reset controller to it's right position
-    final initialIndex = getInitialPageIndex();
-    _selectedIndex = initialIndex;
+    /*final initialIndex = getInitialPageIndex();
+    _selectedIndex = initialIndex;*/
     if (_controller.hasClients) {
-      _controller.jumpToPage(initialIndex);
+      _controller.jumpToPage(_selectedIndex);
     } else {
-      _controller = PageController(initialPage: initialIndex);
+      _controller = PageController(initialPage: _selectedIndex);
     }
 
     notifyListeners();
@@ -160,17 +162,17 @@ class TimetablePageViewmodel extends ChangeNotifier {
     return pages;
   }
 
-  Future<void> loadCurrentDay() async {
-    _selectedIndex = getInitialPageIndex();
+  Future<void> loadDay(DateTime date) async {
+    _selectedIndex = getInitialPageIndex(dateArg: date);
 
     if (DateTime.now().weekday > 5) {
       //TODO year switch shit
-      _selectedWeekNumber = DateTime.now().weekOfYear + 1;
+      _selectedWeekNumber = date.weekOfYear + 1;
     } else {
-      _selectedWeekNumber = DateTime.now().weekOfYear;
+      _selectedWeekNumber = date.weekOfYear;
     }
 
-    await fetchData(weekNr: _selectedWeekNumber);
+    await fetchData(weekNr: _selectedWeekNumber, year: date.year);
 
     getSelectedWeekPages();
 
@@ -179,6 +181,10 @@ class TimetablePageViewmodel extends ChangeNotifier {
       duration: Duration(milliseconds: 300),
       curve: Curves.ease,
     );
+  }
+
+  Future<void> loadCurrentDay() async {
+    await loadDay(DateTime.now());
   }
 
   Future<void> onPageChange(int index) async {
@@ -234,12 +240,13 @@ class TimetablePageViewmodel extends ChangeNotifier {
 
   // LESSON LIST
   List<Lesson?> getSortedLessons(List<Lesson?> lessons) {
-    final sortedLessons = List<Lesson?>.from(lessons)..sort((a, b) {
-      if (a == null && b == null) return 0;
-      if (a == null) return 1;
-      if (b == null) return -1;
-      return a.nr.compareTo(b.nr);
-    });
+    final sortedLessons = List<Lesson?>.from(lessons)
+      ..sort((a, b) {
+        if (a == null && b == null) return 0;
+        if (a == null) return 1;
+        if (b == null) return -1;
+        return a.nr.compareTo(b.nr);
+      });
     return sortedLessons;
   }
 
@@ -318,10 +325,9 @@ class TimetablePageViewmodel extends ChangeNotifier {
     int idx = 0;
     while (idx < processedLessons.length) {
       final Lesson? first = processedLessons[idx];
-      final Lesson? second =
-          (idx + 1 < processedLessons.length)
-              ? processedLessons[idx + 1]
-              : null;
+      final Lesson? second = (idx + 1 < processedLessons.length)
+          ? processedLessons[idx + 1]
+          : null;
 
       if (first == null && second == null) {
         widgets.add(ListTile(title: Text("No data")));
