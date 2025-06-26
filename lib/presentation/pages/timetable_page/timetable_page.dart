@@ -36,7 +36,7 @@ class TimetablePage extends StatelessWidget {
           appBar: AppBar(
             title: Text("Timetable"),
             actions: [DateInfoTileAppBar(viewModel: viewModel)],
-            actionsPadding: EdgeInsets.all(6),
+            actionsPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             elevation: 1,
           ),
           floatingActionButton: FloatingActionButton(

@@ -4,7 +4,7 @@ import 'package:school_app/domain/models/grade.dart';
 
 class GradesChartsUtils {
   static List<String> getTitles(List<Grade> grades) {
-    List<int> sortedGrades = [];
+    List<String> sortedGrades = [];
 
     for (int gradeValue = 1; gradeValue <= 6; gradeValue++) {
       List<Grade> gradesWithValue = grades
@@ -13,10 +13,12 @@ class GradesChartsUtils {
 
       if (gradesWithValue.isEmpty) continue;
 
-      sortedGrades.add(gradeValue);
+      double percentCount = gradesWithValue.length / grades.length;
+
+      sortedGrades.add("${gradeValue.toString()}:(${(percentCount*100).round()}%)");
     }
 
-    return sortedGrades.map((value) => value.toString()).toList();
+    return sortedGrades;
   }
 
   static int getMaxY(List<Grade> grades) {

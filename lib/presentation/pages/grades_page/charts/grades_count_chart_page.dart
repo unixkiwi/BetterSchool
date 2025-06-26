@@ -144,19 +144,43 @@ class _GradesCountAnimatedChartState extends State<GradesCountAnimatedChart> {
               reservedSize: 30,
               getTitlesWidget: (value, meta) {
                 var titles = GradesChartsUtils.getTitles(grades);
-                String text = "";
                 int idx = value.toInt();
+                String gradeText = "";
+                String percentText = "";
+
                 if (idx >= 0 && idx < titles.length) {
-                  text = titles[idx] ?? '';
-                } else {
-                  text = '';
+                  final parts = titles[idx].split(':');
+                  gradeText = parts[0];
+                  percentText = parts.length > 1 ? parts[1] : '';
                 }
+
                 return SideTitleWidget(
                   meta: meta,
                   space: 4,
-                  child: Text(
-                    text,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        gradeText,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: Theme.of(
+                              context,
+                            ).textTheme.labelMedium?.fontSize ?? 14,
+                        ),
+                      ),
+                      if (percentText.isNotEmpty)
+                        Text(
+                          percentText,
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: Theme.of(
+                              context,
+                            ).textTheme.labelSmall?.fontSize ?? 12,
+                          ),
+                        ),
+                        SizedBox(height: 10,)
+                    ],
                   ),
                 );
               },
