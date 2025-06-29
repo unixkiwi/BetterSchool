@@ -26,7 +26,7 @@ class SchoolApp extends StatelessWidget {
   final BesteSchuleRepo repo;
   const SchoolApp({super.key, required this.repo});
 
-  final Color defaultFallbackColor = Colors.green;
+  final MaterialColor defaultFallbackColor  = Colors.green;
 
   ThemeData getLightTheme(
     ColorScheme? lightDynamic,
@@ -36,7 +36,7 @@ class SchoolApp extends StatelessWidget {
       colorScheme: settingsProvider.themeColor == null
           ? lightDynamic ??
                 ColorScheme.fromSeed(
-                  seedColor: defaultFallbackColor,
+                  seedColor: defaultFallbackColor.shade500,
                   brightness: Brightness.light,
                 )
           : ColorScheme.fromSeed(
@@ -55,7 +55,7 @@ class SchoolApp extends StatelessWidget {
       colorScheme: settingsProvider.themeColor == null
           ? darkDynamic ??
                 ColorScheme.fromSeed(
-                  seedColor: defaultFallbackColor,
+                  seedColor: defaultFallbackColor.shade500,
                   brightness: Brightness.dark,
                 )
           : ColorScheme.fromSeed(

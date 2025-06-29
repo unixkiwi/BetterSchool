@@ -18,16 +18,15 @@ class TimetablePageViewmodel extends ChangeNotifier {
   List<SchoolDay?> _schoolDays = [];
   bool _isLoading = false;
   bool _dataFetched = false;
-  int? _currentWeekNumber;
+  DateString _currentDateString = DateString.now();
 
   // TIMETABLE PAGE LOGIC
-  int _selectedWeekNumber = DateTime.now().weekday > 5
-      ? DateTime.now().weekOfYear + 1
-      : DateTime.now().weekOfYear;
   int _selectedIndex = DateTime.now().weekday > 5
       ? 1
       : DateTime.now().weekday - 1;
+
   List<Widget> _pages = [];
+
   PageController _controller = PageController(
     initialPage: DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday - 1,
   );
@@ -52,7 +51,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get dataFetched => _dataFetched;
 
-  int? get weekNr => _currentWeekNumber;
+  DateString? get dateString => _currentDateString;
 
   int getInitialPageIndex({DateTime? dateArg}) {
     // Monday = 1, ..., Friday = 5
@@ -69,17 +68,18 @@ class TimetablePageViewmodel extends ChangeNotifier {
     return weekday > 5 ? week + 1 : week;
   }
 
-  Future<bool> fetchData({int? weekNr, int? year, bool force = false}) async {
+  Future<bool> fetchData({DateString? dateString, bool force = false}) async {
     if (_isLoading) return false;
 
     // await the lessons of the current week from the repo
     _isLoading = true;
 
-    _currentWeekNumber = weekNr ?? (_currentWeekNumber ?? getWeekOfYear());
+    if (dateString != null) {
+      _currentDateString = dateString;
+    }
 
     List<SchoolDay?>? days = await repo.getWeek(
-      nr: _currentWeekNumber!,
-      year: year ?? DateTime.now().year,
+      dateString: _currentDateString,
       force: force,
     );
 
@@ -104,8 +104,6 @@ class TimetablePageViewmodel extends ChangeNotifier {
     getSelectedWeekPages();
 
     // reset controller to it's right position
-    /*final initialIndex = getInitialPageIndex();
-    _selectedIndex = initialIndex;*/
     if (_controller.hasClients) {
       _controller.jumpToPage(_selectedIndex);
     } else {
@@ -118,16 +116,6 @@ class TimetablePageViewmodel extends ChangeNotifier {
   }
 
   // TIMETABLE PAGE
-  Future<bool> _fetchNextWeekNumber(int current) async {
-    //TODO year change check
-    return await fetchData(weekNr: current + 1);
-  }
-
-  Future<bool> _fetchPrevWeekNumber(int current) async {
-    //TODO year change check
-    return await fetchData(weekNr: current - 1);
-  }
-
   List<Widget> getSelectedWeekPages() {
     List<Widget> pages = [];
 
@@ -165,14 +153,7 @@ class TimetablePageViewmodel extends ChangeNotifier {
   Future<void> loadDay(DateTime date) async {
     _selectedIndex = getInitialPageIndex(dateArg: date);
 
-    if (DateTime.now().weekday > 5) {
-      //TODO year switch shit
-      _selectedWeekNumber = date.weekOfYear + 1;
-    } else {
-      _selectedWeekNumber = date.weekOfYear;
-    }
-
-    await fetchData(weekNr: _selectedWeekNumber, year: date.year);
+    await fetchData(dateString: DateString.fromDate(date));
 
     getSelectedWeekPages();
 
@@ -208,12 +189,12 @@ class TimetablePageViewmodel extends ChangeNotifier {
         );
       }
       // sets _schoolDays for prev week
-      bool requestResult = await _fetchPrevWeekNumber(_selectedWeekNumber);
+      _currentDateString = _currentDateString.prevWeek();
+
+      bool requestResult = await fetchData(dateString: _currentDateString);
       // when fetched and set it can generate pages
       getSelectedWeekPages();
 
-      // set current Week number to prev week
-      _selectedWeekNumber -= 1;
       // Instantly jump to Friday (index 5) after loading prev week
       _selectedIndex = 5;
       if (_controller.hasClients) {
@@ -229,10 +210,11 @@ class TimetablePageViewmodel extends ChangeNotifier {
         );
       }
       // sets _schoolDays for next week
-      bool requestResult = await _fetchNextWeekNumber(_selectedWeekNumber);
+      _currentDateString = _currentDateString.nextWeek();
+
+      bool requestResult = await fetchData(dateString: _currentDateString);
       // when fetched and set it can generate pages
       getSelectedWeekPages();
-      _selectedWeekNumber += 1;
       // Instantly jump to Monday (index 1) after loading next week
       _selectedIndex = 1;
       if (_controller.hasClients) {

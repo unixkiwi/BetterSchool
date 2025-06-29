@@ -19,7 +19,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   BesteSchuleStudent? _student;
   Map _allData = {};
-  Map<int, List> _weekData = {};
+  Map<DateString, List> _weekData = {};
 
   //TODO reload after specific time
 
@@ -351,19 +351,18 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   @override
   Future<List<SchoolDay?>?> getWeek({
-    required int nr,
-    required int year,
+    required DateString dateString,
     bool force = false,
   }) async {
     List data;
-    //TODO make year stuff also in cache
-    if (!force && _weekData[nr] != null) {
+
+    if (!force && _weekData[dateString] != null) {
       logger.i("[API] Week info from cache");
 
-      data = _weekData[nr]!;
+      data = _weekData[dateString]!;
     } else {
       var resp = await getFromAPI(
-        route: "/api/journal/weeks/$year-$nr",
+        route: "/api/journal/weeks/${dateString.toString()}",
         params: {'include': 'days.lessons', 'interpolate': 'true'},
       );
 
@@ -374,7 +373,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       data = resp['data']['days'];
 
-      _weekData[nr] = data;
+      _weekData[dateString] = data;
       logger.i("[Lesson API] Cached week data");
     }
 
@@ -397,25 +396,32 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   // Save _allData to shared preferences
   Future<void> _saveAllDataToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
+
     try {
+      // save all data
       await prefs.setString('_allData', jsonEncode(_allData));
       logger.i("[Repo] Saved _allData to shared preferences.");
 
+      // save and convert week data
       // Convert _weekData to a serializable map (deep conversion)
       final serializableWeekData = _weekData.map((key, value) {
         final serializableList =
             value.map((e) {
-              // If already Map, return as is
+              // if already map -> just return the map
               if (e is Map) return e;
-              // If SchoolDay, use toJson
+
+              // if schoolday -> make it a jsonb
               if (e is SchoolDay) return e.toJson();
-              // If it's a custom object, try toJson, else fallback to string
+
+              // if it is any other object -> try converting to json 
+              // else -> make it a string
               try {
                 return e.toJson();
               } catch (_) {
                 return e.toString();
               }
             }).toList();
+
         return MapEntry(key.toString(), serializableList);
       });
 
@@ -431,6 +437,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   Future<void> _loadAllDataFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
 
+    // load all data
     final allDataJsonString = prefs.getString('_allData');
     if (allDataJsonString != null) {
       try {
@@ -441,15 +448,17 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       }
     }
 
+    // load week data
     final weekDataJsonString = prefs.getString('_weekData');
     if (weekDataJsonString != null) {
       try {
         final decoded = jsonDecode(weekDataJsonString) as Map;
-        // Convert Map<String, dynamic> to Map<int, List>
+        // convert dynamic value of each key to a list
         _weekData = {};
         decoded.forEach((key, value) {
-          _weekData[int.parse(key)] = List.from(value);
+          _weekData[DateString.fromString(key)] = List.from(value);
         });
+
         logger.i("[Repo] Loaded _weekData from shared preferences.");
       } catch (e) {
         logger.e("[Repo] Failed to load _weekData: $e");
@@ -463,7 +472,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     WidgetsBinding.instance.addObserver(this);
   }
 
-  // Call this before runApp to ensure cache is loaded
+  // called before runApp to ensure cache is loaded first instead of the requests being made
   Future<void> loadCacheOnStartup() async {
     await _loadAllDataFromPrefs();
   }
