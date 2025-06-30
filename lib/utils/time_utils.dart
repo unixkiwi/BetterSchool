@@ -15,7 +15,7 @@ class DateString {
   }
 
   @override
-  int get hashCode => Object.hash(year, weekNr);
+  int get hashCode => year ^ weekNr;
 
   @override
   String toString() {

@@ -15,7 +15,8 @@ import 'package:school_app/utils/logger.dart';
 class BesteSchuleRepoImpl extends WidgetsBindingObserver
     implements BesteSchuleRepo {
   final String _BASE_URL = "beste.schule";
-  final BesteSchuleOauthWebviewRepoImpl clientImpl = BesteSchuleOauthWebviewRepoImpl();
+  final BesteSchuleOauthWebviewRepoImpl clientImpl =
+      BesteSchuleOauthWebviewRepoImpl();
 
   BesteSchuleStudent? _student;
   Map _allData = {};
@@ -65,7 +66,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   // START GET IS USER STUDENT
   bool _getIsUserStudent(Map json) {
     if (json['data']['teacher'] == null &&
-        json['data']['guardian'] == null &&
+        json['data']['guardian'] == null && //TODO remove when parents supported
         json['data']['config']['role'] == "student") {
       return true;
     } else {
@@ -91,7 +92,6 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       return null;
     }
   }
-  // END GET IS USER STUDENT
 
   Future<int?> getStudentId() async {
     if (_student != null) {
@@ -185,7 +185,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         (_allData['finalgrades'] as List).isNotEmpty) {
       data = _allData['finalgrades'];
     } else {
-      var resp = await getFromAPI(route: "/api/finalgrades");
+      var resp = await getFromAPI(
+        route: "/api/finalgrades",
+      ); //FIXME call getAllData
 
       if (resp == null) return null;
 
@@ -197,19 +199,19 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     int interval_id = await getCurrentIntervalID() ?? 0;
 
     // find entry with the given subject
-    final entry =
-        data
-            .where(
-              (item) =>
-                  item['subject_id'] == subjectId &&
-                  item['interval_id'] == interval_id,
-            )
-            .firstOrNull;
+    final entry = data
+        .where(
+          (item) =>
+              item['subject_id'] == subjectId &&
+              item['interval_id'] == interval_id,
+        )
+        .firstOrNull;
 
     String? rule;
     if (entry == null) {
-      final entries =
-          data.where((item) => item['subject_id'] == subjectId).toList();
+      final entries = data
+          .where((item) => item['subject_id'] == subjectId)
+          .toList();
 
       if (entries.isEmpty) return null;
 
@@ -240,7 +242,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       logger.i("[API] Received subjects from _allData 'cache'");
     } else {
-      data = (await getFromAPI(route: "/api/subjects") as Map)['data'];
+      data =
+          (await getFromAPI(route: "/api/subjects")
+              as Map)['data']; //FIXME call getAllData() instead
 
       _allData['subjects'] = data;
     }
@@ -264,30 +268,15 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   @override
   Future<List<Grade>?> getGrades({bool force = false}) async {
+    List data;
+    List<Grade>? grades = null;
+
     if (!force &&
         _allData['grades'] != null &&
         (_allData['grades'] as List).isNotEmpty) {
-      var data = _allData['grades'];
+      data = _allData['grades'];
 
       logger.i("[API] Received grades from _allData 'cache'");
-
-      List<Grade> grades = [];
-
-      for (Map grade in data) {
-        grades.add(
-          Grade(
-            subject: Subject.fromJson(grade['collection']['subject']),
-            title: grade['collection']['name'],
-            type: grade['collection']['type'],
-            date: DateTime.parse(grade['given_at']),
-            value: Grade.gradeToNumber(grade['value']),
-            plainValue: Grade.plainValueFromString(grade['value']),
-            valueString: grade['value'],
-          ),
-        );
-      }
-
-      return grades;
     } else {
       int? id = await getStudentId();
 
@@ -295,58 +284,27 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         var resp = await getFromAPI(
           route: "/api/students/$id",
           params: {'include': 'grades'},
-        );
+        ); //FIXME call complete getAllData() instead
 
         if (resp != null) {
           logger.i("[API] Grades from API weren't null");
 
-          List<Grade> grades = [];
-
-          var data = resp['data']['grades'];
-
-          for (Map grade in data) {
-            grades.add(
-              Grade(
-                subject: Subject.fromJson(grade['collection']['subject']),
-                title: grade['collection']['name'],
-                type: grade['collection']['type'],
-                date: DateTime.parse(grade['given_at']),
-                value: Grade.gradeToNumber(grade['value']),
-                plainValue: Grade.plainValueFromString(grade['value']),
-                valueString: grade['value'],
-              ),
-            );
-          }
+          data = resp['data']['grades'];
 
           _allData['grades'] = data;
-
-          return grades;
         }
       }
 
       return null;
-
-      //logger.i("[API] Sending deprecated /api/students")
-
-      /*var data =
-          (await getFromAPI(
-                route: "/api/students/",
-                params: {'include': 'collection', 'sort': 'given_at'},
-              )
-              as Map)['data'];
-
-      if (data == null) return null;
-
-      List<Grade> grades = [];
-
-      for (Map grade in data) {
-        grades.add(Grade.fromJson(grade));
-      }
-
-      _allData['grades'] = data;
-
-      return grades;*/
     }
+
+    grades = [];
+
+    for (Map grade in data) {
+      grades.add(Grade.fromJson(grade));
+    }
+
+    return grades;
   }
 
   @override
@@ -356,7 +314,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }) async {
     List data;
 
-    if (!force && _weekData[dateString] != null) {
+    if (!force && _weekData[dateString] != null && _weekData[dateString]!.isNotEmpty) {
       logger.i("[API] Week info from cache");
 
       data = _weekData[dateString]!;
@@ -378,14 +336,13 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     }
 
     // Map to SchoolDay? (allowing nulls if fromJson returns null)
-    List<SchoolDay?> days =
-        data.map((e) {
-          try {
-            return SchoolDay.fromJson(e);
-          } catch (_) {
-            return null;
-          }
-        }).toList();
+    List<SchoolDay?> days = data.map((e) {
+      try {
+        return SchoolDay.fromJson(e);
+      } catch (_) {
+        return null;
+      }
+    }).toList();
 
     // Remove days where .isNull is true, but keep nulls
     days = days.map((day) => (day != null && day.isNull) ? null : day).toList();
@@ -405,22 +362,21 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       // save and convert week data
       // Convert _weekData to a serializable map (deep conversion)
       final serializableWeekData = _weekData.map((key, value) {
-        final serializableList =
-            value.map((e) {
-              // if already map -> just return the map
-              if (e is Map) return e;
+        final serializableList = value.map((e) {
+          // if already map -> just return the map
+          if (e is Map) return e;
 
-              // if schoolday -> make it a jsonb
-              if (e is SchoolDay) return e.toJson();
+          // if schoolday -> make it a jsonb
+          if (e is SchoolDay) return e.toJson();
 
-              // if it is any other object -> try converting to json 
-              // else -> make it a string
-              try {
-                return e.toJson();
-              } catch (_) {
-                return e.toString();
-              }
-            }).toList();
+          // if it is any other object -> try converting to json
+          // else -> make it a string
+          try {
+            return e.toJson();
+          } catch (_) {
+            return e.toString();
+          }
+        }).toList();
 
         return MapEntry(key.toString(), serializableList);
       });

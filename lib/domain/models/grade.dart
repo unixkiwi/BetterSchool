@@ -42,14 +42,18 @@ class Grade {
   }
 
   factory Grade.fromJson(Map json) {
+    final collection = json['collection'];
+
     return Grade(
-      title: json['collection']['name'] ?? "No title found!",
+      title: collection != null ? collection['name'] ?? "No title" : "No title",
       value: Grade.gradeToNumber(json['value']),
       plainValue: Grade.plainValueFromString(json['value']),
       valueString: json['value'] ?? "0",
-      type: json['collection']['type'] ?? "",
+      type: collection != null ? collection['type'] : "No type",
       date: DateTime.parse(json['given_at']),
-      subject: Subject.fromJson(json['subject']),
+      subject: json['subject'] == null
+          ? Subject(id: 0, name: "Unknown Subject", shortName: "---")
+          : Subject.fromJson(json['subject']),
     );
   }
 }
