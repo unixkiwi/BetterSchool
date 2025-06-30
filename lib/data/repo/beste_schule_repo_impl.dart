@@ -217,9 +217,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         (_allData['finalgrades'] as List).isNotEmpty) {
       data = _allData['finalgrades'];
     } else {
-      var resp = await getFromAPI(
-        route: "/api/finalgrades",
-      ); //FIXME call getAllData
+      var resp = await getAllData();
 
       if (resp == null) return null;
 
@@ -274,9 +272,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       logger.i("[API] Received subjects from _allData 'cache'");
     } else {
-      var dataRaw = await getFromAPI(
-        route: "/api/subjects",
-      ); //FIXME call getAllData() instead
+      var dataRaw = await getAllData();
 
       if (dataRaw == null)
         data = null;
@@ -318,10 +314,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       int? id = await getStudentId();
 
       if (id != null) {
-        var resp = await getFromAPI(
-          route: "/api/students/$id",
-          params: {'include': 'grades'},
-        ); //FIXME call complete getAllData() instead
+        var resp = await getAllData();
 
         if (resp != null) {
           logger.i("[API] Grades from API weren't null");
