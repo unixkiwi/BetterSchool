@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/widgets.dart';
+import 'package:week_of_year/week_of_year.dart';
 
 class DateString {
   final int year;
@@ -144,12 +143,12 @@ class DateString {
 }
 
 extension DateTimeExtension on DateTime {
-  int get weekOfYear {
-    final startOfYear = DateTime(year, 1, 1);
-    final weekNumber =
-        ((difference(startOfYear).inDays + startOfYear.weekday) / 7).ceil();
-    return weekNumber;
-  }
+  // int get weekOfYear {
+  //   final startOfYear = DateTime(year, 1, 1);
+  //   final weekNumber =
+  //       ((difference(startOfYear).inDays + startOfYear.weekday) / 7).ceil();
+  //   return weekNumber;
+  // }
 
   int lastWeekOfYear() {
     return DateTime(year, 12, 31).weekOfYear;

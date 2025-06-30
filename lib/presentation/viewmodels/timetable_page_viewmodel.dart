@@ -9,6 +9,7 @@ import 'package:school_app/presentation/pages/timetable_page/timetable_list/day_
 import 'package:school_app/presentation/pages/timetable_page/timetable_list/lesson_tile_timetable.dart';
 import 'package:school_app/utils/logger.dart';
 import 'package:school_app/utils/time_utils.dart';
+import 'package:week_of_year/week_of_year.dart';
 
 class TimetablePageViewmodel extends ChangeNotifier {
   final BesteSchuleRepo repo;
@@ -83,8 +84,6 @@ class TimetablePageViewmodel extends ChangeNotifier {
       force: force,
     );
 
-    // return when an error occurred while fetching the api,
-    // TODO return error when error occured -> network error
     if (days == null) {
       logger.i("[Timetable Viewmodel] Fetched days were null!");
       return false;
