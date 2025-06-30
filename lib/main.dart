@@ -5,6 +5,7 @@ import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/login_page/auth_checker.dart';
 import 'package:school_app/domain/settings/settings_provider.dart';
+import 'package:school_app/utils/global_dialog.dart';
 import 'package:school_app/utils/logger.dart';
 
 void main() async {
@@ -77,6 +78,7 @@ class SchoolApp extends StatelessWidget {
         return Provider<BesteSchuleRepo>(
           create: (_) => repo,
           child: MaterialApp(
+            navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             theme: getLightTheme(lightDynamic, settingsProvider),
             darkTheme: getDarkTheme(darkDynamic, settingsProvider),

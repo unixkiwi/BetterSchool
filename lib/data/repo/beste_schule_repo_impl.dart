@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
@@ -11,6 +12,7 @@ import 'package:school_app/domain/models/grade.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/utils/logger.dart';
+import 'package:school_app/utils/global_dialog.dart';
 
 class BesteSchuleRepoImpl extends WidgetsBindingObserver
     implements BesteSchuleRepo {
@@ -24,6 +26,11 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   //TODO reload after specific time
 
+  // Debounce for error dialogs
+  DateTime? _lastErrorDialogTime;
+  String? _lastErrorDialogMessage;
+  static const Duration _errorDialogDebounce = Duration(seconds: 5);
+
   Future<dynamic> getFromAPI({
     required String route,
     Map<String, dynamic>? params,
@@ -32,6 +39,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
     if (key == null || key.isEmpty) {
       logger.e("[API] ERROR: API KEY is missing.");
+      _debouncedShowGlobalErrorDialog("API KEY is missing.");
       return null;
     }
 
@@ -53,14 +61,38 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         logger.e(
           "[API] ERROR: Error fetching $route from API, with these arguments: ${params.toString()}",
         );
+        _debouncedShowGlobalErrorDialog(
+          "Error fetching $route from API. Status code: ${resp.statusCode}",
+        );
         return null;
       }
     } catch (e) {
       logger.e(
         "[API] ERROR: Exception occurred while fetching $route from API: $e",
       );
+
+      if (e is SocketException) {
+        _debouncedShowGlobalErrorDialog("No internet connection!");
+      } else {
+        _debouncedShowGlobalErrorDialog(
+          "Exception occurred while fetching $route: $e",
+        );
+      }
+
       return null;
     }
+  }
+
+  void _debouncedShowGlobalErrorDialog(String message) {
+    final now = DateTime.now();
+    if (_lastErrorDialogMessage == message &&
+        _lastErrorDialogTime != null &&
+        now.difference(_lastErrorDialogTime!) < _errorDialogDebounce)
+      return;
+
+    _lastErrorDialogTime = now;
+    _lastErrorDialogMessage = message;
+    showGlobalErrorDialog(message);
   }
 
   // START GET IS USER STUDENT
@@ -242,11 +274,16 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       logger.i("[API] Received subjects from _allData 'cache'");
     } else {
-      data =
-          (await getFromAPI(route: "/api/subjects")
-              as Map)['data']; //FIXME call getAllData() instead
+      var dataRaw = await getFromAPI(
+        route: "/api/subjects",
+      ); //FIXME call getAllData() instead
 
-      _allData['subjects'] = data;
+      if (dataRaw == null)
+        data = null;
+      else {
+        data = dataRaw['data'];
+        _allData['subjects'] = data;
+      }
     }
 
     if (data != null) {
@@ -269,7 +306,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   @override
   Future<List<Grade>?> getGrades({bool force = false}) async {
     List data;
-    List<Grade>? grades = null;
+    List<Grade>? grades;
 
     if (!force &&
         _allData['grades'] != null &&
@@ -314,7 +351,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }) async {
     List data;
 
-    if (!force && _weekData[dateString] != null && _weekData[dateString]!.isNotEmpty) {
+    if (!force &&
+        _weekData[dateString] != null &&
+        _weekData[dateString]!.isNotEmpty) {
       logger.i("[API] Week info from cache");
 
       data = _weekData[dateString]!;
