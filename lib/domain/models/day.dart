@@ -19,7 +19,7 @@ class SchoolDay {
   factory SchoolDay.fromJson(Map json) {
     if (json["time_name"] == null) {
       return SchoolDay(
-        date: DateTime.now(),
+        date: json['date'] == null ? DateTime.now() : DateTime.parse(json['date']),
         lessons: [],
         notes: [],
         isNull: true,

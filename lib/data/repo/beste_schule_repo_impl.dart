@@ -372,12 +372,13 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       try {
         return SchoolDay.fromJson(e);
       } catch (_) {
+        logger.i("[API] Converting JSON to SchoolDay failed. Returning null!");
         return null;
       }
     }).toList();
 
     // Remove days where .isNull is true, but keep nulls
-    days = days.map((day) => (day != null && day.isNull) ? null : day).toList();
+    days = days.map((day) => (day != null) ? day : null).toList();
 
     return days;
   }

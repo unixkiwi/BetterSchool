@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/presentation/pages/timetable_page/date_time_action_tile.dart';
 import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
-import 'package:school_app/utils/time_utils.dart';
 
 class TimetablePage extends StatelessWidget {
   const TimetablePage({super.key});
