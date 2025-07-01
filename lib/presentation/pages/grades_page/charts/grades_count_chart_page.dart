@@ -18,36 +18,34 @@ Future<void> showGradesCountChartBottomSheet(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         ),
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(), // Prevents drag conflict
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Handle for the bottom sheet
-                Center(
-                  child: Container(
-                    height: 4,
-                    width: 100,
-                    margin: const EdgeInsets.only(top: 8, bottom: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  height: 4,
+                  width: 100,
+                  margin: const EdgeInsets.only(top: 8, bottom: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 16),
-                if (grades.isEmpty)
-                  const Center(child: Text('No data to display'))
-                else
-                  AspectRatio(
-                    aspectRatio: 1.7,
+              ),
+              const SizedBox(height: 16),
+              if (grades.isEmpty)
+                const Center(child: Text('No data to display'))
+              else
+                Flexible(
+                  child: FractionallySizedBox(
+                    heightFactor: 0.45,
                     child: GradesCountAnimatedChart(grades: grades),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       );
@@ -58,8 +56,7 @@ Future<void> showGradesCountChartBottomSheet(
 // Animated chart widget
 class GradesCountAnimatedChart extends StatefulWidget {
   final List<Grade> grades;
-  const GradesCountAnimatedChart({Key? key, required this.grades})
-    : super(key: key);
+  const GradesCountAnimatedChart({super.key, required this.grades});
 
   @override
   State<GradesCountAnimatedChart> createState() =>
@@ -141,7 +138,7 @@ class _GradesCountAnimatedChartState extends State<GradesCountAnimatedChart> {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 30,
+              reservedSize: 40, // Increased from 24 to 40 for more space
               getTitlesWidget: (value, meta) {
                 var titles = GradesChartsUtils.getTitles(grades);
                 int idx = value.toInt();
@@ -156,30 +153,34 @@ class _GradesCountAnimatedChartState extends State<GradesCountAnimatedChart> {
 
                 return SideTitleWidget(
                   meta: meta,
-                  space: 4,
+                  space: 2,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         gradeText,
-                        style: TextStyle(
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          fontSize: Theme.of(
-                              context,
-                            ).textTheme.labelMedium?.fontSize ?? 14,
+                          fontSize:
+                              Theme.of(
+                                context,
+                              ).textTheme.labelLarge?.fontSize ??
+                              14,
                         ),
                       ),
                       if (percentText.isNotEmpty)
                         Text(
                           percentText,
-                          style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: Theme.of(
-                              context,
-                            ).textTheme.labelSmall?.fontSize ?? 12,
-                          ),
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.normal,
+                                fontSize:
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.labelMedium?.fontSize ??
+                                    12,
+                              ),
                         ),
-                        SizedBox(height: 10,)
                     ],
                   ),
                 );
