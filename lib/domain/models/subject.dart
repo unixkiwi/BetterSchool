@@ -29,7 +29,6 @@ class Subject {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Subject &&
-          runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
           shortName == other.shortName;

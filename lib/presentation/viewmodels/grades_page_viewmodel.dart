@@ -46,13 +46,13 @@ class GradesPageViewmodel extends ChangeNotifier {
     // Fetch all grades
     final grades = await repo.getGrades(force: force);
     if (grades != null) {
-      logger.i("Fetched all grades from repo!");
+      logger.i("[Grades VM] Fetched all grades from repo!");
       _grades = grades;
     }
 
     final subjects = await repo.getSubjects(force: force);
     if (subjects != null) {
-      logger.i("Fetched all subjects from repo!");
+      logger.i("[Grades VM] Fetched all subjects from repo!");
       _subjects = subjects;
     }
 
@@ -62,10 +62,12 @@ class GradesPageViewmodel extends ChangeNotifier {
         subject.id,
         force: force,
       );
+
       if (calcRule != null) {
         calcRules[subject] = calcRule;
       }
     }
+
     _calcRules = calcRules;
 
     logger.i("Calculating averages!");
@@ -85,7 +87,7 @@ class GradesPageViewmodel extends ChangeNotifier {
       if (subjectIt.id == subject.id) {
         // get grades for the subject
         final subjectGrades =
-            _grades.where((g) => g.subject == subject).toList();
+            _grades.where((g) => g.subject.id == subject.id).toList();
 
         // sort by date, newest first
         subjectGrades.sort((a, b) => b.date.compareTo(a.date));
@@ -123,7 +125,7 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     for (final subject in _subjects) {
       // get grades for the subject
-      final subjectGrades = _grades.where((g) => g.subject == subject).toList();
+      final subjectGrades = _grades.where((g) => g.subject.id == subject.id).toList();
 
       // skip subjects with no grades
       if (subjectGrades.isEmpty) continue;

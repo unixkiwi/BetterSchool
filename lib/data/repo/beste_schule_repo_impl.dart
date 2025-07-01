@@ -141,7 +141,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<Map?> getAllData() async {
+  Future<Map?> getAllData({int? year}) async {
     var studentId = await getStudentId();
     if (studentId == null) return null;
 
@@ -217,13 +217,10 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         (_allData['finalgrades'] as List).isNotEmpty) {
       data = _allData['finalgrades'];
     } else {
-      var resp = await getAllData();
+      await getAllData();
 
-      if (resp == null) return null;
-
-      data = resp['data'];
-
-      _allData['finalgrades'] = data;
+      if (_allData['finalgrades'] == null) return null;
+      else data = _allData['finalgrades'];
     }
 
     int interval_id = await getCurrentIntervalID() ?? 0;
@@ -270,20 +267,16 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         (_allData['subjects'] as List).isNotEmpty) {
       data = _allData['subjects'];
 
-      logger.i("[API] Received subjects from _allData 'cache'");
+      logger.i("[API] Received subjects from _allData cache");
     } else {
-      var dataRaw = await getAllData();
+      await getAllData();
 
-      if (dataRaw == null)
-        data = null;
-      else {
-        data = dataRaw['data'];
-        _allData['subjects'] = data;
-      }
+      if (_allData['subjects'] == null) return null;
+      else data = _allData['subjects'];
     }
 
     if (data != null) {
-      logger.d("[Subject API] Received -subjects- from the api weren't null.");
+      logger.d("[Subject API] Received subjects from the api weren't null.");
 
       List<Subject> subjects = [];
 
@@ -293,7 +286,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
       return subjects;
     } else {
-      logger.e("[Subject API] Received -subjects- from the api were null.");
+      logger.e("[Subject API] Received subjects from the api were null.");
 
       return null;
     }
@@ -314,18 +307,15 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       int? id = await getStudentId();
 
       if (id != null) {
-        var resp = await getAllData();
+        await getAllData();
 
-        if (resp != null) {
+        if (_allData['grades'] != null) {
           logger.i("[API] Grades from API weren't null");
-
-          data = resp['data']['grades'];
-
-          _allData['grades'] = data;
         }
       }
 
-      return null;
+      if (_allData['grades'] == null) return null;
+      else data = _allData['grades'];
     }
 
     grades = [];

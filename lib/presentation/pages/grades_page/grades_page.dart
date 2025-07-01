@@ -45,10 +45,9 @@ class _GradesPageState extends State<GradesPage> {
     return Consumer<GradesPageViewmodel>(
       builder: (context, viewModel, child) {
         double avg = ((viewModel.totalAvg * 100).round() / 100);
-        String avgDisplay =
-            avg == -1
-                ? String.fromCharCode(Icons.block.codePoint)
-                : "Ø ${avg.toStringAsFixed(2)}";
+        Widget avgDisplay = avg == -1
+            ? Icon(Icons.block_rounded)
+            : Text("Ø ${avg.toStringAsFixed(2)}");
 
         return Scaffold(
           appBar: AppBar(
@@ -63,43 +62,42 @@ class _GradesPageState extends State<GradesPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Center(child: Text(avgDisplay)),
+                child: Center(child: avgDisplay),
               ),
             ],
             elevation: 1,
           ),
-          body:
-              viewModel.isLoading && !viewModel.dataFetched
-                  ? Center(child: CircularProgressIndicator())
-                  : RefreshIndicator(
-                    onRefresh: () async {
-                      logger.i("[Grades Page] Refetching Data");
-                      await viewModel.fetchData(force: true);
-                      logger.i("[Grades Page] Refetched Data");
-                      SnackBar refreshMsg = SnackBar(
-                        content: Text('Refreshed grades!'),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(refreshMsg);
-                    },
-                    child: ListView(
-                      children: [
-                        Column(
-                          children: [
-                            for (final entry in viewModel.averages.entries)
-                              Column(
-                                children: [
-                                  AvgGradeTile(
-                                    subject: entry.key,
-                                    avgGrade: entry.value,
-                                    viewModel: viewModel,
-                                  ),
-                                ],
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
+          body: viewModel.isLoading && !viewModel.dataFetched
+              ? Center(child: CircularProgressIndicator())
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    logger.i("[Grades Page] Refetching Data");
+                    await viewModel.fetchData(force: true);
+                    logger.i("[Grades Page] Refetched Data");
+                    SnackBar refreshMsg = SnackBar(
+                      content: Text('Refreshed grades!'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(refreshMsg);
+                  },
+                  child: ListView(
+                    children: [
+                      Column(
+                        children: [
+                          for (final entry in viewModel.averages.entries)
+                            Column(
+                              children: [
+                                AvgGradeTile(
+                                  subject: entry.key,
+                                  avgGrade: entry.value,
+                                  viewModel: viewModel,
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
+                ),
         );
       },
     );

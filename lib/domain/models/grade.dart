@@ -51,9 +51,9 @@ class Grade {
       valueString: json['value'] ?? "0",
       type: collection != null ? collection['type'] : "No type",
       date: DateTime.parse(json['given_at']),
-      subject: json['subject'] == null
+      subject: collection['subject'] == null
           ? Subject(id: 0, name: "Unknown Subject", shortName: "---")
-          : Subject.fromJson(json['subject']),
+          : Subject.fromJson(collection['subject']),
     );
   }
 }
