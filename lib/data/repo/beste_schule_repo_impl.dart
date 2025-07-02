@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
+import 'package:school_app/domain/models/school_year.dart';
 import 'package:school_app/utils/time_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/widgets.dart';
@@ -21,7 +23,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       BesteSchuleOauthWebviewRepoImpl();
 
   BesteSchuleStudent? _student;
-  Map _allData = {};
+  List<SchoolYear> _years = [];
+  SchoolYear? _selectedYear;
+  Map<SchoolYear, Map> _allData = {};
   Map<DateString, List> _weekData = {};
 
   //TODO reload after specific time
@@ -135,38 +139,99 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         logger.e("[API] /api/students was null when calling getStudentId()");
         return null;
       } else {
-        return resp['data'][0]['id'];
+        if (resp['data'] != null)
+          return resp['data'][0]['id'];
+        else
+          return null;
+      }
+    }
+  }
+
+  List<SchoolYear> sortSchoolYears(List<SchoolYear> years) {
+    years.sort((a, b) => b.from.compareTo(a.from));
+    return years;
+  }
+
+  Future<SchoolYear?> getCurrentYear() async {
+    if (_selectedYear != null) return _selectedYear;
+    if (_years.isEmpty) await getSchoolYears();
+    if (_years.isEmpty) return null;
+
+    sortSchoolYears(_years);
+
+    _selectedYear = _years.first;
+
+    return _years.first;
+  }
+
+  void setSelectedYear(SchoolYear year) {
+    _selectedYear = year;
+  }
+
+  Future<List<SchoolYear>?> getSchoolYears() async {
+    if (_years.isNotEmpty) {
+      return _years;
+    }
+    var resp = await getFromAPI(route: "/api/years");
+    if (resp == null) {
+      logger.e("[API] /api/years was null");
+      return null;
+    } else {
+      if (resp['data'] != null) {
+        List<SchoolYear> years = [];
+        for (final year in (resp['data'] as List)) {
+          years.add(SchoolYear.fromJson(year));
+        }
+        years = sortSchoolYears(years);
+        _years = years;
+        if (_selectedYear == null && years.isNotEmpty) {
+          await getCurrentYear(); // sets _selectedYear
+        }
+        return years;
+      } else {
+        return null;
       }
     }
   }
 
   @override
-  Future<Map?> getAllData({int? year}) async {
+  Future<Map?> getAllData() async {
+    final selectedYear =
+        await getCurrentYear() ?? (_years.isNotEmpty ? sortSchoolYears(_years).first : null);
+
+    if (selectedYear == null) return null;
+    if (_allData[selectedYear] != null) return _allData[selectedYear];
+
     var studentId = await getStudentId();
     if (studentId == null) return null;
 
     var resp = await getFromAPI(
       route: "/api/students/$studentId",
-      params: {'include': 'grades,finalgrades,subjects,intervals'},
+      params: {
+        'include': 'grades,finalgrades,subjects,intervals',
+        'year': selectedYear.id.toString(),
+      },
     );
 
     if (resp == null) {
       logger.e("[API] getAllData() response was null!");
       return null;
     }
-
-    _allData = resp['data'];
-
-    return _allData;
+    _allData[selectedYear] = resp['data'];
+    return _allData[selectedYear];
   }
 
   @override
   Future<int?> getCurrentIntervalID({bool force = false}) async {
-    if (!force &&
-        _allData['intervals'] != null &&
-        (_allData['intervals'] as List).isNotEmpty) {
-      var intervals = _allData['intervals'] as List;
+    final year = await getCurrentYear();
+    if (year == null) return null;
+    final allData = _allData[year];
 
+    if (!force &&
+        allData != null &&
+        allData['intervals'] != null &&
+        (allData['intervals'] as List).isNotEmpty) {
+      var intervals = allData['intervals'] as List;
       intervals.sort(
         (a, b) =>
             DateTime.parse(b['from']).compareTo(DateTime.parse(a['from'])),
@@ -179,18 +244,39 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       if (currentInterval != null) return currentInterval;
     }
 
-    var resp = await getFromAPI(route: "/api/intervals");
+    // IF NOT FROM THE CACHE
 
-    if (resp != null) {
+    var resp = await getFromAPI(route: "/api/years");
+
+    if (resp != null && resp['data'] != null) {
       logger.d("[Interval API] Received -interval- from the api wasn't null.");
 
-      List data = resp['data'];
+      List? dataTmp;
+
+      for (Map yearData in resp['data']) {
+        if (yearData['id'] != null &&
+            yearData['id'] == year.id &&
+            yearData['intervals'] != null)
+          dataTmp = yearData['intervals'];
+      }
+
+      if (dataTmp == null) {
+        logger.e(
+          "[API] getCurrentInterval() no matching year found that had intervals (Year: ${year.id} Data: ${resp['data']})",
+        );
+        return null;
+      }
+
+      List data = dataTmp;
 
       if (data.isEmpty) return null;
+      if (_allData[year] != null) {
+        _allData[year]!['intervals'] = data;
+      } else {
+        _allData[year] = {};
+        _allData[year]!['intervals'] = data;
+      }
 
-      _allData['intervals'] = data;
-
-      // sort intervals by their from data
       data.sort(
         (a, b) =>
             DateTime.parse(b['from']).compareTo(DateTime.parse(a['from'])),
@@ -210,17 +296,21 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     int subjectId, {
     bool force = false,
   }) async {
+    final year = await getCurrentYear();
+    if (year == null) return null;
     List data = [];
-
+    final allData = _allData[year];
     if (!force &&
-        _allData['finalgrades'] != null &&
-        (_allData['finalgrades'] as List).isNotEmpty) {
-      data = _allData['finalgrades'];
+        allData != null &&
+        allData['finalgrades'] != null &&
+        (allData['finalgrades'] as List).isNotEmpty) {
+      data = allData['finalgrades'];
     } else {
       await getAllData();
-
-      if (_allData['finalgrades'] == null) return null;
-      else data = _allData['finalgrades'];
+      if (_allData[year] == null || _allData[year]!['finalgrades'] == null)
+        return null;
+      else
+        data = _allData[year]!['finalgrades'];
     }
 
     int interval_id = await getCurrentIntervalID() ?? 0;
@@ -260,19 +350,22 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   @override
   Future<List<Subject>?> getSubjects({bool force = false}) async {
+    final year = await getCurrentYear();
+    if (year == null) return null;
     List? data;
-
+    final allData = _allData[year];
     if (!force &&
-        _allData['subjects'] != null &&
-        (_allData['subjects'] as List).isNotEmpty) {
-      data = _allData['subjects'];
-
+        allData != null &&
+        allData['subjects'] != null &&
+        (allData['subjects'] as List).isNotEmpty) {
+      data = allData['subjects'];
       logger.i("[API] Received subjects from _allData cache");
     } else {
       await getAllData();
-
-      if (_allData['subjects'] == null) return null;
-      else data = _allData['subjects'];
+      if (_allData[year] == null || _allData[year]!['subjects'] == null)
+        return null;
+      else
+        data = _allData[year]!['subjects'];
     }
 
     if (data != null) {
@@ -294,28 +387,30 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   @override
   Future<List<Grade>?> getGrades({bool force = false}) async {
+    final year = await getCurrentYear();
+    if (year == null) return null;
     List data;
     List<Grade>? grades;
-
+    final allData = _allData[year];
     if (!force &&
-        _allData['grades'] != null &&
-        (_allData['grades'] as List).isNotEmpty) {
-      data = _allData['grades'];
-
+        allData != null &&
+        allData['grades'] != null &&
+        (allData['grades'] as List).isNotEmpty) {
+      data = allData['grades'];
       logger.i("[API] Received grades from _allData 'cache'");
     } else {
       int? id = await getStudentId();
 
       if (id != null) {
         await getAllData();
-
-        if (_allData['grades'] != null) {
+        if (_allData[year] != null && _allData[year]!['grades'] != null) {
           logger.i("[API] Grades from API weren't null");
         }
       }
-
-      if (_allData['grades'] == null) return null;
-      else data = _allData['grades'];
+      if (_allData[year] == null || _allData[year]!['grades'] == null)
+        return null;
+      else
+        data = _allData[year]!['grades'];
     }
 
     grades = [];
@@ -379,9 +474,32 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
     try {
       // save all data
-      await prefs.setString('_allData', jsonEncode(_allData));
-      logger.i("[Repo] Saved _allData to shared preferences.");
-
+      final allDataToSave = _allData.map(
+        (year, data) => MapEntry(year.id.toString(), data),
+      );
+      await prefs.setString('_allData', jsonEncode(allDataToSave));
+      await prefs.setString(
+        '_years',
+        jsonEncode(
+          _years
+              .map(
+                (y) => {
+                  'id': y.id,
+                  'name': y.name,
+                  'from': y.from.toIso8601String(),
+                  'to': y.to.toIso8601String(),
+                },
+              )
+              .toList(),
+        ),
+      );
+      await prefs.setString(
+        '_selectedYear',
+        _selectedYear?.id.toString() ?? '',
+      );
+      logger.i(
+        "[Repo] Saved _allData, _years, _selectedYear to shared preferences.",
+      );
       // save and convert week data
       // Convert _weekData to a serializable map (deep conversion)
       final serializableWeekData = _weekData.map((key, value) {
@@ -416,11 +534,57 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   Future<void> _loadAllDataFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
 
+    // load years
+    final yearsString = prefs.getString('_years');
+    if (yearsString != null) {
+      try {
+        List yearsRaw = jsonDecode(yearsString);
+
+        List<SchoolYear> years = [];
+
+        yearsRaw.map((yearRaw) {
+          years.add(SchoolYear.fromJson(yearRaw));
+        });
+
+        _years = years;
+
+        logger.d("[Repo] Loaded _years from shared preferences.");
+      } catch (e) {
+        logger.e("[Repo] Failed to load _years: $e");
+      }
+    }
+
+    // load selected year
+    final selectedYearString = prefs.getString('_selectedYear');
+    if (selectedYearString != null) {
+      try {
+        _selectedYear = _years
+            .where((year) => year.id == int.parse(selectedYearString))
+            .firstOrNull;
+
+        logger.d("[Repo] Loaded _selectedYear from shared preferences.");
+      } catch (e) {
+        logger.e("[Repo] Failed to load _selectedYear: $e");
+      }
+    }
+
     // load all data
     final allDataJsonString = prefs.getString('_allData');
     if (allDataJsonString != null) {
       try {
-        _allData = jsonDecode(allDataJsonString);
+        Map allDataRaw = jsonDecode(allDataJsonString);
+        Map<SchoolYear, Map> allData = {};
+
+        allData = allDataRaw.map((yearRaw, value) {
+          SchoolYear year =
+              _years
+                  .where((year) => year.id == int.parse(yearRaw))
+                  .firstOrNull ??
+              SchoolYear.fromJson({});
+
+          return MapEntry(year, value);
+        });
+
         logger.i("[Repo] Loaded _allData from shared preferences.");
       } catch (e) {
         logger.e("[Repo] Failed to load _allData: $e");
