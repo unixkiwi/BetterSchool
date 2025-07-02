@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/presentation/viewmodels/timetable_page_viewmodel.dart';
 import 'package:school_app/utils/logger.dart';
+import 'package:week_of_year/date_week_extensions.dart';
 
 String getDateText(SchoolDay? day) {
   if (day == null) return "No date for this day.";
@@ -23,7 +24,7 @@ String getDateText(SchoolDay? day) {
     prefix = DateFormat('EEEE').format(date);
   }
 
-  return "$prefix, ${DateFormat('d MMMM y').format(date)}";
+  return "$prefix, ${DateFormat('d MMMM y').format(date)} (NR. ${date.weekOfYear})";
 }
 
 class DateInfoTileAppBar extends StatelessWidget {

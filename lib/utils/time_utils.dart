@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:week_of_year/week_of_year.dart';
 
 class DateString {
@@ -143,20 +144,15 @@ class DateString {
 }
 
 extension DateTimeExtension on DateTime {
-  // int get weekOfYear {
-  //   final startOfYear = DateTime(year, 1, 1);
-  //   final weekNumber =
-  //       ((difference(startOfYear).inDays + startOfYear.weekday) / 7).ceil();
-  //   return weekNumber;
-  // }
-
   int lastWeekOfYear() {
-    return DateTime(year, 12, 31).weekOfYear;
+    DateTime dec28 = DateTime(year, 12, 28);
+    int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
+    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
   }
 
   bool isLastWeekOfYear() {
     final int currentWeek = weekOfYear;
-    final int lastWeek = DateTime(year, 12, 31).weekOfYear;
+    final int lastWeek = lastWeekOfYear();
     return currentWeek == lastWeek;
   }
 }
