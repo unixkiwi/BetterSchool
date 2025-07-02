@@ -20,7 +20,7 @@ class _GradesSettingsSectionState extends State<GradesSettingsSection> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Grades Settings', style: Theme.of(context).textTheme.labelLarge),
+        Text('Grades', style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 12),
         SwitchListTile(
           value: _usePlainGradeValue,

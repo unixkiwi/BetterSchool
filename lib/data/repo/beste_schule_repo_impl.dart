@@ -159,6 +159,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
     sortSchoolYears(_years);
 
+    //TODO make post request to switch year
+
     _selectedYear = _years.first;
 
     return _years.first;

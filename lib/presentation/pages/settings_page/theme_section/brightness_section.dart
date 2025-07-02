@@ -15,7 +15,7 @@ class BrightnessSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Theme Theme', style: Theme.of(context).textTheme.labelLarge),
+        Text('Theme', style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 12),
         SegmentedButton<ThemeMode>(
           segments: const [
