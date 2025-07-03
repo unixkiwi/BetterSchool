@@ -1,5 +1,6 @@
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/grade.dart';
+import 'package:school_app/domain/models/school_year.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/utils/time_utils.dart';
 
@@ -13,4 +14,6 @@ abstract class BesteSchuleRepo {
   });
   Future<bool?> isUserStudent();
   Future<Map?> getAllData();
+  Future<List<SchoolYear>?> getSchoolYears();
+  Future<SchoolYear?> getCurrentYear();
 }

@@ -12,7 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // load cache before app starts
-  final repo = BesteSchuleRepoImpl();
+  final repo = BesteSchuleRepoImpl.instance;
   await repo.loadCacheOnStartup();
 
   runApp(

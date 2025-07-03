@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
 import 'package:school_app/domain/models/school_year.dart';
@@ -18,6 +17,15 @@ import 'package:school_app/utils/global_dialog.dart';
 
 class BesteSchuleRepoImpl extends WidgetsBindingObserver
     implements BesteSchuleRepo {
+  
+  static final BesteSchuleRepoImpl _instance = BesteSchuleRepoImpl._internal();
+  factory BesteSchuleRepoImpl() => _instance;
+  BesteSchuleRepoImpl._internal() {
+    _loadAllDataFromPrefs();
+    WidgetsBinding.instance.addObserver(this);
+  }
+  static BesteSchuleRepoImpl get instance => _instance;
+  
   final String _BASE_URL = "beste.schule";
   final BesteSchuleOauthWebviewRepoImpl clientImpl =
       BesteSchuleOauthWebviewRepoImpl();
@@ -35,11 +43,23 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   String? _lastErrorDialogMessage;
   static const Duration _errorDialogDebounce = Duration(seconds: 5);
 
+  Future<String?> getAPIKey() async {
+    final key = await clientImpl.getToken();
+
+    if (key == null || key.isEmpty) {
+      logger.e("[API] ERROR: API KEY is missing.");
+      _debouncedShowGlobalErrorDialog("API KEY is missing.");
+      return null;
+    }
+
+    return key;
+  }
+
   Future<dynamic> getFromAPI({
     required String route,
     Map<String, dynamic>? params,
   }) async {
-    final key = await clientImpl.getToken();
+    final key = await getAPIKey();
 
     if (key == null || key.isEmpty) {
       logger.e("[API] ERROR: API KEY is missing.");
@@ -139,7 +159,10 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         logger.e("[API] /api/students was null when calling getStudentId()");
         return null;
       } else {
-        if (resp['data'] != null)
+        if (resp['data'] != null &&
+            resp['data'] is List &&
+            (resp['data'] as List).isNotEmpty &&
+            resp['data'][0]['id'] != null)
           return resp['data'][0]['id'];
         else
           return null;
@@ -152,28 +175,78 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     return years;
   }
 
+  Future<void> setSchoolYear(SchoolYear year) async {
+    if (year.id == -1 && _selectedYear != null && _selectedYear!.id == year.id)
+      return;
+
+    final url = Uri.parse('https://beste.schule/api/years/current');
+    final payload = 'id=${year.id}';
+
+    final key = await getAPIKey();
+
+    if (key == null || key.isEmpty) {
+      logger.e("[API] ERROR: API KEY is missing.");
+      _debouncedShowGlobalErrorDialog("API KEY is missing. (setSchoolYear())");
+      return;
+    }
+
+    try {final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer $key',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: payload,
+    );
+
+    if (response.statusCode != 200) {
+      logger.e(
+        "[API] ERROR: Failed settings school year: response code is ${response.statusCode}",
+      );
+      _debouncedShowGlobalErrorDialog(
+        "Failed settings school year: response code is ${response.statusCode}",
+      );
+      return;
+    } else {
+      _selectedYear = year;
+      logger.i(
+        "[API] Successfully changed school year to ${year.name} (${year.id})",
+      );
+    }} catch (e) {
+      logger.e(
+        "[API] ERROR: Exception occurred while setting the current year: $e",
+      );
+
+      if (e is SocketException) {
+        _debouncedShowGlobalErrorDialog("No internet connection!");
+      } else {
+        _debouncedShowGlobalErrorDialog(
+          "Exception occurred while changing the current year: $e",
+        );
+      }
+    }
+    
+  }
+
+  @override
   Future<SchoolYear?> getCurrentYear() async {
-    if (_selectedYear != null) return _selectedYear;
     if (_years.isEmpty) await getSchoolYears();
+    if (_selectedYear != null) return _selectedYear;
     if (_years.isEmpty) return null;
 
     sortSchoolYears(_years);
 
-    //TODO make post request to switch year
-
-    _selectedYear = _years.first;
+    await setSchoolYear(_years.first);
 
     return _years.first;
   }
 
-  void setSelectedYear(SchoolYear year) {
-    _selectedYear = year;
-  }
-
+  @override
   Future<List<SchoolYear>?> getSchoolYears() async {
     if (_years.isNotEmpty) {
       return _years;
     }
+
     var resp = await getFromAPI(route: "/api/years");
     if (resp == null) {
       logger.e("[API] /api/years was null");
@@ -184,11 +257,13 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         for (final year in (resp['data'] as List)) {
           years.add(SchoolYear.fromJson(year));
         }
+
         years = sortSchoolYears(years);
         _years = years;
         if (_selectedYear == null && years.isNotEmpty) {
           await getCurrentYear(); // sets _selectedYear
         }
+
         return years;
       } else {
         return null;
@@ -199,7 +274,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   @override
   Future<Map?> getAllData() async {
     final selectedYear =
-        await getCurrentYear() ?? (_years.isNotEmpty ? sortSchoolYears(_years).first : null);
+        await getCurrentYear() ??
+        (_years.isNotEmpty ? sortSchoolYears(_years).first : null);
 
     if (selectedYear == null) return null;
     if (_allData[selectedYear] != null) return _allData[selectedYear];
@@ -610,11 +686,6 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         logger.e(weekDataJsonString.toString());
       }
     }
-  }
-
-  BesteSchuleRepoImpl() {
-    _loadAllDataFromPrefs();
-    WidgetsBinding.instance.addObserver(this);
   }
 
   // called before runApp to ensure cache is loaded first instead of the requests being made
