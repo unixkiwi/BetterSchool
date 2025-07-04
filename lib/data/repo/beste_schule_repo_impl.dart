@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/semantics.dart';
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
 import 'package:school_app/domain/models/school_year.dart';
@@ -17,7 +18,6 @@ import 'package:school_app/utils/global_dialog.dart';
 
 class BesteSchuleRepoImpl extends WidgetsBindingObserver
     implements BesteSchuleRepo {
-  
   static final BesteSchuleRepoImpl _instance = BesteSchuleRepoImpl._internal();
   factory BesteSchuleRepoImpl() => _instance;
   BesteSchuleRepoImpl._internal() {
@@ -25,7 +25,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     WidgetsBinding.instance.addObserver(this);
   }
   static BesteSchuleRepoImpl get instance => _instance;
-  
+
   final String _BASE_URL = "beste.schule";
   final BesteSchuleOauthWebviewRepoImpl clientImpl =
       BesteSchuleOauthWebviewRepoImpl();
@@ -190,29 +190,31 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       return;
     }
 
-    try {final response = await http.post(
-      url,
-      headers: {
-        'Authorization': 'Bearer $key',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: payload,
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $key',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: payload,
+      );
 
-    if (response.statusCode != 200) {
-      logger.e(
-        "[API] ERROR: Failed settings school year: response code is ${response.statusCode}",
-      );
-      _debouncedShowGlobalErrorDialog(
-        "Failed settings school year: response code is ${response.statusCode}",
-      );
-      return;
-    } else {
-      _selectedYear = year;
-      logger.i(
-        "[API] Successfully changed school year to ${year.name} (${year.id})",
-      );
-    }} catch (e) {
+      if (response.statusCode != 200) {
+        logger.e(
+          "[API] ERROR: Failed settings school year: response code is ${response.statusCode}",
+        );
+        _debouncedShowGlobalErrorDialog(
+          "Failed settings school year: response code is ${response.statusCode}",
+        );
+        return;
+      } else {
+        _selectedYear = year;
+        logger.i(
+          "[API] Successfully changed school year to ${year.name} (${year.id})",
+        );
+      }
+    } catch (e) {
       logger.e(
         "[API] ERROR: Exception occurred while setting the current year: $e",
       );
@@ -225,7 +227,6 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         );
       }
     }
-    
   }
 
   @override
@@ -235,6 +236,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     if (_years.isEmpty) return null;
 
     sortSchoolYears(_years);
+
+    if (_years.isEmpty) return null;
 
     await setSchoolYear(_years.first);
 
@@ -556,21 +559,21 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         (year, data) => MapEntry(year.id.toString(), data),
       );
       await prefs.setString('_allData', jsonEncode(allDataToSave));
-      await prefs.setString(
-        '_years',
-        jsonEncode(
-          _years
-              .map(
-                (y) => {
-                  'id': y.id,
-                  'name': y.name,
-                  'from': y.from.toIso8601String(),
-                  'to': y.to.toIso8601String(),
-                },
-              )
-              .toList(),
-        ),
+
+      String yearString = jsonEncode(
+        _years
+            .map(
+              (y) => {
+                'id': y.id,
+                'name': y.name,
+                'from': y.from.toIso8601String(),
+                'to': y.to.toIso8601String(),
+              },
+            )
+            .toList(),
       );
+
+      await prefs.setString('_years', yearString);
       await prefs.setString(
         '_selectedYear',
         _selectedYear?.id.toString() ?? '',
@@ -600,7 +603,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         return MapEntry(key.toString(), serializableList);
       });
 
-      await prefs.setString('_weekData', jsonEncode(serializableWeekData));
+      if (serializableWeekData.isNotEmpty) await prefs.setString('_weekData', jsonEncode(serializableWeekData));
+
       logger.i("[Repo] Saved _weekData to shared preferences.");
     } catch (e) {
       logger.e("[Repo] Failed to save _weekData: $e");
@@ -620,11 +624,15 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
         List<SchoolYear> years = [];
 
-        yearsRaw.map((yearRaw) {
-          years.add(SchoolYear.fromJson(yearRaw));
-        });
+        for (dynamic year in yearsRaw) {
+          if (year is Map && SchoolYear.fromJson(year).id != -1) years.add(SchoolYear.fromJson(year));
+        }
 
-        _years = years;
+        logger.d("[API] years loaded: $years");
+
+        if (years.isNotEmpty) {
+          _years = years;
+        }
 
         logger.d("[Repo] Loaded _years from shared preferences.");
       } catch (e) {
@@ -636,11 +644,15 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     final selectedYearString = prefs.getString('_selectedYear');
     if (selectedYearString != null) {
       try {
-        _selectedYear = _years
+        SchoolYear? selectedYear = _years
             .where((year) => year.id == int.parse(selectedYearString))
             .firstOrNull;
 
-        logger.d("[Repo] Loaded _selectedYear from shared preferences.");
+        if (selectedYear != null) _selectedYear = selectedYear;
+
+        selectedYear == null
+            ? logger.e("[Repo] Failed to load _selectedYear (null or not found): value: $selectedYear ($selectedYearString) years: $_years ($yearsString)")
+            : logger.i("[Repo] Loaded _selectedYear (${_selectedYear?.id ?? ""}) from shared preferences.");
       } catch (e) {
         logger.e("[Repo] Failed to load _selectedYear: $e");
       }
@@ -662,6 +674,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
           return MapEntry(year, value);
         });
+
+        if (allData.isNotEmpty) _allData = allData;
 
         logger.i("[Repo] Loaded _allData from shared preferences.");
       } catch (e) {
