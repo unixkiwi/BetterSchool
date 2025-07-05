@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/settings/settings_provider.dart';
-import 'package:school_app/presentation/pages/settings_page/year_section/school_year_menu_button.dart';
 import 'package:school_app/domain/models/school_year.dart';
 
 class YearSettingsSection extends StatefulWidget {
@@ -43,20 +42,27 @@ class _YearSettingsSectionState extends State<YearSettingsSection> {
                 future.data!.isNotEmpty) {
               final selected = _selectedYear;
 
-              return DropdownButton<SchoolYear>(
-                value: future.data!.contains(selected)
+              return DropdownMenu<SchoolYear>(
+                initialSelection: future.data!.contains(selected)
                     ? selected
                     : future.data!.first,
-                items: future.data!
-                    .map<DropdownMenuItem<SchoolYear>>(
-                      (year) => DropdownMenuItem<SchoolYear>(
+                onSelected: (SchoolYear? value) {
+                  if (value != null) {
+                    _onChanged(value);
+                  }
+                },
+                dropdownMenuEntries: future.data!
+                    .map<DropdownMenuEntry<SchoolYear>>(
+                      (year) => DropdownMenuEntry<SchoolYear>(
                         value: year,
-                        child: SchoolYearMenuButton(year: year),
+                        label: year.name,
+                        enabled: true,
+                        style: MenuItemButton.styleFrom(),
+                        leadingIcon: Icon(Icons.calendar_month_rounded),
                       ),
                     )
                     .toList(),
-                onChanged: _onChanged,
-                isExpanded: true,
+                menuHeight: 300,
               );
             } else {
               return CircularProgressIndicator();
