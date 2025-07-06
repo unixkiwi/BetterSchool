@@ -5,9 +5,9 @@ import 'package:school_app/presentation/pages/settings_page/theme_section/color_
 import 'package:school_app/utils/logger.dart';
 
 class ColorSchemeSection extends StatelessWidget {
-  final SettingsProvider settingsProvider;
+  final SettingsProvider settingsProvider = SettingsProvider.instance;
 
-  ColorSchemeSection({super.key, required this.settingsProvider});
+  ColorSchemeSection({super.key});
 
   // .shade500 so that the value is a Color and not a MaterialColor
   final List<Color> colors = [
@@ -45,32 +45,26 @@ class ColorSchemeSection extends StatelessWidget {
       return buttons;
     }
 
-    return Column(
-      children: [
-        Text('Theme Color', style: Theme.of(context).textTheme.labelLarge),
-        const SizedBox(height: 12),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Theme.of(context).colorScheme.secondaryContainer,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Theme.of(context).colorScheme.secondaryContainer,
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              right: 1,
+              left: 1,
+              top: 4,
+              bottom: 4,
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  right: 1,
-                  left: 1,
-                  top: 4,
-                  bottom: 4,
-                ),
-                child: Row(children: getColorButtons()),
-              ),
-            ),
+            child: Row(children: getColorButtons()),
           ),
         ),
-      ],
+      ),
     );
   }
 }

@@ -9,11 +9,12 @@
 - [ ] nicer widgets when no data available like svg or somthing like this (medium-high)
 - [x] school year switching in settings (medium)
 - [ ] add logout option (medium)
-- [ ] add per subject grade count bar chart (medium)
-- [ ] add linechart for your avg grades over the years (medium)
+- [ ] total- and per-subject anylytics page with charts (medium)
+  - [ ] add per subject grade count bar chart (medium)
+  - [ ] add linechart for your avg grades over the years (medium)
+  - [ ] add avg grade over time as line chart (low)
 - [ ] add support for parents (medium)
-- [ ] make settings page titles look better (low)
-- [ ] add avg grade over time as line chart (low)
+- [x] make settings page titles look better (low)
 
 ## Current state
 

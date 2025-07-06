@@ -18,20 +18,13 @@ class _GradesSettingsSectionState extends State<GradesSettingsSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('Grades', style: Theme.of(context).textTheme.labelLarge),
-        const SizedBox(height: 12),
-        SwitchListTile(
+    return SwitchListTile(
           value: _usePlainGradeValue,
           onChanged: _onSwitchChanged,
           title: Text("Use Grade Modifiers"),
           subtitle: Text(
             "Include plus and minus of grades when calculating their value. (beste.schule is not using them)",
           ),
-        ),
-        const SizedBox(height: 24), 
-      ],
-    );
+        );
   }
 }

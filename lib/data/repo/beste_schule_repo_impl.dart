@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/semantics.dart';
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
 import 'package:school_app/domain/models/school_year.dart';

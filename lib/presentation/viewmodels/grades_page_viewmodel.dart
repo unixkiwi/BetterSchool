@@ -99,33 +99,38 @@ class GradesPageViewmodel extends ChangeNotifier {
     return [];
   }
 
-  Future<double> getTotalAvg() async {
+  Future<double> getTotalAvg({List<Grade>? grades}) async {
     logger.d("[Grades ViewModel] Called getTotalAvg()");
 
-    await getAveragesForAllSubjects();
+    Map<Subject, double> avgs = await getAveragesForAllSubjects(gradesArg: grades);
 
     if (_averages.isEmpty) return -1;
 
-    return _calculateTotalAvg();
+    return _calculateTotalAvg(avgsArg: avgs);
   }
 
-  double _calculateTotalAvg() {
-    if (_averages.isEmpty) return -1;
+  double _calculateTotalAvg({Map<Subject, double>? avgsArg}) {
+    if (avgsArg == null && _averages.isEmpty) return -1;
+
+    Map<Subject, double> avgs = avgsArg ?? _averages;
+
     double sum = 0;
-    for (MapEntry<Subject, double> entry in _averages.entries) {
+    for (MapEntry<Subject, double> entry in avgs.entries) {
       sum += entry.value;
     }
-    return sum / _averages.values.length;
+    return sum / avgs.values.length;
   }
 
-  Future<Map<Subject, double>> getAveragesForAllSubjects() async {
+  Future<Map<Subject, double>> getAveragesForAllSubjects({List<Grade>? gradesArg}) async {
     logger.d("[Grades ViewModel] Called getAveragesForAllSubjects()");
+
+    List<Grade> grades = gradesArg ?? _grades;
 
     Map<Subject, double> averages = {};
 
     for (final subject in _subjects) {
       // get grades for the subject
-      final subjectGrades = _grades.where((g) => g.subject.id == subject.id).toList();
+      final subjectGrades = grades.where((g) => g.subject.id == subject.id).toList();
 
       // skip subjects with no grades
       if (subjectGrades.isEmpty) continue;
@@ -135,7 +140,8 @@ class GradesPageViewmodel extends ChangeNotifier {
 
       // calculate avg
       final avg = calculateAverage(subjectGrades, rule, usePlain: SettingsProvider.instance.usePlainGradeValue);
-      averages[subject] = avg;
+
+      if (gradesArg == null) averages[subject] = avg;
     }
 
     logger.i("[Grades ViewModel] Calculated all averages!");

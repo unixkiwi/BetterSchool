@@ -30,47 +30,38 @@ class _YearSettingsSectionState extends State<YearSettingsSection> {
   @override
   Widget build(BuildContext context) {
     _selectedYear = SettingsProvider.instance.schoolYear;
-    return Column(
-      children: [
-        Text('School Year', style: Theme.of(context).textTheme.labelLarge),
-        const SizedBox(height: 12),
-        FutureBuilder<List<SchoolYear>>(
-          future: SettingsProvider.instance.getSchoolYears(),
-          builder: (context, future) {
-            if (future.hasData &&
-                future.data != null &&
-                future.data!.isNotEmpty) {
-              final selected = _selectedYear;
+    return FutureBuilder<List<SchoolYear>>(
+      future: SettingsProvider.instance.getSchoolYears(),
+      builder: (context, future) {
+        if (future.hasData && future.data != null && future.data!.isNotEmpty) {
+          final selected = _selectedYear;
 
-              return DropdownMenu<SchoolYear>(
-                initialSelection: future.data!.contains(selected)
-                    ? selected
-                    : future.data!.first,
-                onSelected: (SchoolYear? value) {
-                  if (value != null) {
-                    _onChanged(value);
-                  }
-                },
-                dropdownMenuEntries: future.data!
-                    .map<DropdownMenuEntry<SchoolYear>>(
-                      (year) => DropdownMenuEntry<SchoolYear>(
-                        value: year,
-                        label: year.name,
-                        enabled: true,
-                        style: MenuItemButton.styleFrom(),
-                        leadingIcon: Icon(Icons.calendar_month_rounded),
-                      ),
-                    )
-                    .toList(),
-                menuHeight: 300,
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-        ),
-        const SizedBox(height: 24),
-      ],
+          return DropdownMenu<SchoolYear>(
+            initialSelection: future.data!.contains(selected)
+                ? selected
+                : future.data!.first,
+            onSelected: (SchoolYear? value) {
+              if (value != null) {
+                _onChanged(value);
+              }
+            },
+            dropdownMenuEntries: future.data!
+                .map<DropdownMenuEntry<SchoolYear>>(
+                  (year) => DropdownMenuEntry<SchoolYear>(
+                    value: year,
+                    label: year.name,
+                    enabled: true,
+                    style: MenuItemButton.styleFrom(),
+                    leadingIcon: Icon(Icons.calendar_month_rounded),
+                  ),
+                )
+                .toList(),
+            menuHeight: 300,
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 }
