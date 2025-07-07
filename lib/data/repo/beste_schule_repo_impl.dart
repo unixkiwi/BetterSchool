@@ -274,10 +274,11 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<Map?> getAllData() async {
+  Future<Map?> getAllData({SchoolYear? year}) async {
     final selectedYear =
-        await getCurrentYear() ??
-        (_years.isNotEmpty ? sortSchoolYears(_years).first : null);
+        year ??
+        (await getCurrentYear() ??
+            (_years.isNotEmpty ? sortSchoolYears(_years).first : null));
 
     if (selectedYear == null) return null;
     if (_allData[selectedYear] != null) return _allData[selectedYear];
@@ -602,7 +603,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         return MapEntry(key.toString(), serializableList);
       });
 
-      if (serializableWeekData.isNotEmpty) await prefs.setString('_weekData', jsonEncode(serializableWeekData));
+      if (serializableWeekData.isNotEmpty)
+        await prefs.setString('_weekData', jsonEncode(serializableWeekData));
 
       logger.i("[Repo] Saved _weekData to shared preferences.");
     } catch (e) {
@@ -624,7 +626,8 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         List<SchoolYear> years = [];
 
         for (dynamic year in yearsRaw) {
-          if (year is Map && SchoolYear.fromJson(year).id != -1) years.add(SchoolYear.fromJson(year));
+          if (year is Map && SchoolYear.fromJson(year).id != -1)
+            years.add(SchoolYear.fromJson(year));
         }
 
         logger.d("[API] years loaded: $years");
@@ -650,8 +653,12 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         if (selectedYear != null) _selectedYear = selectedYear;
 
         selectedYear == null
-            ? logger.e("[Repo] Failed to load _selectedYear (null or not found): value: $selectedYear ($selectedYearString) years: $_years ($yearsString)")
-            : logger.i("[Repo] Loaded _selectedYear (${_selectedYear?.id ?? ""}) from shared preferences.");
+            ? logger.e(
+                "[Repo] Failed to load _selectedYear (null or not found): value: $selectedYear ($selectedYearString) years: $_years ($yearsString)",
+              )
+            : logger.i(
+                "[Repo] Loaded _selectedYear (${_selectedYear?.id ?? ""}) from shared preferences.",
+              );
       } catch (e) {
         logger.e("[Repo] Failed to load _selectedYear: $e");
       }

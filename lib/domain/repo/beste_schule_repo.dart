@@ -13,7 +13,7 @@ abstract class BesteSchuleRepo {
     bool force = false,
   });
   Future<bool?> isUserStudent();
-  Future<Map?> getAllData();
+  Future<Map?> getAllData({SchoolYear? year});
   Future<List<SchoolYear>?> getSchoolYears();
   Future<SchoolYear?> getCurrentYear();
 }
