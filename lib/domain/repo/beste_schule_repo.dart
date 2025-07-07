@@ -8,6 +8,7 @@ abstract class BesteSchuleRepo {
   Future<List<SchoolDay?>?> getWeek({required DateString dateString, bool force = false});
   Future<List<Subject>?> getSubjects({bool force = false});
   Future<List<Grade>?> getGrades({bool force = false});
+  Future<List<Grade>?> getAllGrades();
   Future<int?> getCurrentIntervalID({bool force = false});
   Future<String?> getCalculationRuleForSubject(int subjectID, {
     bool force = false,
