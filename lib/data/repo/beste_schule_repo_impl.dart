@@ -467,6 +467,26 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
+  Future<List<Grade>> getAllGrades() async {
+    List<Grade> grades = [];
+    
+    for (SchoolYear year in _years) {
+      if (_allData.length == _years.length)
+        var resp = await getAllData(year: year);
+
+      if (_allData[year] != null) {
+        logger.d("[API] getAllGrades got grades from api");
+
+        for (Map grade in _allData[year]!['grades']) {
+          grades.add(Grade.fromJson(grade));
+        }
+      }
+    }
+
+    return grades;
+  }
+
+  @override
   Future<List<Grade>?> getGrades({bool force = false}) async {
     final year = await getCurrentYear();
     if (year == null) return null;
