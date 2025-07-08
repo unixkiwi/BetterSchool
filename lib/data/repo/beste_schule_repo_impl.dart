@@ -469,7 +469,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   @override
   Future<List<Grade>> getAllGrades() async {
     List<Grade> grades = [];
-    
+
     for (SchoolYear year in _years) {
       if (_allData.length == _years.length)
         var resp = await getAllData(year: year);
@@ -487,8 +487,11 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<List<Grade>?> getGrades({bool force = false}) async {
-    final year = await getCurrentYear();
+  Future<List<Grade>?> getGrades({
+    bool force = false,
+    SchoolYear? yearArg,
+  }) async {
+    final year = yearArg ?? await getCurrentYear();
     if (year == null) return null;
     List data;
     List<Grade>? grades;

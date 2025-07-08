@@ -2,6 +2,7 @@ import 'package:math_expressions/math_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/grade.dart';
+import 'package:school_app/domain/models/school_year.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/domain/settings/settings_provider.dart';
@@ -86,8 +87,9 @@ class GradesPageViewmodel extends ChangeNotifier {
     for (final subjectIt in _subjects) {
       if (subjectIt.id == subject.id) {
         // get grades for the subject
-        final subjectGrades =
-            _grades.where((g) => g.subject.id == subject.id).toList();
+        final subjectGrades = _grades
+            .where((g) => g.subject.id == subject.id)
+            .toList();
 
         // sort by date, newest first
         subjectGrades.sort((a, b) => b.date.compareTo(a.date));
@@ -99,10 +101,41 @@ class GradesPageViewmodel extends ChangeNotifier {
     return [];
   }
 
+  Future<Map<SchoolYear, double>> getYearsAvg() async {
+    logger.d("[Grade ViewModel] Called getYearsAvg()");
+
+    List<SchoolYear> years = [];
+    Map<SchoolYear, double> averages = {};
+
+    List<SchoolYear>? resp = await repo.getSchoolYears();
+
+    if (resp != null && resp.isNotEmpty) {
+      for (SchoolYear year in years) {
+        List<Grade>? grades = await repo.getGrades(yearArg: year);
+
+        if (grades != null && grades.isNotEmpty) {
+          double sum = 0.0;
+
+          for (var grade in grades) {
+            sum += SettingsProvider.instance.usePlainGradeValue
+                ? grade.plainValue
+                : grade.value;
+          }
+
+          averages[year] = sum;
+        }
+      }
+    }
+
+    return averages;
+  }
+
   Future<double> getTotalAvg({List<Grade>? grades}) async {
     logger.d("[Grades ViewModel] Called getTotalAvg()");
 
-    Map<Subject, double> avgs = await getAveragesForAllSubjects(gradesArg: grades);
+    Map<Subject, double> avgs = await getAveragesForAllSubjects(
+      gradesArg: grades,
+    );
 
     if (_averages.isEmpty) return -1;
 
@@ -121,7 +154,9 @@ class GradesPageViewmodel extends ChangeNotifier {
     return sum / avgs.values.length;
   }
 
-  Future<Map<Subject, double>> getAveragesForAllSubjects({List<Grade>? gradesArg}) async {
+  Future<Map<Subject, double>> getAveragesForAllSubjects({
+    List<Grade>? gradesArg,
+  }) async {
     logger.d("[Grades ViewModel] Called getAveragesForAllSubjects()");
 
     List<Grade> grades = gradesArg ?? _grades;
@@ -130,7 +165,9 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     for (final subject in _subjects) {
       // get grades for the subject
-      final subjectGrades = grades.where((g) => g.subject.id == subject.id).toList();
+      final subjectGrades = grades
+          .where((g) => g.subject.id == subject.id)
+          .toList();
 
       // skip subjects with no grades
       if (subjectGrades.isEmpty) continue;
@@ -139,7 +176,11 @@ class GradesPageViewmodel extends ChangeNotifier {
       final rule = _calcRules[subject];
 
       // calculate avg
-      final avg = calculateAverage(subjectGrades, rule, usePlain: SettingsProvider.instance.usePlainGradeValue);
+      final avg = calculateAverage(
+        subjectGrades,
+        rule,
+        usePlain: SettingsProvider.instance.usePlainGradeValue,
+      );
 
       if (gradesArg == null) averages[subject] = avg;
     }
@@ -164,7 +205,11 @@ class GradesPageViewmodel extends ChangeNotifier {
     return types;
   }
 
-  double calculateAverage(List<Grade> grades, String? calculationRule, {bool usePlain = false}) {
+  double calculateAverage(
+    List<Grade> grades,
+    String? calculationRule, {
+    bool usePlain = false,
+  }) {
     if (grades.isEmpty) {
       logger.i(
         "[Grades ViewModel] calculateAverage(): given grades list is empty",
@@ -174,7 +219,10 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     // no rule, just default sum divided by the count
     if (calculationRule == null) {
-      final sum = grades.fold<double>(0.0, (prev, g) => prev + g.getValue(usePlain));
+      final sum = grades.fold<double>(
+        0.0,
+        (prev, g) => prev + g.getValue(usePlain),
+      );
 
       return sum / grades.length;
     }
@@ -188,14 +236,16 @@ class GradesPageViewmodel extends ChangeNotifier {
 
     for (final type in types) {
       // get all grades with a specific type
-      final matching =
-          grades
-              .where((g) => g.type.toLowerCase() == type.toLowerCase())
-              .toList();
+      final matching = grades
+          .where((g) => g.type.toLowerCase() == type.toLowerCase())
+          .toList();
 
       // iterates over mathing and sums values
       // starts at 0.0, value is the current summed up value
-      final sum = matching.fold<double>(0.0, (value, g) => value + g.getValue(usePlain));
+      final sum = matching.fold<double>(
+        0.0,
+        (value, g) => value + g.getValue(usePlain),
+      );
       final count = matching.length;
 
       typeSums[type] = sum;
