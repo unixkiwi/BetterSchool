@@ -110,7 +110,7 @@ class GradesPageViewmodel extends ChangeNotifier {
     List<SchoolYear>? resp = await repo.getSchoolYears();
 
     if (resp != null && resp.isNotEmpty) {
-      for (SchoolYear year in years) {
+      for (SchoolYear year in resp) {
         List<Grade>? grades = await repo.getGrades(yearArg: year);
 
         if (grades != null && grades.isNotEmpty) {
@@ -118,13 +118,19 @@ class GradesPageViewmodel extends ChangeNotifier {
 
           for (var grade in grades) {
             sum += SettingsProvider.instance.usePlainGradeValue
-                ? grade.plainValue
+                ? grade.plainValue.toDouble()
                 : grade.value;
           }
 
-          averages[year] = sum;
+          averages[year] = sum / grades.length;
+        } else {
+          logger.e(
+            "[GradesPageViewmodel] Data from getYearsAvg.getGrades(year: ${year.id}) was empty",
+          );
         }
       }
+    } else {
+      logger.e("[GradesPageViewmodel] Data from getYearsAvg was empty");
     }
 
     return averages;

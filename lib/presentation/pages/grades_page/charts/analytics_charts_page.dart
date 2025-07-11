@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:school_app/presentation/pages/grades_page/charts/year_avg_chart.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 
 class AnalyticsChartsPage extends StatelessWidget {
@@ -8,6 +9,9 @@ class AnalyticsChartsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: []);
+    return FractionallySizedBox(
+      heightFactor: 0.45,
+      child: YearsAvgLineChart(viewModel: viewModel),
+    );
   }
 }

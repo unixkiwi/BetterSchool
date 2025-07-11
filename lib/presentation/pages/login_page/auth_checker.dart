@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/data/models/oauth_repo_impl_oauth_client_pkg.dart';
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
 import 'package:school_app/presentation/pages/login_page/login_page.dart';

@@ -286,12 +286,19 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     var studentId = await getStudentId();
     if (studentId == null) return null;
 
+    String route = "/api/students/$studentId";
+    Map<String, dynamic> params = {
+      'include': 'grades,finalgrades,subjects,intervals',
+      'filter[year]': selectedYear.id.toString(),
+    };
+
+    logger.i("[API] $route");
+
+    logger.i("[API] $params");
+
     var resp = await getFromAPI(
-      route: "/api/students/$studentId",
-      params: {
-        'include': 'grades,finalgrades,subjects,intervals',
-        'year': selectedYear.id.toString(),
-      },
+      route: route,
+      params: params
     );
 
     if (resp == null) {
@@ -501,12 +508,14 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         allData['grades'] != null &&
         (allData['grades'] as List).isNotEmpty) {
       data = allData['grades'];
-      logger.i("[API] Received grades from _allData 'cache'");
+      logger.i(
+        "[API] Received grades from _allData 'cache' (year: ${year.id})",
+      );
     } else {
       int? id = await getStudentId();
 
       if (id != null) {
-        await getAllData();
+        await getAllData(year: year);
         if (_allData[year] != null && _allData[year]!['grades'] != null) {
           logger.i("[API] Grades from API weren't null");
         }
