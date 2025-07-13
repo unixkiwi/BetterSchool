@@ -27,7 +27,7 @@ class SchoolApp extends StatelessWidget {
   final BesteSchuleRepo repo;
   const SchoolApp({super.key, required this.repo});
 
-  final MaterialColor defaultFallbackColor  = Colors.green;
+  final MaterialColor defaultFallbackColor = Colors.green;
 
   ThemeData getLightTheme(
     ColorScheme? lightDynamic,
