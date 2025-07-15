@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:school_app/data/models/oauth_repo_impl_webview.dart';
+import 'package:school_app/domain/models/interval.dart';
 import 'package:school_app/domain/models/school_year.dart';
 import 'package:school_app/utils/time_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -296,10 +297,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
     logger.i("[API] $params");
 
-    var resp = await getFromAPI(
-      route: route,
-      params: params
-    );
+    var resp = await getFromAPI(route: route, params: params);
 
     if (resp == null) {
       logger.e("[API] getAllData() response was null!");
@@ -310,8 +308,11 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<int?> getCurrentIntervalID({bool force = false}) async {
-    final year = await getCurrentYear();
+  Future<SchoolInterval?> getCurrentInterval({
+    SchoolYear? schoolYear,
+    bool force = false,
+  }) async {
+    final year = schoolYear ?? await getCurrentYear();
     if (year == null) return null;
     final allData = _allData[year];
 
@@ -326,7 +327,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       );
 
       // return first -> latest
-      var currentInterval = intervals.first['id'] as int?;
+      SchoolInterval? currentInterval = intervals.firstOrNull == null
+          ? null
+          : SchoolInterval.fromJson(intervals.first);
 
       logger.d("[API] Returned CurrentInvterval from allData 'cache'.");
       if (currentInterval != null) return currentInterval;
@@ -334,36 +337,21 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
     // IF NOT FROM THE CACHE
 
-    var resp = await getFromAPI(route: "/api/years");
+    // var resp = await getFromAPI(route: "/api/years");
 
-    if (resp != null && resp['data'] != null) {
-      logger.d("[Interval API] Received -interval- from the api wasn't null.");
+    var resp = await getAllData(year: year);
 
-      List? dataTmp;
+    if (resp != null) {
+      logger.d("[API] Received -interval- from the api wasn't null.");
 
-      for (Map yearData in resp['data']) {
-        if (yearData['id'] != null &&
-            yearData['id'] == year.id &&
-            yearData['intervals'] != null)
-          dataTmp = yearData['intervals'];
-      }
-
-      if (dataTmp == null) {
+      if (_allData[year] == null || _allData[year]?['intervals'] == null) {
         logger.e(
-          "[API] getCurrentInterval() no matching year found that had intervals (Year: ${year.id} Data: ${resp['data']})",
+          "[API] AllData intervals for year ${year.id} was null after getAllData request",
         );
         return null;
       }
 
-      List data = dataTmp;
-
-      if (data.isEmpty) return null;
-      if (_allData[year] != null) {
-        _allData[year]!['intervals'] = data;
-      } else {
-        _allData[year] = {};
-        _allData[year]!['intervals'] = data;
-      }
+      List data = _allData[year]!['intervals'];
 
       data.sort(
         (a, b) =>
@@ -371,7 +359,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       );
 
       // return first -> latest
-      return data.first['id'] as int;
+      return data.firstOrNull == null
+          ? null
+          : SchoolInterval.fromJson(data.first);
     } else {
       logger.e("[Interval API] Received -interval- from the api was null.");
 
@@ -382,9 +372,10 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   @override
   Future<String?> getCalculationRuleForSubject(
     int subjectId, {
+    SchoolYear? schoolYear,
     bool force = false,
   }) async {
-    final year = await getCurrentYear();
+    final SchoolYear? year = schoolYear ?? await getCurrentYear();
     if (year == null) return null;
     List data = [];
     final allData = _allData[year];
@@ -394,14 +385,15 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
         (allData['finalgrades'] as List).isNotEmpty) {
       data = allData['finalgrades'];
     } else {
-      await getAllData();
+      await getAllData(year: year);
       if (_allData[year] == null || _allData[year]!['finalgrades'] == null)
         return null;
       else
         data = _allData[year]!['finalgrades'];
     }
 
-    int interval_id = await getCurrentIntervalID() ?? 0;
+    SchoolInterval? interval = await getCurrentInterval(schoolYear: year);
+    int interval_id = interval?.id ?? 0;
 
     // find entry with the given subject
     final entry = data

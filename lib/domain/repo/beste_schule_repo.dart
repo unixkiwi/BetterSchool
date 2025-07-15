@@ -1,5 +1,6 @@
 import 'package:school_app/domain/models/day.dart';
 import 'package:school_app/domain/models/grade.dart';
+import 'package:school_app/domain/models/interval.dart';
 import 'package:school_app/domain/models/school_year.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/utils/time_utils.dart';
@@ -12,9 +13,13 @@ abstract class BesteSchuleRepo {
   Future<List<Subject>?> getSubjects({bool force = false});
   Future<List<Grade>?> getGrades({bool force = false, SchoolYear? yearArg});
   Future<List<Grade>?> getAllGrades();
-  Future<int?> getCurrentIntervalID({bool force = false});
+  Future<SchoolInterval?> getCurrentInterval({
+    SchoolYear? schoolYear,
+    bool force = false,
+  });
   Future<String?> getCalculationRuleForSubject(
     int subjectID, {
+    SchoolYear? schoolYear,
     bool force = false,
   });
   Future<bool?> isUserStudent();
