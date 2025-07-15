@@ -73,9 +73,7 @@ class YearsAvgLineChart extends StatelessWidget {
     }
 
     for (MapEntry<SchoolYear, double> entry in data.entries) {
-      spots.add(
-        FlSpot(years.indexOf(entry.key).toDouble(), roundNice(entry.value)),
-      );
+      spots.add(FlSpot(years.indexOf(entry.key).toDouble(), entry.value));
     }
 
     return spots;
@@ -104,13 +102,25 @@ class YearsAvgLineChart extends StatelessWidget {
 
           if (data.isEmpty) logger.e("[YearsAvgLineChart] Data is empty");
 
+          double maxY = getBestMaxY(data);
+          double minY = getBestMinY(data);
+
+          double heightSum = maxY + minY;
+
           return LineChart(
             LineChartData(
-              minY: getBestMinY(data),
-              maxY: getBestMaxY(data),
+              minY: minY,
+              maxY: maxY,
+              // minY: maxY,
+              // maxY: minY,
               lineBarsData: [
                 LineChartBarData(
-                  spots: getSpots(data),
+                  spots: getSpots(data)
+                      .map(
+                        (FlSpot spot) =>
+                            FlSpot(spot.x, roundNice(heightSum - spot.y)),
+                      )
+                      .toList(),
                   isCurved: false,
                   color: Theme.of(context).colorScheme.primary,
                   dotData: FlDotData(
@@ -151,7 +161,15 @@ class YearsAvgLineChart extends StatelessWidget {
                   sideTitles: SideTitles(showTitles: false),
                 ),
                 leftTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: true, interval: 0.25),
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 40,
+                    getTitlesWidget: (double y, TitleMeta meta) =>
+                        Transform.rotate(
+                          angle: 0, //-1.57,
+                          child: Text((heightSum - y).toStringAsFixed(2)),
+                        ),
+                  ),
                 ),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
@@ -171,7 +189,11 @@ class YearsAvgLineChart extends StatelessWidget {
                   ? ExtraLinesData(
                       horizontalLines: [
                         HorizontalLine(
-                          y: getExtraLineHeight(data),
+                          y: roundNice(heightSum - getExtraLineHeight(data)),
+                          label: HorizontalLineLabel(
+                            show: true,
+                            labelResolver: (line) => "Avg: ${line.y}",
+                          ),
                           color: Theme.of(context).colorScheme.secondary,
                         ),
                       ],

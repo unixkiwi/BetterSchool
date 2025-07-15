@@ -1,7 +1,6 @@
 name: school_app
 description: "An alternative to beste.schule."
-publish_to: 'none'
-
+publish_to: "none"
 
 version: 1.0.1
 

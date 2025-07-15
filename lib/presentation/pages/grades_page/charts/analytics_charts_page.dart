@@ -11,7 +11,13 @@ class AnalyticsChartsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        SizedBox(height: 300, child: YearsAvgLineChart(viewModel: viewModel)),
+        SizedBox(
+          height: 300,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: YearsAvgLineChart(viewModel: viewModel),
+          ),
+        ),
       ],
     );
   }
