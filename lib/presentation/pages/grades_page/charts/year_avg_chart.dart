@@ -163,12 +163,14 @@ class YearsAvgLineChart extends StatelessWidget {
                 leftTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
-                    reservedSize: 40,
+                    reservedSize: 36,
                     getTitlesWidget: (double y, TitleMeta meta) =>
-                        Transform.rotate(
-                          angle: 0, //-1.57,
-                          child: Text((heightSum - y).toStringAsFixed(2)),
-                        ),
+                        y == maxY || y == minY
+                        ? Container()
+                        : Transform.rotate(
+                            angle: 0, //-1.57,
+                            child: Text((heightSum - y).toStringAsFixed(2)),
+                          ),
                   ),
                 ),
                 bottomTitles: AxisTitles(
