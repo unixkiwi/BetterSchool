@@ -1,5 +1,6 @@
 import 'package:dynamic_system_colors/dynamic_system_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:animations/animations.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
@@ -45,6 +46,16 @@ class SchoolApp extends StatelessWidget {
               brightness: Brightness.light,
             ),
       useMaterial3: true,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+            transitionType: SharedAxisTransitionType.horizontal,
+          ),
+          TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
+            transitionType: SharedAxisTransitionType.horizontal,
+          ),
+        },
+      ),
     );
   }
 
@@ -64,6 +75,16 @@ class SchoolApp extends StatelessWidget {
               brightness: Brightness.dark,
             ),
       useMaterial3: true,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+            transitionType: SharedAxisTransitionType.horizontal,
+          ),
+          TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
+            transitionType: SharedAxisTransitionType.horizontal,
+          ),
+        },
+      ),
     );
   }
 

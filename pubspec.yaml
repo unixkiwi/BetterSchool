@@ -25,6 +25,7 @@ dependencies:
   material_color_utilities: ^0.11.1
   fl_chart: ^1.0.0
   week_of_year: ^2.2.0
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:
