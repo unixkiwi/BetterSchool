@@ -2,6 +2,7 @@ import 'package:math_expressions/math_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:school_app/domain/models/grade.dart';
+import 'package:school_app/domain/models/interval.dart';
 import 'package:school_app/domain/models/school_year.dart';
 import 'package:school_app/domain/models/subject.dart';
 import 'package:school_app/domain/repo/beste_schule_repo.dart';
@@ -101,32 +102,46 @@ class GradesPageViewmodel extends ChangeNotifier {
     return [];
   }
 
-  Future<Map<SchoolYear, double>> getYearsAvg() async {
+  Future<Map<SchoolYear, Map<SchoolInterval, double>>> getYearsAvg() async {
     logger.d("[Grade ViewModel] Called getYearsAvg()");
 
     List<SchoolYear> years = [];
-    Map<SchoolYear, double> averages = {};
+    Map<SchoolYear, Map<SchoolInterval, double>> averages = {};
 
     List<SchoolYear>? resp = await repo.getSchoolYears();
 
     if (resp != null && resp.isNotEmpty) {
       for (SchoolYear year in resp) {
-        List<Grade>? grades = await repo.getGrades(yearArg: year);
+        List<SchoolInterval> intervals = await repo.getIntervals(
+          schoolYear: year,
+        );
 
-        if (grades != null && grades.isNotEmpty) {
-          double sum = 0.0;
+        intervals.sort((a, b) => a.from.compareTo(b.from));
 
-          for (var grade in grades) {
-            sum += SettingsProvider.instance.usePlainGradeValue
-                ? grade.plainValue.toDouble()
-                : grade.value;
-          }
+        averages[year] = {};
+        Map resp = {};
 
-          averages[year] = sum / grades.length;
-        } else {
-          logger.e(
-            "[GradesPageViewmodel] Data from getYearsAvg.getGrades(year: ${year.id}) was empty",
+        for (SchoolInterval interval in intervals) {
+          List<Grade>? grades = await repo.getGrades(
+            yearArg: year,
+            interval: interval,
           );
+
+          if (grades != null && grades.isNotEmpty) {
+            double sum = 0.0;
+
+            for (var grade in grades) {
+              sum += SettingsProvider.instance.usePlainGradeValue
+                  ? grade.plainValue.toDouble()
+                  : grade.value;
+            }
+
+            averages[year]![interval] = sum / grades.length;
+          } else {
+            logger.e(
+              "[GradesPageViewmodel] Data from getYearsAvg.getGrades(year: ${year.id}) was empty",
+            );
+          }
         }
       }
     } else {

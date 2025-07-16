@@ -11,7 +11,11 @@ abstract class BesteSchuleRepo {
     bool force = false,
   });
   Future<List<Subject>?> getSubjects({bool force = false});
-  Future<List<Grade>?> getGrades({bool force = false, SchoolYear? yearArg});
+  Future<List<Grade>?> getGrades({
+    bool force = false,
+    SchoolYear? yearArg,
+    SchoolInterval? interval,
+  });
   Future<List<Grade>?> getAllGrades();
   Future<SchoolInterval?> getCurrentInterval({
     SchoolYear? schoolYear,
@@ -26,4 +30,8 @@ abstract class BesteSchuleRepo {
   Future<Map?> getAllData({SchoolYear? year});
   Future<List<SchoolYear>?> getSchoolYears();
   Future<SchoolYear?> getCurrentYear();
+  Future<List<SchoolInterval>> getIntervals({
+    SchoolYear? schoolYear,
+    bool force = false,
+  });
 }

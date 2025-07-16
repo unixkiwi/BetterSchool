@@ -1,3 +1,5 @@
+import 'package:school_app/data/repo/beste_schule_repo_impl.dart';
+import 'package:school_app/domain/models/interval.dart';
 import 'package:school_app/domain/models/subject.dart';
 
 class Grade {
@@ -8,6 +10,7 @@ class Grade {
   final String type;
   final DateTime date;
   final Subject subject;
+  final int intervalId;
 
   const Grade({
     required this.title,
@@ -17,6 +20,7 @@ class Grade {
     required this.type,
     required this.date,
     required this.subject,
+    required this.intervalId,
   });
 
   double getValue(bool usePlain) {
@@ -54,6 +58,7 @@ class Grade {
       subject: collection['subject'] == null
           ? Subject(id: 0, name: "Unknown Subject", shortName: "---")
           : Subject.fromJson(collection['subject']),
+      intervalId: collection['interval_id'] ?? -1,
     );
   }
 }

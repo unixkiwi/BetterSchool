@@ -275,7 +275,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   }
 
   @override
-  Future<Map?> getAllData({SchoolYear? year}) async {
+  Future<Map?> getAllData({SchoolYear? year, SchoolInterval? interval}) async {
     final selectedYear =
         year ??
         (await getCurrentYear() ??
@@ -291,6 +291,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     Map<String, dynamic> params = {
       'include': 'grades,finalgrades,subjects,intervals',
       'filter[year]': selectedYear.id.toString(),
+      if (interval != null) 'filter[interval]': interval.id.toString(),
     };
 
     logger.i("[API] $route");
@@ -307,66 +308,120 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
     return _allData[selectedYear];
   }
 
+  SchoolInterval? searchInterval(List<SchoolInterval> intervals, int id) {
+    for (SchoolInterval interval in intervals) {
+      if (interval.id == id) return interval;
+    }
+    return null;
+  }
+
+  Future<SchoolInterval?> getIntervalByID(int id) async {
+    SchoolInterval? interval;
+    List<SchoolInterval> intervals = [];
+
+    for (Map year in _allData.values) {
+      if (year['intervals'] != null &&
+          year['intervals'] is List &&
+          (year['intervals'] as List).isNotEmpty) {
+        for (Map interval in year['intervals']) {
+          intervals.add(SchoolInterval.fromJson(interval));
+        }
+      }
+    }
+
+    SchoolInterval? result = searchInterval(intervals, id);
+    if (result != null)
+      return result;
+    else
+      intervals = [];
+
+    var resp = await getFromAPI(
+      route: "/api/years",
+      params: {'filter[student]': await getStudentId() ?? -1},
+    );
+
+    if (resp != null &&
+        resp['data'] != null &&
+        resp['data'] is List &&
+        (resp['data'] as List).isNotEmpty) {
+      List<Map> years = resp['data'];
+
+      for (Map year in years) {
+        if (year['intervals'] != null &&
+            year['intervals'] is List &&
+            (year['intervals'] as List).isNotEmpty) {
+          for (Map interval in year['intervals']) {
+            intervals.add(SchoolInterval.fromJson(interval));
+          }
+        }
+      }
+    }
+
+    return searchInterval(intervals, id);
+  }
+
   @override
-  Future<SchoolInterval?> getCurrentInterval({
+  Future<List<SchoolInterval>> getIntervals({
     SchoolYear? schoolYear,
     bool force = false,
   }) async {
     final year = schoolYear ?? await getCurrentYear();
-    if (year == null) return null;
+    if (year == null) return [];
     final allData = _allData[year];
 
     if (!force &&
         allData != null &&
         allData['intervals'] != null &&
-        (allData['intervals'] as List).isNotEmpty) {
-      var intervals = allData['intervals'] as List;
-      intervals.sort(
-        (a, b) =>
-            DateTime.parse(b['from']).compareTo(DateTime.parse(a['from'])),
-      );
+        allData['intervals'] is List<Map> &&
+        (allData['intervals'] as List<Map>).isNotEmpty) {
+      List<Map> intervals = allData['intervals'] as List<Map>;
 
-      // return first -> latest
-      SchoolInterval? currentInterval = intervals.firstOrNull == null
-          ? null
-          : SchoolInterval.fromJson(intervals.first);
-
-      logger.d("[API] Returned CurrentInvterval from allData 'cache'.");
-      if (currentInterval != null) return currentInterval;
+      return intervals
+          .map((Map interval) => SchoolInterval.fromJson(interval))
+          .toList();
     }
 
-    // IF NOT FROM THE CACHE
-
-    // var resp = await getFromAPI(route: "/api/years");
-
-    var resp = await getAllData(year: year);
+    Map? resp = await getAllData(year: year);
 
     if (resp != null) {
       logger.d("[API] Received -interval- from the api wasn't null.");
 
-      if (_allData[year] == null || _allData[year]?['intervals'] == null) {
+      final allData = _allData[year];
+
+      if (allData != null &&
+          allData['intervals'] != null &&
+          allData['intervals'] is List &&
+          (allData['intervals'] as List).isNotEmpty) {
+        List<Map> data = (allData['intervals'] as List).map((e) => e as Map).toList();
+
+        return data
+            .map((Map interval) => SchoolInterval.fromJson(interval))
+            .toList();
+      } else {
         logger.e(
           "[API] AllData intervals for year ${year.id} was null after getAllData request",
         );
-        return null;
+        return [];
       }
-
-      List data = _allData[year]!['intervals'];
-
-      data.sort(
-        (a, b) =>
-            DateTime.parse(b['from']).compareTo(DateTime.parse(a['from'])),
-      );
-
-      // return first -> latest
-      return data.firstOrNull == null
-          ? null
-          : SchoolInterval.fromJson(data.first);
-    } else {
-      logger.e("[Interval API] Received -interval- from the api was null.");
-
-      return null;
     }
+    return [];
+  }
+
+  @override
+  Future<SchoolInterval?> getCurrentInterval({
+    SchoolYear? schoolYear,
+    bool force = false,
+  }) async {
+    final List<SchoolInterval> intervals = await getIntervals(
+      schoolYear: schoolYear,
+      force: force,
+    );
+
+    intervals.sort((a, b) => b.from.compareTo(a.from));
+
+    // return first -> latest
+    logger.d("[API] Returned CurrentInvterval from allData 'cache'.");
+    return intervals.firstOrNull;
   }
 
   @override
@@ -489,6 +544,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
   Future<List<Grade>?> getGrades({
     bool force = false,
     SchoolYear? yearArg,
+    SchoolInterval? interval,
   }) async {
     final year = yearArg ?? await getCurrentYear();
     if (year == null) return null;
@@ -524,7 +580,7 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       grades.add(Grade.fromJson(grade));
     }
 
-    return grades;
+    return grades.where((grade) => interval == null ? true : grade.intervalId == interval.id).toList();
   }
 
   @override

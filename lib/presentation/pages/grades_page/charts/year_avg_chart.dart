@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:school_app/domain/models/interval.dart';
 import 'package:school_app/domain/models/school_year.dart';
 import 'package:school_app/presentation/viewmodels/grades_page_viewmodel.dart';
 import 'package:school_app/utils/logger.dart';
@@ -20,37 +21,58 @@ class YearsAvgLineChart extends StatelessWidget {
     return maxValue - minValue;
   }
 
-  double getBestMaxY(Map<SchoolYear, double> data) {
+  double getBestMaxY(Map<SchoolYear, Map<SchoolInterval, double>> data) {
     double max = 0;
 
-    for (double value in data.values) {
+    for (double value in data.values.expand((innerMap) => innerMap.values)) {
       if (value > max) max = value;
     }
 
-    return (max + maxDifference(data.values.toList())) > 6
+    double result =
+        max +
+        maxDifference(
+          data.values.expand((innerMap) => innerMap.values).toList(),
+        );
+
+    return result > 6 || result.isInfinite
         ? 6
-        : (max + maxDifference(data.values.toList()));
+        : (max +
+              maxDifference(
+                data.values.expand((innerMap) => innerMap.values).toList(),
+              ));
   }
 
-  double getBestMinY(Map<SchoolYear, double> data) {
+  double getBestMinY(Map<SchoolYear, Map<SchoolInterval, double>> data) {
     double smallest = double.infinity;
 
-    for (double value in data.values) {
+    for (double value in data.values.expand((innerMap) => innerMap.values)) {
       if (value < smallest) smallest = value;
     }
 
-    return smallest - maxDifference(data.values.toList()) < 0
+    if (smallest.isInfinite) return 0;
+
+    return smallest -
+                maxDifference(
+                  data.values.expand((innerMap) => innerMap.values).toList(),
+                ) <
+            0
         ? 0
-        : smallest - maxDifference(data.values.toList());
+        : smallest -
+              maxDifference(
+                data.values.expand((innerMap) => innerMap.values).toList(),
+              );
   }
 
-  double getExtraLineHeight(Map<SchoolYear, double> data) {
+  double getExtraLineHeight(Map<SchoolYear, Map<SchoolInterval, double>> data) {
     double sum = data.entries.fold<double>(
       0,
-      (double sum, year) => sum += year.value,
+      (double sum, year) =>
+          sum += year.value.entries.fold(0, (sum, entry) => sum += entry.value),
     );
 
-    if (data.isNotEmpty)
+    int years = data.entries.fold(0, (sum, year) => sum += year.value.length);
+
+    if (data.isNotEmpty && years != 0)
       return sum / data.length;
     else
       return -1;
@@ -63,27 +85,33 @@ class YearsAvgLineChart extends StatelessWidget {
     return "${first.substring(2, 4)}/${second.substring(2, 4)}";
   }
 
-  List<FlSpot> getSpots(Map<SchoolYear, double> data) {
+  List<FlSpot> getSpots(Map<SchoolYear, Map<SchoolInterval, double>> data) {
     List<FlSpot> spots = [];
 
-    List<SchoolYear> years = [];
+    List<SchoolInterval> years = getYears(data);
 
-    for (MapEntry<SchoolYear, double> entry in data.entries) {
-      years.contains(entry.key) ? 0 : years.add(entry.key);
-    }
-
-    for (MapEntry<SchoolYear, double> entry in data.entries) {
-      spots.add(FlSpot(years.indexOf(entry.key).toDouble(), entry.value));
+    for (MapEntry<SchoolYear, Map<SchoolInterval, double>> entry
+        in data.entries) {
+      for (MapEntry<SchoolInterval, double> interval in entry.value.entries) {
+        spots.add(
+          FlSpot(years.indexOf(interval.key).toDouble(), interval.value),
+        );
+      }
     }
 
     return spots;
   }
 
-  List<SchoolYear> getYears(Map<SchoolYear, double> data) {
-    List<SchoolYear> years = [];
+  List<SchoolInterval> getYears(
+    Map<SchoolYear, Map<SchoolInterval, double>> data,
+  ) {
+    List<SchoolInterval> years = [];
 
-    for (MapEntry<SchoolYear, double> entry in data.entries) {
-      years.contains(entry.key) ? 0 : years.add(entry.key);
+    for (MapEntry<SchoolYear, Map<SchoolInterval, double>> entry
+        in data.entries) {
+      for (MapEntry<SchoolInterval, double> interval in entry.value.entries) {
+        years.contains(interval.key) ? null : years.add(interval.key);
+      }
     }
 
     return years;
@@ -95,7 +123,7 @@ class YearsAvgLineChart extends StatelessWidget {
       future: viewModel.getYearsAvg(),
       builder: (context, snap) {
         if (snap.hasData && snap.data != null && snap.data!.isNotEmpty) {
-          Map<SchoolYear, double> data = Map.fromEntries(
+          Map<SchoolYear, Map<SchoolInterval, double>> data = Map.fromEntries(
             snap.data!.entries.toList()
               ..sort((a, b) => a.key.from.compareTo(b.key.from)),
           );
@@ -111,8 +139,6 @@ class YearsAvgLineChart extends StatelessWidget {
             LineChartData(
               minY: minY,
               maxY: maxY,
-              // minY: maxY,
-              // maxY: minY,
               lineBarsData: [
                 LineChartBarData(
                   spots: getSpots(data)
@@ -176,14 +202,19 @@ class YearsAvgLineChart extends StatelessWidget {
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
                     showTitles: true,
-                    interval: 1,
+                    interval: 1.0,
                     getTitlesWidget: (double index, TitleMeta titleMeta) =>
-                        Text(
-                          index.toInt() < getYears(data).length &&
-                                  index.toInt() >= 0
-                              ? getYearTitle(getYears(data)[index.toInt()])
-                              : index.toInt().toString(),
-                        ),
+                        index % 2 == 0
+                        ? Container()
+                        : Text(
+                            index < getYears(data).length && index >= 0
+                                ? getYearTitle(
+                                    data.entries
+                                        .toList()[(index / 2).toInt()]
+                                        .key,
+                                  )
+                                : index.toString(),
+                          ),
                   ),
                 ),
               ),
