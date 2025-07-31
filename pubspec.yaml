@@ -17,7 +17,7 @@ dependencies:
   dynamic_system_colors: ^1.8.0
   provider: ^6.1.5
   math_expressions: ^3.0.0
-  logger: ^2.6.0
+  logger: ^2.6.1
   shared_preferences: ^2.5.3
   oauth2_client: ^4.2.0
   oauth_webauth: ^5.1.0
