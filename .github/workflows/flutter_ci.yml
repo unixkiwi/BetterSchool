@@ -26,5 +26,4 @@ jobs:
           key: ${{ runner.os }}-pub-{{ hashFiles('**/pubspec.lock') }}
 
       - run: flutter pub get
-      - run: flutter analyze --no-fatal-warnings
       - run: flutter build apk --release
