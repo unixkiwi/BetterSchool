@@ -1,0 +1,31 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test_and_build:
+    name: Test & Build Android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Cache Pub Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            /usr/local/flutter/.pub-cache
+          key: ${{ runner.os }}-pub-{{ hashFiles('**/pubspec.lock') }}
+
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter analyze
+      - run: flutter build apk --release
