@@ -8,7 +8,6 @@
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
-  errors-only: true
   errors:
     unused_field: ignore
     prefer_final_fields: ignore
