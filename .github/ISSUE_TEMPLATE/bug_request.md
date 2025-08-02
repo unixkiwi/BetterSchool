@@ -9,6 +9,9 @@ assignees: ''
 **Description of the Bug (required)**
 A clear description of what is happening.
 
+**Steps to reproduce (required if reproducible)**
+Step by step description on how to reproduce the bug.
+
 **Expected behavior (required)**
 A clear description of what you expected to happen.
 
