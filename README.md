@@ -40,22 +40,16 @@ No ads, no tracking, no subscriptions — just a clean, privacy-focused experien
 
 ---
 
-## 🚀 Installation
+## ⚙️ Installation
 
-### Perquisites
-- Android device
+### 📲 Direct Download (coming soon, a month or so)
+Get the latest APK from [Github Releases](https://github.com/unixkiwi/schoolapp/releases)
 
-**Coming soon (in about a month or so) Get it on Github**
-
----
-
-## ⚒️ Build it yourself
-
+### 🛠️ Build from Source
 ### Prerequisites
 - Flutter
 - Android device or emulator
 
-### Installation  
 1. Clone the repo:  
 ```bash  
 git clone https://github.com/unixkiwi/schoolapp  
@@ -75,7 +69,7 @@ flutter run
 ### Build for Production  
 ```bash  
 flutter build apk --release  # Android
-```  
+```
 
 ---
 
