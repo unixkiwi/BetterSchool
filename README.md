@@ -61,12 +61,12 @@ cd schoolapp
 flutter pub get  
 ```  
 
-3. Run the app:  
+3. Run the app: 
 ```bash  
-flutter run  
-```  
-
-### Build for Production  
+flutter run            # for debug
+flutter run --release  # for release (more performance)
+```
+4. Build for Production (optional)
 ```bash  
 flutter build apk --release  # Android
 ```
