@@ -1,5 +1,4 @@
 # SchoolApp 🏫
-## A beste.schule client
 
 ![Total Commits](https://img.shields.io/github/commit-activity/t/unixkiwi/schoolapp?style=for-the-badge&logo=git&label=Total%20Commits) ![Last Commit](https://img.shields.io/github/last-commit/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Last%20Commit) ![Flutter CI](https://img.shields.io/github/actions/workflow/status/unixkiwi/schoolapp/flutter_ci.yml?style=for-the-badge&logo=flutter&label=Flutter%20CI) ![Total Issues](https://img.shields.io/github/issues-raw/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Total%20Issues)
 
