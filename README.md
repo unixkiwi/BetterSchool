@@ -7,6 +7,9 @@ SchoolApp is an unofficial, feature-rich client for [beste.schule](https://beste
  
 No ads, no tracking, no subscriptions — just a clean, privacy-focused experience.
 
+> [!IMPORTANT]
+> This is an unofficial client. Not affiliated with beste.schule.  
+
 ---
 
 ## 🔗 Quick Links  
@@ -93,4 +96,3 @@ Check the [Issues](https://github.com/unixkiwi/schoolapp/issues) for bugs/featur
 ---
 
 > ✨ **Open Source** · 🔒 **Ad-Free Forever** · 🚀 **By Students, For Students**  
-> **Note**: This is an unofficial client. Not affiliated with beste.schule.  
