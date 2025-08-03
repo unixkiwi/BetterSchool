@@ -1,4 +1,4 @@
-# BetterSchool 🏫
+<h1 align="cebter">🏫 BetterSchool 🏫</h1>
 
 <div align="center">
   <img src="https://img.shields.io/github/commit-activity/t/unixkiwi/schoolapp?style=for-the-badge&logo=git&label=Total%20Commits" alt="Total Commits">
