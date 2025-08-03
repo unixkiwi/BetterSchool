@@ -97,8 +97,8 @@ Check the [Issues](https://github.com/unixkiwi/schoolapp/issues) for bugs/featur
 
 ---
 
-## 📜 License  
-**Coming Soon**
+## 📜 License
+This project is licensed under the [AGPL - GNU Affero General Public License](https://github.com/unixkiwi/SchoolApp/blob/main/LICENSE), which ensures that this projects stays FOSS.
 
 ---
 
