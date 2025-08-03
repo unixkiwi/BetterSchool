@@ -1,6 +1,12 @@
 # BetterSchool 🏫
 
-![Total Commits](https://img.shields.io/github/commit-activity/t/unixkiwi/schoolapp?style=for-the-badge&logo=git&label=Total%20Commits) ![Last Commit](https://img.shields.io/github/last-commit/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Last%20Commit) ![Flutter CI](https://img.shields.io/github/actions/workflow/status/unixkiwi/schoolapp/flutter_ci.yml?style=for-the-badge&logo=flutter&label=Flutter%20CI) ![Total Issues](https://img.shields.io/github/issues-raw/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Total%20Issues) ![GitHub License](https://img.shields.io/github/license/unixkiwi/schoolapp?style=for-the-badge)
+<div align="center">
+  <img src="https://img.shields.io/github/commit-activity/t/unixkiwi/schoolapp?style=for-the-badge&logo=git&label=Total%20Commits" alt="Total Commits">
+  <img src="https://img.shields.io/github/last-commit/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Last%20Commit" alt="Last Commit">
+  <img src="https://img.shields.io/github/actions/workflow/status/unixkiwi/schoolapp/flutter_ci.yml?style=for-the-badge&logo=flutter&label=Flutter%20CI" alt="Flutter CI">
+  <img src="https://img.shields.io/github/issues-raw/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Total%20Issues" alt="Total Issues">
+  <img src="https://img.shields.io/github/license/unixkiwi/schoolapp?style=for-the-badge" alt="GitHub License">
+</div>
 
 **Open Source, Ad-Free Forever, and Free**  
 BetterSchool is an unofficial, feature-rich client for [beste.schule](https://beste.schule), designed for students and parents. The app is designed to give students and their parents a clean and simple way to access their data like timetable and grades from beste.schule.
