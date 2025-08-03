@@ -12,7 +12,7 @@
 <p align="center">BetterSchool is an unofficial, feature-rich client for <a href="https://beste.schule">beste.schule</a>, designed for students and parents.</p>
 <p align="center">The app is designed to give students and their parents a clean and simple way to access their data like timetable and grades from beste.schule.</p>
  
-<p align="center">No ads, no tracking, no subscriptions — just a clean, privacy-focused experience.</p>
+<p align="center"><i>No ads, no tracking, no subscriptions — just a clean, privacy-focused experience.</i></p>
 
 > [!IMPORTANT]
 > BetterSchool is not an official beste.schule client and not affiliated with beste.schule.  
