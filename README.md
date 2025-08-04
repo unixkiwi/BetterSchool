@@ -36,9 +36,9 @@
 ### 📊 Grades & Insights  
 - **Full grade overview** per subject, with date, title and type
 - **Smart analytics and interactive charts**:  
-  - Average grade per subject.  
+  - Average grade per subject
   - Average of all grades
-  - Visualize avgerage grades over time.
+  - Visualize avgerage grades over time
 
 ### 🚧 Coming Soon  
 - ☑️ **Advanced analytics** such as grade trends within subjects and over years
