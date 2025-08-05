@@ -1,11 +1,11 @@
 <h1 align="center">🏫 BetterSchool 🏫</h1>
 
 <div align="center">
-  <img src="https://img.shields.io/github/commit-activity/t/unixkiwi/schoolapp?style=for-the-badge&logo=git&label=Total%20Commits" alt="Total Commits">
-  <img src="https://img.shields.io/github/last-commit/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Last%20Commit" alt="Last Commit">
-  <img src="https://img.shields.io/github/actions/workflow/status/unixkiwi/schoolapp/flutter_ci.yml?style=for-the-badge&logo=flutter&label=Flutter%20CI" alt="Flutter CI">
-  <img src="https://img.shields.io/github/issues-raw/unixkiwi/schoolapp?style=for-the-badge&logo=github&label=Total%20Issues" alt="Total Issues">
-  <img src="https://img.shields.io/github/license/unixkiwi/schoolapp?style=for-the-badge" alt="GitHub License">
+  <img src="https://img.shields.io/github/commit-activity/t/unixkiwi/betterschool?style=for-the-badge&logo=git&label=Total%20Commits" alt="Total Commits">
+  <img src="https://img.shields.io/github/last-commit/unixkiwi/betterschool?style=for-the-badge&logo=github&label=Last%20Commit" alt="Last Commit">
+  <img src="https://img.shields.io/github/actions/workflow/status/unixkiwi/betterschool/flutter_ci.yml?style=for-the-badge&logo=flutter&label=Flutter%20CI" alt="Flutter CI">
+  <img src="https://img.shields.io/github/issues-raw/unixkiwi/betterschool?style=for-the-badge&logo=github&label=Total%20Issues" alt="Total Issues">
+  <img src="https://img.shields.io/github/license/unixkiwi/betterschool?style=for-the-badge" alt="GitHub License">
 </div>
 
 <div align="center"><b>Open Source, Ad-Free Forever, and Free</b></div>  
@@ -20,8 +20,8 @@
 ---
 
 ## 🔗 Quick Links  
-- [Download Latest Release](https://github.com/unixkiwi/schoolapp/releases)  
-- [Report an Issue](https://github.com/unixkiwi/schoolapp/issues)  
+- [Download Latest Release](https://github.com/unixkiwi/betterschool/releases)  
+- [Report an Issue](https://github.com/unixkiwi/betterschool/issues)  
 - [beste.schule Official Website](https://beste.schule)  
 
 ---
@@ -55,7 +55,7 @@
 ## ⚙️ Installation
 
 ### 📲 Direct Download (coming soon, a month or so)
-Get the latest APK from [Github Releases](https://github.com/unixkiwi/schoolapp/releases)
+Get the latest APK from [Github Releases](https://github.com/unixkiwi/betterschool/releases)
 
 ### 🛠️ Build from Source
 ### Prerequisites
@@ -64,7 +64,7 @@ Get the latest APK from [Github Releases](https://github.com/unixkiwi/schoolapp/
 
 1. Clone the repo:  
 ```bash  
-git clone https://github.com/unixkiwi/schoolapp  
+git clone https://github.com/unixkiwi/betterschool  
 cd schoolapp  
 ```  
 
@@ -93,12 +93,12 @@ Contributions are welcome! Here’s how:
 4. Push: `git push origin feature/your-idea`.  
 5. Open a **pull request**.  
 
-Check the [Issues](https://github.com/unixkiwi/schoolapp/issues) for bugs/feature requests.
+Check the [Issues](https://github.com/unixkiwi/betterschool/issues) for bugs/feature requests.
 
 ---
 
 ## 📜 License
-This project is licensed under the [AGPL - GNU Affero General Public License](https://github.com/unixkiwi/SchoolApp/blob/master/LICENSE), which ensures that this projects stays FOSS.
+This project is licensed under the [AGPL - GNU Affero General Public License](https://github.com/unixkiwi/betterschool/blob/master/LICENSE), which ensures that this projects stays FOSS.
 
 ---
 
