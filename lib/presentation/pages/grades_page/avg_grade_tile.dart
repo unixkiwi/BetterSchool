@@ -40,7 +40,7 @@ class AvgGradeTile extends StatelessWidget {
             );
           },
           leading: Icon(Icons.leaderboard_outlined),
-          title: Text(subject.name),
+          title: Text(subject.name.length > 17 ? subject.shortName : subject.name),
           trailing:
               avgGrade == -1
                   ? Icon(Icons.block)
