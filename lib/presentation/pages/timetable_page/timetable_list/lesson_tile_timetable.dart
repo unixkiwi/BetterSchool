@@ -32,7 +32,7 @@ class TimetableLessonTile extends StatelessWidget {
             showLessonTileBottomSheet(context, lesson);
           },
           title: Text(
-            subject.name,
+            subject.name.length > 17 ? subject.shortName : subject.name,
             style:
                 Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
