@@ -246,9 +246,10 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
 
   @override
   Future<List<SchoolYear>?> getSchoolYears() async {
-    if (_years.isNotEmpty) {
+    // disabled for the reason that school years don't get refreshed
+    /*if (_years.isNotEmpty) {
       return _years;
-    }
+    }*/
 
     var resp = await getFromAPI(route: "/api/years");
     if (resp == null) {
@@ -392,7 +393,9 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
           allData['intervals'] != null &&
           allData['intervals'] is List &&
           (allData['intervals'] as List).isNotEmpty) {
-        List<Map> data = (allData['intervals'] as List).map((e) => e as Map).toList();
+        List<Map> data = (allData['intervals'] as List)
+            .map((e) => e as Map)
+            .toList();
 
         return data
             .map((Map interval) => SchoolInterval.fromJson(interval))
@@ -580,7 +583,11 @@ class BesteSchuleRepoImpl extends WidgetsBindingObserver
       grades.add(Grade.fromJson(grade));
     }
 
-    return grades.where((grade) => interval == null ? true : grade.intervalId == interval.id).toList();
+    return grades
+        .where(
+          (grade) => interval == null ? true : grade.intervalId == interval.id,
+        )
+        .toList();
   }
 
   @override
