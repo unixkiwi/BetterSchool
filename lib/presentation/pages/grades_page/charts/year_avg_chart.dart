@@ -90,11 +90,19 @@ class YearsAvgLineChart extends StatelessWidget {
 
     List<SchoolInterval> years = getYears(data);
 
+    double heightSum = getBestMaxY(data) + getBestMinY(data);
+
+    logger.i(data.entries.map((entry) => "${entry.key.name} ${entry.value}"));
+
     for (MapEntry<SchoolYear, Map<SchoolInterval, double>> entry
         in data.entries) {
-      for (MapEntry<SchoolInterval, double> interval in entry.value.entries) {
+      for (MapEntry<SchoolInterval, double> interval
+          in entry.value.entries) {
         spots.add(
-          FlSpot(years.indexOf(interval.key).toDouble(), interval.value),
+          FlSpot(
+            years.indexOf(interval.key).toDouble(),
+            roundNice(heightSum - interval.value),
+          ),
         );
       }
     }
@@ -135,105 +143,117 @@ class YearsAvgLineChart extends StatelessWidget {
 
           double heightSum = maxY + minY;
 
-          return LineChart(
-            LineChartData(
-              minY: minY,
-              maxY: maxY,
-              lineBarsData: [
-                LineChartBarData(
-                  spots: getSpots(data)
-                      .map(
-                        (FlSpot spot) =>
-                            FlSpot(spot.x, roundNice(heightSum - spot.y)),
-                      )
-                      .toList(),
-                  isCurved: false,
-                  color: Theme.of(context).colorScheme.primary,
-                  dotData: FlDotData(
-                    show: true,
-                    getDotPainter:
-                        (
-                          FlSpot spot,
-                          double xPercentage,
-                          LineChartBarData bar,
-                          int index, {
-                          double? size,
-                        }) {
-                          return FlDotCirclePainter(
-                            radius: 6,
-                            color: Theme.of(context).colorScheme.primary,
-                          );
-                        },
-                  ),
-                  belowBarData: BarAreaData(
-                    show: true,
+          return SizedBox(
+            height: 300,
+            child: LineChart(
+              LineChartData(
+                minY: minY,
+                maxY: maxY,
+                lineBarsData: [
+                  LineChartBarData(
+                    barWidth: 3,
                     gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.primary.withAlpha(75),
-                        Theme.of(context).colorScheme.primary.withAlpha(35),
-                      ],
+                      colors: [Colors.green, Colors.red],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
+                      stops: [0.5, 0.8],
+                    ),
+                    spots: getSpots(data),
+                    isCurved: false,
+                    color: Theme.of(context).colorScheme.primary,
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter:
+                          (
+                            FlSpot spot,
+                            double xPercentage,
+                            LineChartBarData bar,
+                            int index, {
+                            double? size,
+                          }) {
+                            return FlDotCirclePainter(
+                              radius: 6,
+                              color: Theme.of(context).colorScheme.primary
+                            );
+                          },
+                    ),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.green.withAlpha(100),
+                          Colors.red.withAlpha(75),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [0, 1],
+                      ),
+                    ),
+                  ),
+                ],
+                titlesData: FlTitlesData(
+                  show: true,
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 36,
+                      getTitlesWidget: (double y, TitleMeta meta) =>
+                          y == maxY || y == minY
+                          ? Container()
+                          : Transform.rotate(
+                              angle: 0, //-1.57,
+                              child: Text((heightSum - y).toStringAsFixed(2)),
+                            ),
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 1.0,
+                      getTitlesWidget: (double index, TitleMeta titleMeta) =>
+                          index % 2 == 0
+                          ? Container()
+                          : Text(
+                              index < getYears(data).length && index >= 0
+                                  ? getYearTitle(
+                                      data.entries
+                                          .toList()[(index / 2).toInt()]
+                                          .key,
+                                    )
+                                  : index.toString(),
+                            ),
                     ),
                   ),
                 ),
-              ],
-              titlesData: FlTitlesData(
-                show: true,
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 36,
-                    getTitlesWidget: (double y, TitleMeta meta) =>
-                        y == maxY || y == minY
-                        ? Container()
-                        : Transform.rotate(
-                            angle: 0, //-1.57,
-                            child: Text((heightSum - y).toStringAsFixed(2)),
+                extraLinesData:
+                    true //getExtraLineHeight(data) > 0
+                    ? ExtraLinesData(
+                        horizontalLines: [
+                          HorizontalLine(
+                            y: roundNice(heightSum - getExtraLineHeight(data)),
+                            label: HorizontalLineLabel(
+                              show: true,
+                              labelResolver: (line) => "Avg: ${line.y}",
+                            ),
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
+                        ],
+                      )
+                    : null,
+                lineTouchData: LineTouchData(
+                  touchSpotThreshold: 45,
+                  touchTooltipData: LineTouchTooltipData(
+                    fitInsideHorizontally: true,
                   ),
                 ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    interval: 1.0,
-                    getTitlesWidget: (double index, TitleMeta titleMeta) =>
-                        index % 2 == 0
-                        ? Container()
-                        : Text(
-                            index < getYears(data).length && index >= 0
-                                ? getYearTitle(
-                                    data.entries
-                                        .toList()[(index / 2).toInt()]
-                                        .key,
-                                  )
-                                : index.toString(),
-                          ),
-                  ),
-                ),
+                gridData: FlGridData(drawVerticalLine: false),
               ),
-              extraLinesData: getExtraLineHeight(data) > 0
-                  ? ExtraLinesData(
-                      horizontalLines: [
-                        HorizontalLine(
-                          y: roundNice(heightSum - getExtraLineHeight(data)),
-                          label: HorizontalLineLabel(
-                            show: true,
-                            labelResolver: (line) => "Avg: ${line.y}",
-                          ),
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ],
-                    )
-                  : null,
-              lineTouchData: LineTouchData(touchSpotThreshold: 45),
-              gridData: FlGridData(drawVerticalLine: false),
             ),
           );
         } else {
