@@ -23,6 +23,9 @@ dependencies:
   # date formatter
   intl: ^0.20.2
 
+  # api requests
+  retrofit: ^4.7.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
