@@ -1,4 +1,4 @@
-import 'package:betterschool/ui/auth/widgets/login_btn.dart';
+import 'package:betterschool/ui/login/widgets/login_btn.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -9,4 +9,3 @@ class LoginPage extends StatelessWidget {
     return Scaffold(body: const Center(child: LoginButton()));
   }
 }
-

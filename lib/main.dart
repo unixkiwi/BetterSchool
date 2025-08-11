@@ -1,4 +1,4 @@
-import 'package:betterschool/ui/auth/pages/login_page.dart';
+import 'package:betterschool/ui/login/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
