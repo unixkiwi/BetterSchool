@@ -17,6 +17,9 @@ dependencies:
   # comparing
   equatable: ^2.0.7
 
+  # service locator
+  get_it: ^8.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
