@@ -30,6 +30,9 @@ dependencies:
   # logging
   logger: ^2.6.1
 
+  # oauth
+  oauth_webauth: ^5.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
