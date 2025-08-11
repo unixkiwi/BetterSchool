@@ -1,8 +1,15 @@
+import 'package:betterschool/ui/login/bloc/login_cubit.dart';
 import 'package:betterschool/ui/login/pages/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const BetterSchoolApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [BlocProvider(create: (context) => LoginCubit())],
+      child: const BetterSchoolApp(),
+    ),
+  );
 }
 
 class BetterSchoolApp extends StatelessWidget {
