@@ -5,6 +5,6 @@ import 'package:get_it/get_it.dart';
 GetIt sl = GetIt.instance;
 
 void initDependencies() {
-  sl.registerSingleton<AuthRepository>(AuthRepository());
   sl.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage());
+  sl.registerSingleton<AuthRepository>(AuthRepository(sl()));
 }
