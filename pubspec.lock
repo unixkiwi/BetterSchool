@@ -505,7 +505,7 @@ packages:
     source: hosted
     version: "1.0.0"
   oauth2:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: oauth2
       sha256: c84470642cbb2bec450ccab2f8520c079cd1ca546a76ffd5c40589e07f4e8bf4
