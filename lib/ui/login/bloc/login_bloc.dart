@@ -8,6 +8,11 @@ part 'login_event.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginInitial()) {
-    on<LoginButtonPressedEvent>((event, Emitter emitter) {});
+    on<LoginButtonPressedEvent>(_onLoginBtnPressed);
   }
+
+  void _onLoginBtnPressed(
+    LoginButtonPressedEvent event,
+    Emitter<LoginState> emit,
+  ) {}
 }
