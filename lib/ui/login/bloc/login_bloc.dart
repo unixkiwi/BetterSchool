@@ -48,7 +48,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           authorizeUrl: authorizeUrl,
           tokenUrl: tokenUrl,
           clientSecret: clientSecret,
-          clientId: clientSecret,
+          clientId: clientId,
           redirectUrl: redirectUrl,
         ),
       ),
