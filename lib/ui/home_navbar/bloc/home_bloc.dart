@@ -1,6 +1,7 @@
 import 'package:betterschool/ui/grades/pages/grades_page.dart';
 import 'package:betterschool/ui/settings/pages/settings_page.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_page.dart';
+import 'package:betterschool/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,7 +17,7 @@ class NavBarEntry {
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final List<Widget> _pages = [TimetablePage(), GradesPage(), SettingsPage()];
-  final List<NavigationDestination> destinations = const [
+  final List<NavigationDestination> _destinations = const [
     NavigationDestination(
       icon: Icon(Icons.calendar_today_outlined),
       selectedIcon: Icon(Icons.calendar_today),
@@ -34,6 +35,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     ),
   ];
 
+  List<Widget> get pages => _pages;
+  List<NavigationDestination> get destinations => _destinations;
+
   HomeBloc() : super(HomePageLoading()) {
     on<DestinationTappedEvent>(_onDestinationTapped);
   }
@@ -42,7 +46,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     DestinationTappedEvent event,
     Emitter<HomeState> emit,
   ) {
-    if (_pages.length < event.index && event.index >= 0) {
+    logger.d("Received navbar tapped event: index : ${event.index}");
+
+    if (_pages.length > event.index && event.index >= 0) {
       emit(
         HomePageSelectedState(page: _pages[event.index], index: event.index),
       );
