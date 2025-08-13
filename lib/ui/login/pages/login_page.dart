@@ -1,3 +1,4 @@
+import 'package:betterschool/routing/routes.dart';
 import 'package:betterschool/ui/login/bloc/login_bloc.dart';
 import 'package:betterschool/ui/login/widgets/login_btn.dart';
 import 'package:betterschool/utils/logger.dart';
@@ -14,7 +15,9 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) async {
-            if (state is LoginLoading) {
+            if (state is LoginSuccessful) {
+              Navigator.pushReplacementNamed(context, homeRoute);
+            } else if (state is LoginLoading) {
               await OAuthWebScreen.start(
                 context: context,
                 configuration: OAuthConfiguration(
