@@ -29,7 +29,7 @@ class BetterSchoolApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: initialRoute,
+      initialRoute: loginRoute,
       routes: routes,
       home: const LoginPage(),
     );
