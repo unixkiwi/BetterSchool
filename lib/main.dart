@@ -1,4 +1,5 @@
 import 'package:betterschool/config/di.dart';
+import 'package:betterschool/routing/routes.dart';
 import 'package:betterschool/ui/login/bloc/login_bloc.dart';
 import 'package:betterschool/ui/login/pages/login_page.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +29,8 @@ class BetterSchoolApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      initialRoute: initialRoute,
+      routes: routes,
       home: const LoginPage(),
     );
   }
