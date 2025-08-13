@@ -16,7 +16,11 @@ class NavBarEntry {
 }
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final List<Widget> _pages = [TimetablePage(), GradesPage(), SettingsPage()];
+  static final List<Widget> _pages = [
+    TimetablePage(),
+    GradesPage(),
+    SettingsPage(),
+  ];
   final List<NavigationDestination> _destinations = const [
     NavigationDestination(
       icon: Icon(Icons.calendar_today_outlined),
@@ -38,7 +42,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<Widget> get pages => _pages;
   List<NavigationDestination> get destinations => _destinations;
 
-  HomeBloc() : super(HomePageLoading()) {
+  HomeBloc()
+    : super(
+        _pages.isEmpty
+            ? HomePageLoading()
+            : HomePageSelectedState(page: _pages.first, index: 0),
+      ) {
     on<DestinationTappedEvent>(_onDestinationTapped);
   }
 
