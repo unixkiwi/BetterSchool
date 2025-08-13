@@ -1,5 +1,6 @@
 import 'package:betterschool/config/di.dart';
 import 'package:betterschool/routing/routes.dart';
+import 'package:betterschool/ui/home_navbar/bloc/home_bloc.dart';
 import 'package:betterschool/ui/login/bloc/login_bloc.dart';
 import 'package:betterschool/ui/login/pages/login_page.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ void main() {
         BlocProvider(
           create: (context) => LoginBloc(sl())..add(AppStartedEvent()),
         ),
+        BlocProvider(create: (context) => HomeBloc()),
       ],
       child: const BetterSchoolApp(),
     ),
