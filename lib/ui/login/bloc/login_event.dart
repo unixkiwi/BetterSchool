@@ -13,6 +13,8 @@ final class SuccessfulOAuthLoginEvent extends LoginEvent {
   SuccessfulOAuthLoginEvent({required this.credentials});
 }
 
+final class CancelledOAuthEvent extends LoginEvent {}
+
 final class FailedOAuthLoginEvent extends LoginEvent {
   final dynamic error;
 

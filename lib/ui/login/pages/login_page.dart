@@ -44,11 +44,7 @@ class LoginPage extends StatelessWidget {
                   },
                   onCancel: () {
                     logger.t("[OAuth native] Cancelled!");
-                    context.read<LoginBloc>().add(
-                      FailedOAuthLoginEvent(
-                        error: Exception("Login WebView closed!"),
-                      ),
-                    );
+                    context.read<LoginBloc>().add(CancelledOAuthEvent());
                   },
                 ),
               );

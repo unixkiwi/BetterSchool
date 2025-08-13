@@ -17,8 +17,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginButtonPressedEvent>(_onLoginBtnPressed);
     on<AppStartedEvent>(_onAppStarted);
     on<SuccessfulOAuthLoginEvent>(_onOAuthSuccess);
+    on<CancelledOAuthEvent>(_onCancelLogin);
   }
 
+  /// What happends when the app has been started
   Future<void> _onAppStarted(
     AppStartedEvent event,
     Emitter<LoginState> emit,
@@ -62,5 +64,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     await authRepo.storeToken(event.credentials.accessToken);
 
     emit(LoginSuccessful());
+  }
+
+  void _onCancelLogin(CancelledOAuthEvent event, Emitter<LoginState> emit) {
+    emit(LoginInitial());
   }
 }
