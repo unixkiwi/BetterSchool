@@ -17,11 +17,8 @@ Widget homeNavBarPage(BuildContext context) => const HomePageNavBar();
 
 final String timetableRoute = "/timetable";
 Widget timetablePage(BuildContext context) {
-  logger.d("Called Timetable route");
-
   return BlocProvider<TimetableBloc>(
     create: (context) {
-      logger.d("Called BlocProvider create method");
       return sl<TimetableBloc>()..add(TimetablePageStartedEvent());
     },
     child: const TimetablePage(),
