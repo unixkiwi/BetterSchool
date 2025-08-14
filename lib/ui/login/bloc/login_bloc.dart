@@ -1,5 +1,5 @@
 import 'package:betterschool/config/constants.dart';
-import 'package:betterschool/data/repositories/auth_repository.dart';
+import 'package:betterschool/data/repositories/auth/auth_repository.dart';
 import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:equatable/equatable.dart';
