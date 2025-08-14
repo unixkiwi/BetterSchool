@@ -5,7 +5,6 @@ import 'package:betterschool/ui/login/pages/login_page.dart';
 import 'package:betterschool/ui/settings/pages/settings_page.dart';
 import 'package:betterschool/ui/timetable/pages/bloc/timetable_bloc.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_page.dart';
-import 'package:betterschool/utils/logger.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
