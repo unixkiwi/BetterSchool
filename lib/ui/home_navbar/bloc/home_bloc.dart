@@ -1,6 +1,4 @@
-import 'package:betterschool/ui/grades/pages/grades_page.dart';
-import 'package:betterschool/ui/settings/pages/settings_page.dart';
-import 'package:betterschool/ui/timetable/pages/timetable_page.dart';
+import 'package:betterschool/routing/routes.dart';
 import 'package:betterschool/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,10 +14,10 @@ class NavBarEntry {
 }
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  static final List<Widget> _pages = [
-    TimetablePage(),
-    GradesPage(),
-    SettingsPage(),
+  static final List<WidgetBuilder> _pages = [
+    timetablePage,
+    gradesPage,
+    settingsPage,
   ];
   final List<NavigationDestination> _destinations = const [
     NavigationDestination(
@@ -39,7 +37,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     ),
   ];
 
-  List<Widget> get pages => _pages;
+  List<WidgetBuilder> get pages => _pages;
   List<NavigationDestination> get destinations => _destinations;
 
   HomeBloc()
