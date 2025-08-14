@@ -8,3 +8,5 @@ final String redirectUrl = "$customUrlScheme://oauth2redirect";
 
 final String clientId = "143";
 final String clientSecret = "N7isbO1oEezAkOCRKCHl8SZ5gti2T3IUkm5B1z7v";
+
+final String besteSchuleApiBaseURL = "https://beste.schule/api";
