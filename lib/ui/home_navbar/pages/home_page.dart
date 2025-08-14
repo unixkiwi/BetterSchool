@@ -9,7 +9,7 @@ class HomePageNavBar extends StatelessWidget {
   Widget _getPage(BuildContext context, HomeState state) {
     if (state is HomePageSelectedState) {
       logger.d("HomePageSelected state received");
-      return state.page;
+      return state.page(context);
     }
     return Center(child: CircularProgressIndicator());
   }
