@@ -26,6 +26,7 @@ dependencies:
   # api requests
   retrofit: ^4.7.1
   json_annotation: ^4.9.0
+  dio: ^5.9.0
 
   # logging
   logger: ^2.6.1
