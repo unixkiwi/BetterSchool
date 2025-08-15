@@ -15,7 +15,9 @@ class TimetablePage extends StatelessWidget {
             itemCount: state.tasks.length,
             itemBuilder: (context, index) {
               return ListTile(
-                title: Text(state.tasks[index].name ?? "No title"),
+                title: Text(
+                  state.tasks[index].lessons!.first.subject!.name ?? "No title",
+                ),
               );
             },
           );

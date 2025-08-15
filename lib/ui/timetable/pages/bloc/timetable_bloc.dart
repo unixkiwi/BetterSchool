@@ -1,4 +1,8 @@
+import 'package:betterschool/data/models/core/models.dart';
+import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
+import 'package:betterschool/utils/logger.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +20,14 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     TimetablePageStartedEvent event,
     Emitter<TimetableState> emit,
   ) async {
-    emit(TimetableStateTest(await _apiClient.getTasks()));
+    try {
+      BesteSchuleApiResponse<SchoolWeekModel> resp = await _apiClient.getWeek(
+        weekId: "2025-33",
+      );
+
+      emit(TimetableStateTest(resp.data!.days ?? []));
+    } on DioException catch (e) {
+      logger.e(e);
+    }
   }
 }
