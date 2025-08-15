@@ -3,33 +3,13 @@
 part of 'beste_schule_api_client_impl.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-Task _$TaskFromJson(Map<String, dynamic> json) => Task(
-  id: json['id'] as String?,
-  name: json['name'] as String?,
-  avatar: json['avatar'] as String?,
-  createdAt: json['createdAt'] as String?,
-);
-
-Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
-  'id': instance.id,
-  'name': instance.name,
-  'avatar': instance.avatar,
-  'createdAt': instance.createdAt,
-};
-
-// **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter
 
 class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
-  _BesteSchuleApiClientImpl(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'https://5d42a6e2bc64f90014a56ca0.mockapi.io/api/v1';
-  }
+  _BesteSchuleApiClientImpl(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -38,27 +18,35 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<Task>> getTasks() async {
+  Future<BesteSchuleApiResponse<SchoolWeekModel>> getWeek({
+    required String weekId,
+    String include = "days.lessons",
+    String interpolate = "true",
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'include': include,
+      r'interpolate': interpolate,
+    };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<Task>>(
+    final _options = _setStreamType<BesteSchuleApiResponse<SchoolWeekModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/tasks',
+            'https://beste.schule/api/journal/weeks/${weekId}',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<Task> _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BesteSchuleApiResponse<SchoolWeekModel> _value;
     try {
-      _value = _result.data!
-          .map((dynamic i) => Task.fromJson(i as Map<String, dynamic>))
-          .toList();
+      _value = BesteSchuleApiResponse<SchoolWeekModel>.fromJson(
+        _result.data!,
+        (json) => SchoolWeekModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
