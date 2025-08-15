@@ -5,7 +5,7 @@ publish_to: "none"
 version: 1.0.0
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.9.0-0
 
 dependencies:
   flutter:
@@ -44,7 +44,7 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
   retrofit_generator: ^10.0.2
-  build_runner: ^2.6.0
+  build_runner: ^2.7.0
   json_serializable: ^6.10.0
 
 flutter:
