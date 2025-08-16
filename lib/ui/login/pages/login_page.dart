@@ -16,7 +16,11 @@ class LoginPage extends StatelessWidget {
         child: BlocListener<LoginBloc, LoginState>(
           listener: (context, state) async {
             if (state is LoginSuccessful) {
-              Navigator.pushReplacementNamed(context, homeRoute);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                homeRoute,
+                (Route route) => false,
+              );
             } else if (state is LoginLoading) {
               await OAuthWebScreen.start(
                 context: context,
