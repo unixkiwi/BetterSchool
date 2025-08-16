@@ -2,19 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
 
-// @JsonSerializable()
-// class BesteSchuleJournalWeeksResponse {
-//   final SchoolWeekModel? data;
-//
-//   BesteSchuleJournalWeeksResponse({required this.data});
-//
-//   factory BesteSchuleJournalWeeksResponse.fromJson(Map<String, dynamic> json) =>
-//       _$BesteSchuleJournalWeeksResponseFromJson(json);
-//
-//   Map<String, dynamic> toJson() =>
-//       _$BesteSchuleJournalWeeksResponseToJson(this);
-// }
-
 @JsonSerializable()
 class SchoolWeekModel {
   List<SchoolDayModel>? days;
