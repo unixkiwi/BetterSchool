@@ -1,4 +1,5 @@
 import 'package:betterschool/data/repositories/auth/auth_repository.dart';
+import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/ui/timetable/pages/bloc/timetable_bloc.dart';
 import 'package:betterschool/utils/result.dart';
@@ -35,6 +36,8 @@ void initDependencies() {
   );
 
   sl.registerSingleton(BesteSchuleApiClientImpl(sl()));
+
+  sl.registerSingleton(TimetableRepo(sl()));
 
   sl.registerFactory(() => TimetableBloc(sl()));
 }
