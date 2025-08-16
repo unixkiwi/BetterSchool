@@ -2,6 +2,7 @@ import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/utils/result.dart';
+import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
 
 class TimetableRepo {
@@ -9,10 +10,10 @@ class TimetableRepo {
 
   TimetableRepo(this._apiClient);
 
-  Future<Result<SchoolWeekModel>> getWeek(String weekId) async {
+  Future<Result<SchoolWeekModel>> getWeek(WeekString weekId) async {
     try {
       BesteSchuleApiResponse<SchoolWeekModel> response = await _apiClient
-          .getWeek(weekId: weekId);
+          .getWeek(weekId: weekId.toString());
 
       if (response.data != null && response.data!.days != null) {
         return Result.success(response.data!);
