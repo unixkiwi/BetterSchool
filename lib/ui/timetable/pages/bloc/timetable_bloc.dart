@@ -1,8 +1,7 @@
-import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
-import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
-import 'package:betterschool/utils/logger.dart';
-import 'package:dio/dio.dart';
+import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
+import 'package:betterschool/utils/result.dart';
+import 'package:betterschool/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,9 +9,9 @@ part 'timetable_state.dart';
 part 'timetable_event.dart';
 
 class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
-  final BesteSchuleApiClientImpl _apiClient;
+  final TimetableRepo _repo;
 
-  TimetableBloc(this._apiClient) : super(TimetableStateLoading()) {
+  TimetableBloc(this._repo) : super(TimetableStateLoading()) {
     on<TimetablePageStartedEvent>(_onPageLoaded);
   }
 
@@ -20,14 +19,14 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     TimetablePageStartedEvent event,
     Emitter<TimetableState> emit,
   ) async {
-    try {
-      BesteSchuleApiResponse<SchoolWeekModel> resp = await _apiClient.getWeek(
-        weekId: "2025-33",
-      );
+    Result<SchoolWeekModel> response = await _repo.getWeek(
+      WeekString.fromDate(DateTime.now()),
+    );
 
-      emit(TimetableStateTest(resp.data!.days ?? []));
-    } on DioException catch (e) {
-      logger.e(e);
+    if (response is Success<SchoolWeekModel>) {
+      emit(TimetableStateTest(response.value.days ?? []));
+    } else {
+      emit(TimetableStateLoading());
     }
   }
 }
