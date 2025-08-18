@@ -27,17 +27,15 @@ class _MainNavBarState extends State<MainNavBar> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       ChangeNotifierProvider(
-        create:
-            (context) => TimetablePageViewmodel(
-              repo: Provider.of<BesteSchuleRepo>(context, listen: false),
-            ),
+        create: (context) => TimetablePageViewmodel(
+          repo: Provider.of<BesteSchuleRepo>(context, listen: false),
+        ),
         child: TimetablePage(),
       ),
       ChangeNotifierProvider(
-        create:
-            (context) => GradesPageViewmodel(
-              repo: Provider.of<BesteSchuleRepo>(context, listen: false),
-            ),
+        create: (context) => GradesPageViewmodel(
+          repo: Provider.of<BesteSchuleRepo>(context, listen: false),
+        ),
         child: GradesPage(),
       ),
       SettingsPage(),
@@ -50,14 +48,20 @@ class _MainNavBarState extends State<MainNavBar> {
         onDestinationSelected: _onItemTapped,
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.calendar_today),
+            icon: Icon(Icons.calendar_today_outlined),
+            selectedIcon: Icon(Icons.calendar_today),
             label: 'Timetable',
           ),
           NavigationDestination(
-            icon: Icon(Icons.leaderboard_rounded),
+            icon: Icon(Icons.leaderboard_outlined),
+            selectedIcon: Icon(Icons.leaderboard_rounded),
             label: 'Grades',
           ),
-          NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings_rounded),
+            label: 'Settings',
+          ),
         ],
       ),
     );
