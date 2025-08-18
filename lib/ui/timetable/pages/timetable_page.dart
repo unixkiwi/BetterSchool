@@ -1,5 +1,5 @@
 import 'package:betterschool/ui/core/widgets/loading.dart';
-import 'package:betterschool/ui/timetable/pages/bloc/timetable_bloc.dart';
+import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
