@@ -15,32 +15,36 @@
 <p align="center"><i>No ads, no tracking, no subscriptions — just a clean, privacy-focused experience.</i></p>
 
 > [!IMPORTANT]
-> BetterSchool is not an official beste.schule client and not affiliated with beste.schule.  
+> BetterSchool is not an official beste.schule client and not affiliated with beste.schule.
 
 ---
 
-## 🔗 Quick Links  
-- [Download Latest Release](https://github.com/unixkiwi/betterschool/releases)  
-- [Report an Issue](https://github.com/unixkiwi/betterschool/issues)  
-- [beste.schule Official Website](https://beste.schule)  
+## 🔗 Quick Links
+
+- [Download Latest Release](https://github.com/unixkiwi/betterschool/releases)
+- [Report an Issue](https://github.com/unixkiwi/betterschool/issues)
+- [beste.schule Official Website](https://beste.schule)
 
 ---
 
-## ✨ Features  
+## ✨ Features
 
-### 📅 Timetable  
+### 📅 Timetable
+
 - View your timetable from beste.schule
 - **Cancelled lessons** are **highlighted**, so you're the first to see the cancellation
 - Intuitive navigation between days and weeks
 
-### 📊 Grades & Insights  
+### 📊 Grades & Insights
+
 - **Full grade overview** per subject, with date, title and type
-- **Smart analytics and interactive charts**:  
+- **Smart analytics and interactive charts**:
   - Average grade per subject
   - Average of all grades
   - Visualize avgerage grades over time
 
-### 🚧 Coming Soon  
+### 🚧 Coming Soon
+
 - ☑️ **Advanced analytics** such as grade trends within subjects and over years
 - ☑️ **To-Do List & Task Manager** (assignments, exams, deadlines).
 
@@ -55,51 +59,68 @@
 ## ⚙️ Installation
 
 ### 📲 Direct Download (coming soon, a month or so)
+
 Get the latest APK from [Github Releases](https://github.com/unixkiwi/betterschool/releases)
 
 ### 🛠️ Build from Source
+
 ### Prerequisites
+
 - Flutter
 - Android device or emulator
 
-1. Clone the repo:  
-```bash  
-git clone https://github.com/unixkiwi/betterschool  
-cd schoolapp  
-```  
+1. Clone the repo:
 
-2. Install dependencies:  
-```bash  
-flutter pub get  
-```  
+```bash
+git clone https://github.com/unixkiwi/betterschool
+cd schoolapp
+```
 
-3. Run the app: 
-```bash  
+2. Install dependencies:
+
+```bash
+flutter pub get
+```
+
+3. Run the app:
+
+```bash
 flutter run            # for debug
 flutter run --release  # for release (more performance)
 ```
+
 4. Build for Production (optional)
-```bash  
+
+```bash
 flutter build apk --release  # Android
 ```
 
 ---
 
-## 🤝 Contributing  
-Contributions are welcome! Here’s how:  
-1. **Fork** the repository.  
-2. Create a branch: `git checkout -b feature/your-idea`.  
-3. Commit changes: `git commit -m 'Add amazing feature'`.  
-4. Push: `git push origin feature/your-idea`.  
-5. Open a **pull request**.  
+## 🤝 Contributing
+
+Contributions are welcome! Here’s how:
+
+1. **Fork** the repository.
+2. Create a branch: `git checkout -b feature/your-idea`.
+3. Commit changes: `git commit -m 'Add amazing feature'`.
+4. Push: `git push origin feature/your-idea`.
+5. Open a **pull request**.
 
 Check the [Issues](https://github.com/unixkiwi/betterschool/issues) for bugs/feature requests.
 
 ---
 
 ## 📜 License
+
 This project is licensed under the [AGPL - GNU Affero General Public License](https://github.com/unixkiwi/betterschool/blob/master/LICENSE), which ensures that this projects stays FOSS.
 
 ---
 
-> ✨ **Open Source** · 🔒 **Ad-Free Forever** · 🚀 **By Students, For Students**  
+## 🙏 Credits
+
+- All illustrations in this project come from [undraw](https://undraw.co). They provide a carefully created collection of simple and beautiful open-source SVG illustrations.
+
+---
+
+> ✨ **Open Source** · 🔒 **Ad-Free Forever** · 🚀 **By Students, For Students**
