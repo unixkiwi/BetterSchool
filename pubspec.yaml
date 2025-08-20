@@ -48,6 +48,9 @@ dependencies:
   # date time utils
   in_date_utils: ^1.2.3
 
+  # svg
+  flutter_svg: ^2.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
