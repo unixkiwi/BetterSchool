@@ -17,6 +17,8 @@ void initDependencies() {
     BaseOptions(
       contentType: "application/json",
       headers: {"Accept": "application/json"},
+      connectTimeout: Duration(seconds: 30),
+      receiveTimeout: Duration(seconds: 30)
     ),
   );
 
