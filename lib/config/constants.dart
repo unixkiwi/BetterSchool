@@ -18,6 +18,7 @@ const int forbiddenStatusCode = 403;
 const String assetPrefix = "assets";
 const String noInternetSvg = "$assetPrefix/no_internet.svg";
 const String serverErrorSvg = "$assetPrefix/server_error.svg";
+const String forbiddenSvg = "$assetPrefix/forbidden.svg";
 const String noDataSvg = "$assetPrefix/no_data.svg";
 const String loginSvg = "$assetPrefix/login.svg";
 const String freetimeSvg = "$assetPrefix/freetime.svg";
