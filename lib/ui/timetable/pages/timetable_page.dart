@@ -1,5 +1,7 @@
-import 'package:betterschool/ui/core/widgets/loading.dart';
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_error_page.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_loading_page.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_week_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,20 +12,16 @@ class TimetablePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TimetableBloc, TimetableState>(
       builder: (context, state) {
-        if (state is TimetableStateTest) {
-          return ListView.builder(
-            itemCount: state.tasks.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  state.tasks[index].lessons!.first.subject!.name ?? "No title",
-                ),
-              );
-            },
-          );
+        switch (state) {
+          case TimetableWeekState():
+            return TimetableWeekPage();
+          case TimetableStateLoading():
+            return TimetableLoadingPage();
+          case TimetableErrorState():
+            return TimetableErrorPage(title: state.title, description: state.description, errorType: state.errorType);
+          default:
+            return TimetableLoadingPage();
         }
-
-        return LoadingSpinner();
       },
     );
   }
