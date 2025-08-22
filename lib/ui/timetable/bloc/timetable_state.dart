@@ -26,7 +26,8 @@ final class TimetableErrorState extends TimetableState {
 }
 
 final class TimetableWeekState extends TimetableState {
+  final int weekNr;
   final List<SchoolDayModel> days;
 
-  TimetableWeekState(this.days);
+  TimetableWeekState({required this.weekNr, required this.days});
 }

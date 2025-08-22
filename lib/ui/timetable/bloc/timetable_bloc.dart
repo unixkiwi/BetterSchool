@@ -27,7 +27,12 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
     if (response is Success<SchoolWeekModel> && response.value.days != null) {
       if (response.value.days!.isNotEmpty) {
-        emit(TimetableWeekState(response.value.days!));
+        emit(
+          TimetableWeekState(
+            weekNr: response.value.nr,
+            days: response.value.days!,
+          ),
+        );
       } else {
         emit(TimetableEmptyState());
       }
