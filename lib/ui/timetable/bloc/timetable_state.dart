@@ -7,12 +7,6 @@ final class TimetableStateLoading extends TimetableState {}
 
 final class TimetableEmptyState extends TimetableState {}
 
-final class TimetableStateTest extends TimetableState {
-  final List<SchoolDayModel> tasks;
-
-  TimetableStateTest(this.tasks);
-}
-
 enum TimetableError {
   noConnection, forbidden, other
 }
@@ -27,7 +21,7 @@ final class TimetableErrorState extends TimetableState {
 
 final class TimetableWeekState extends TimetableState {
   final int weekNr;
-  final List<SchoolDayModel> days;
+  final List<SchoolDay> days;
 
   TimetableWeekState({required this.weekNr, required this.days});
 }

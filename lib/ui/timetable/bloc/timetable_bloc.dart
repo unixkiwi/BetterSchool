@@ -1,6 +1,7 @@
 import 'package:betterschool/config/constants.dart';
-import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
+import 'package:betterschool/domain/models/schoolday.dart';
+import 'package:betterschool/domain/models/week.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
@@ -21,22 +22,22 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     TimetablePageStartedEvent event,
     Emitter<TimetableState> emit,
   ) async {
-    Result<SchoolWeekModel> response = await _repo.getWeek(
+    Result<SchoolWeek> response = await _repo.getWeek(
       WeekString.fromDate(DateTime.now()),
     );
 
-    if (response is Success<SchoolWeekModel> && response.value.days != null) {
-      if (response.value.days!.isNotEmpty) {
+    if (response is Success<SchoolWeek>) {
+      if (response.value.days.isNotEmpty) {
         emit(
           TimetableWeekState(
             weekNr: response.value.nr,
-            days: response.value.days!,
+            days: response.value.days,
           ),
         );
       } else {
         emit(TimetableEmptyState());
       }
-    } else if (response is Error<SchoolWeekModel>) {
+    } else if (response is Error<SchoolWeek>) {
       Exception error = response.error;
 
       if (error is DioException) {
