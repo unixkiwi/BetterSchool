@@ -1,12 +1,14 @@
+import 'package:betterschool/domain/models/lesson.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
 
 @JsonSerializable()
 class SchoolWeekModel {
+  int nr;
   List<SchoolDayModel>? days;
 
-  SchoolWeekModel({required this.days});
+  SchoolWeekModel({required this.days, required this.nr});
 
   factory SchoolWeekModel.fromJson(Map<String, dynamic> json) =>
       _$SchoolWeekModelFromJson(json);
@@ -32,7 +34,7 @@ class SchoolDayModel {
 class LessonModel {
   final int? id;
   final int? nr;
-  final String? status;
+  final LessonStatus? status;
   final SubjectModel? subject;
 
   LessonModel({

@@ -11,10 +11,11 @@ SchoolWeekModel _$SchoolWeekModelFromJson(Map<String, dynamic> json) =>
       days: (json['days'] as List<dynamic>?)
           ?.map((e) => SchoolDayModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      nr: (json['nr'] as num).toInt(),
     );
 
 Map<String, dynamic> _$SchoolWeekModelToJson(SchoolWeekModel instance) =>
-    <String, dynamic>{'days': instance.days};
+    <String, dynamic>{'nr': instance.nr, 'days': instance.days};
 
 SchoolDayModel _$SchoolDayModelFromJson(Map<String, dynamic> json) =>
     SchoolDayModel(
@@ -37,7 +38,7 @@ Map<String, dynamic> _$SchoolDayModelToJson(SchoolDayModel instance) =>
 LessonModel _$LessonModelFromJson(Map<String, dynamic> json) => LessonModel(
   id: (json['id'] as num?)?.toInt(),
   nr: (json['nr'] as num?)?.toInt(),
-  status: json['status'] as String?,
+  status: $enumDecodeNullable(_$LessonStatusEnumMap, json['status']),
   subject: json['subject'] == null
       ? null
       : SubjectModel.fromJson(json['subject'] as Map<String, dynamic>),
@@ -47,9 +48,16 @@ Map<String, dynamic> _$LessonModelToJson(LessonModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'nr': instance.nr,
-      'status': instance.status,
+      'status': _$LessonStatusEnumMap[instance.status],
       'subject': instance.subject,
     };
+
+const _$LessonStatusEnumMap = {
+  LessonStatus.initial: 'initial',
+  LessonStatus.planned: 'planned',
+  LessonStatus.hold: 'hold',
+  LessonStatus.cancelled: 'canceled',
+};
 
 SubjectModel _$SubjectModelFromJson(Map<String, dynamic> json) => SubjectModel(
   id: (json['id'] as num?)?.toInt(),
