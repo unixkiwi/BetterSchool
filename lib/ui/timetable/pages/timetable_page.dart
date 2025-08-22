@@ -1,4 +1,5 @@
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_empty_page.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_error_page.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_loading_page.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_week_page.dart';
@@ -12,6 +13,8 @@ class TimetablePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TimetableBloc, TimetableState>(
       builder: (context, state) {
+        return TimetableEmptyPage();
+
         switch (state) {
           case TimetableWeekState():
             return TimetableWeekPage(weekNr: state.weekNr, days: state.days);
@@ -19,6 +22,8 @@ class TimetablePage extends StatelessWidget {
             return TimetableLoadingPage();
           case TimetableErrorState():
             return TimetableErrorPage(title: state.title, description: state.description, errorType: state.errorType);
+          case TimetableEmptyState():
+            return TimetableEmptyPage();
           default:
             return TimetableLoadingPage();
         }
