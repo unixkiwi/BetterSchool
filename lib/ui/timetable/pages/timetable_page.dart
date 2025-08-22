@@ -14,7 +14,7 @@ class TimetablePage extends StatelessWidget {
       builder: (context, state) {
         switch (state) {
           case TimetableWeekState():
-            return TimetableWeekPage();
+            return TimetableWeekPage(weekNr: state.weekNr, days: state.days);
           case TimetableStateLoading():
             return TimetableLoadingPage();
           case TimetableErrorState():
