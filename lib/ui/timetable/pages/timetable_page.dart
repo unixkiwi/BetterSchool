@@ -13,8 +13,6 @@ class TimetablePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TimetableBloc, TimetableState>(
       builder: (context, state) {
-        return TimetableEmptyPage();
-
         switch (state) {
           case TimetableWeekState():
             return TimetableWeekPage(weekNr: state.weekNr, days: state.days);
