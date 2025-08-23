@@ -740,10 +740,10 @@ packages:
     dependency: "direct main"
     description:
       name: retrofit
-      sha256: d6361d2e344fdc175457ab11eb5225180be99d3773286d9a2fabdf70559afdfc
+      sha256: "699cf44ec6c7fc7d248740932eca75d334e36bdafe0a8b3e9ff93100591c8a25"
       url: "https://pub.dev"
     source: hosted
-    version: "4.7.1"
+    version: "4.7.2"
   retrofit_generator:
     dependency: "direct dev"
     description:
