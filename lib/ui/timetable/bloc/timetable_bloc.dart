@@ -26,6 +26,13 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       WeekString.fromDate(DateTime.now()),
     );
 
+    _handleSchoolWeekResult(response, emit);
+  }
+
+  void _handleSchoolWeekResult(
+    Result<SchoolWeek> response,
+    Emitter<TimetableState> emit,
+  ) {
     if (response is Success<SchoolWeek>) {
       if (response.value.days.isNotEmpty) {
         List<SchoolDay> days = response.value.days
