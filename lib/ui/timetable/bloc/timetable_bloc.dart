@@ -16,24 +16,57 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
   TimetableBloc(this._repo) : super(TimetableStateLoading()) {
     on<TimetablePageStartedEvent>(_onPageLoaded);
+    on<TimetablePageSwitchEvent>(_onPageSwitch);
+  }
+
+  Future<void> _onPageSwitch(
+    TimetablePageSwitchEvent event,
+    Emitter<TimetableState> emit,
+  ) async {
+    // check for need to load new page
+    // if new page needs to be loaded
+
+    // 0 == first page -> loading page
+    // last page given through parameter
+    // load prev week
+    if (event.isLastPage) {
+      WeekString nextWeek = WeekString.fromDate(event.weekString.toDate().add(Duration(days: 7)));
+      Result<SchoolWeek> response = await _repo.getWeek(nextWeek);
+
+      _handleSchoolWeekResult(response, emit, nextWeek);
+    }
+    // load next week
+    else if (event.page == 0) {
+      WeekString prevWeek = WeekString.fromDate(event.weekString.toDate().subtract(Duration(days: 7)));
+      Result<SchoolWeek> response = await _repo.getWeek(prevWeek);
+
+      _handleSchoolWeekResult(response, emit, prevWeek);
+    }
   }
 
   Future<void> _onPageLoaded(
     TimetablePageStartedEvent event,
     Emitter<TimetableState> emit,
   ) async {
-    Result<SchoolWeek> response = await _repo.getWeek(
-      WeekString.fromDate(DateTime.now()),
-    );
+    WeekString now = WeekString.fromDate(DateTime.now());
 
+    Result<SchoolWeek> response = await _repo.getWeek(now);
+
+    _handleSchoolWeekResult(response, emit, now);
+  }
+
+  void _handleSchoolWeekResult(
+    Result<SchoolWeek> response,
+    Emitter<TimetableState> emit,
+    WeekString week,
+  ) {
     if (response is Success<SchoolWeek>) {
       if (response.value.days.isNotEmpty) {
-        emit(
-          TimetableWeekState(
-            weekNr: response.value.nr,
-            days: response.value.days,
-          ),
-        );
+        List<SchoolDay> days = response.value.days
+            .where((day) => day.date.weekday <= 5)
+            .toList();
+
+        emit(TimetableWeekState(weekNr: week, days: days));
       } else {
         emit(TimetableEmptyState());
       }

@@ -2,7 +2,7 @@ import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_empty_page.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_error_page.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_loading_page.dart';
-import 'package:betterschool/ui/timetable/pages/timetable_week_page.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_week/timetable_week_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
