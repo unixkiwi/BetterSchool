@@ -28,12 +28,11 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
     if (response is Success<SchoolWeek>) {
       if (response.value.days.isNotEmpty) {
-        emit(
-          TimetableWeekState(
-            weekNr: response.value.nr,
-            days: response.value.days,
-          ),
-        );
+        List<SchoolDay> days = response.value.days
+            .where((day) => day.date.weekday <= 5)
+            .toList();
+
+        emit(TimetableWeekState(weekNr: response.value.nr, days: days));
       } else {
         emit(TimetableEmptyState());
       }
