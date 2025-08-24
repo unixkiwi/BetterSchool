@@ -31,6 +31,13 @@ class BetterSchoolApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: <TargetPlatform, PageTransitionsBuilder>{
+            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+          },
+        ),
+      ),
       initialRoute: loginRoute,
       routes: routes,
       home: const LoginPage(),
