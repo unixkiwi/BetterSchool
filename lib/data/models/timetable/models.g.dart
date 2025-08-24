@@ -42,6 +42,12 @@ LessonModel _$LessonModelFromJson(Map<String, dynamic> json) => LessonModel(
   subject: json['subject'] == null
       ? null
       : SubjectModel.fromJson(json['subject'] as Map<String, dynamic>),
+  rooms: (json['rooms'] as List<dynamic>?)
+      ?.map((e) => RoomModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  teachers: (json['teachers'] as List<dynamic>?)
+      ?.map((e) => TeacherModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$LessonModelToJson(LessonModel instance) =>
@@ -50,6 +56,8 @@ Map<String, dynamic> _$LessonModelToJson(LessonModel instance) =>
       'nr': instance.nr,
       'status': _$LessonStatusEnumMap[instance.status],
       'subject': instance.subject,
+      'rooms': instance.rooms,
+      'teachers': instance.teachers,
     };
 
 const _$LessonStatusEnumMap = {
@@ -69,5 +77,27 @@ Map<String, dynamic> _$SubjectModelToJson(SubjectModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'local_id': instance.local_id,
+      'name': instance.name,
+    };
+
+RoomModel _$RoomModelFromJson(Map<String, dynamic> json) =>
+    RoomModel(local_id: json['local_id'] as String?);
+
+Map<String, dynamic> _$RoomModelToJson(RoomModel instance) => <String, dynamic>{
+  'local_id': instance.local_id,
+};
+
+TeacherModel _$TeacherModelFromJson(Map<String, dynamic> json) => TeacherModel(
+  id: (json['id'] as num?)?.toInt(),
+  local_id: json['local_id'] as String?,
+  forename: json['forename'] as String?,
+  name: json['name'] as String?,
+);
+
+Map<String, dynamic> _$TeacherModelToJson(TeacherModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'local_id': instance.local_id,
+      'forename': instance.forename,
       'name': instance.name,
     };
