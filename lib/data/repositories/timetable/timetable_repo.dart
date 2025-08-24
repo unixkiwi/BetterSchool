@@ -2,8 +2,10 @@ import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/domain/models/lesson.dart';
+import 'package:betterschool/domain/models/room.dart';
 import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:betterschool/domain/models/subject.dart';
+import 'package:betterschool/domain/models/teacher.dart';
 import 'package:betterschool/domain/models/week.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
@@ -18,6 +20,8 @@ class TimetableRepo {
     List<Lesson> result = [];
 
     for (final LessonModel lesson in lessons) {
+      List<Room> roomsIfNull = [Room(name: "---")];
+
       result.add(
         Lesson(
           id: lesson.id ?? -1,
@@ -28,6 +32,30 @@ class TimetableRepo {
             local_id: lesson.subject!.local_id ?? "---",
             name: lesson.subject!.name ?? "Unknown subject",
           ),
+          rooms: lesson.rooms != null && lesson.rooms!.isNotEmpty
+              ? lesson.rooms!
+                    .map((room) => Room(name: room.local_id ?? "---"))
+                    .toList()
+              : roomsIfNull,
+          teachers: lesson.teachers != null && lesson.teachers!.isNotEmpty
+              ? lesson.teachers!
+                    .map(
+                      (teacher) => Teacher(
+                        id: teacher.id ?? -1,
+                        shortName: teacher.local_id ?? "---",
+                        forename: teacher.forename ?? "Unknown",
+                        name: teacher.name ?? "Teacher",
+                      ),
+                    )
+                    .toList()
+              : [
+                  Teacher(
+                    id: -1,
+                    shortName: "---",
+                    forename: "Unknown",
+                    name: "Teacher",
+                  ),
+                ],
         ),
       );
     }
