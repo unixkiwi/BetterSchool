@@ -14,12 +14,10 @@ class TimetableLessonTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
         child: ListTile(
           // onTap: () {
-            // showLessonTileBottomSheet(context, lesson);
+          // showLessonTileBottomSheet(context, lesson);
           // },
           title: Text(
             subject.name.length > 17 ? subject.local_id : subject.name,
@@ -34,6 +32,7 @@ class TimetableLessonTile extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
+                    //TODO add bottomsheet for details
                     onTap: () {},
                     child: Tooltip(
                       message: "This lesson was changed",
@@ -56,39 +55,38 @@ class TimetableLessonTile extends StatelessWidget {
                   ),
                 )
               : null,
-          /*subtitle: Row(
-            children: [
-              Wrap(
-                spacing: 4,
-                children: lesson.rooms
-                    .map(
-                      (room) => Chip(
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.surfaceContainerHighest,
-                        padding: EdgeInsets.all(2),
-                        label: Text(room),
-                      ),
-                    )
-                    .toList(),
-              ),
-              Padding(padding: EdgeInsets.only(right: 8)),
-              Wrap(
-                spacing: 2,
-                children: lesson.teachers
-                    .map(
-                      (teacher) => Chip(
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.surfaceContainerHighest,
-                        padding: EdgeInsets.all(2),
-                        label: Text(teacher.short),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
-          ),*/
+          subtitle: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ...lesson.rooms.map(
+                  (room) => Chip(
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest,
+                    padding: EdgeInsets.all(2),
+                    label: Text(room.name),
+                  ),
+                ),
+
+                Padding(padding: EdgeInsets.only(right: 8)),
+
+                ...lesson.teachers.map(
+                  (teacher) => Tooltip(
+                    triggerMode: TooltipTriggerMode.tap,
+                    message: "${teacher.forename} ${teacher.name}",
+                    child: Chip(
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
+                      padding: EdgeInsets.all(2),
+                      label: Text(teacher.shortName),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           style: Theme.of(context).listTileTheme.style,
         ),
       ),
