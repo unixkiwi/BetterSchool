@@ -7,6 +7,7 @@ import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/domain/models/teacher.dart';
 import 'package:betterschool/domain/models/week.dart';
+import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
@@ -103,8 +104,10 @@ class TimetableRepo {
     } on DioException catch (dioException) {
       return Result.error(dioException);
     } on Exception catch (e) {
+      logger.e(e.runtimeType.toString());
       return Result.error(e);
     } catch (e) {
+      logger.e(e.runtimeType.toString());
       return Result.error(Exception(e.toString()));
     }
   }

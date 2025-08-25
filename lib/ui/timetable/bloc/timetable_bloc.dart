@@ -2,6 +2,7 @@ import 'package:betterschool/config/constants.dart';
 import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
 import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:betterschool/domain/models/week.dart';
+import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
@@ -96,6 +97,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
             ),
           );
         } else {
+          logger.e(error.response?.data);
+          logger.e(error.type.toString());
+          logger.e(error.requestOptions.path);
           emit(
             TimetableErrorState(
               title:
