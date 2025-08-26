@@ -3,9 +3,13 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
 
+String toStringJson(dynamic value) => value.toString();
+
 @JsonSerializable()
 class SchoolWeekModel {
-  int nr;
+
+  @JsonKey(fromJson: toStringJson)
+  String? nr;
   List<SchoolDayModel>? days;
 
   SchoolWeekModel({required this.days, required this.nr});

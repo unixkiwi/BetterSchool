@@ -90,7 +90,7 @@ class TimetableRepo {
 
         SchoolWeek result = SchoolWeek(
           days: _getDays(data.days ?? []),
-          nr: data.nr,
+          nr: int.tryParse(data.nr ?? "-1") ?? -1,
         );
 
         return Result.success(result);

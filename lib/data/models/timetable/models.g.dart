@@ -11,7 +11,7 @@ SchoolWeekModel _$SchoolWeekModelFromJson(Map<String, dynamic> json) =>
       days: (json['days'] as List<dynamic>?)
           ?.map((e) => SchoolDayModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      nr: (json['nr'] as num).toInt(),
+      nr: toStringJson(json['nr']),
     );
 
 Map<String, dynamic> _$SchoolWeekModelToJson(SchoolWeekModel instance) =>
