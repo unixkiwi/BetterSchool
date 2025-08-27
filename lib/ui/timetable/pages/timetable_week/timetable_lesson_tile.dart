@@ -14,7 +14,10 @@ class TimetableLessonTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
+        ),
         child: ListTile(
           // onTap: () {
           // showLessonTileBottomSheet(context, lesson);
