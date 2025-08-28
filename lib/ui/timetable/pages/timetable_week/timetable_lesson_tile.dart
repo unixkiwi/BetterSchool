@@ -75,6 +75,10 @@ class TimetableLessonTile extends StatelessWidget {
                     tooltip: "${teacher.forename} ${teacher.name}",
                   ),
                 ),
+
+                Padding(padding: EdgeInsets.only(right: 8)),
+
+                ?lesson.group.isMeta ? null : FieldChipWithTooltip(chip: FieldChip(label: lesson.group.shortName), tooltip: lesson.group.name),
               ],
             ),
           ),
