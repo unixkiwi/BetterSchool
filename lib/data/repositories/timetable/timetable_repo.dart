@@ -76,6 +76,8 @@ class TimetableRepo {
       );
     }
 
+    result.sort((a, b) => a.nr.compareTo(b.nr));
+
     return result;
   }
 
