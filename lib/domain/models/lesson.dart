@@ -1,3 +1,5 @@
+import 'package:betterschool/domain/models/group.dart';
+import 'package:betterschool/domain/models/note.dart';
 import 'package:betterschool/domain/models/room.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/domain/models/teacher.dart';
@@ -22,6 +24,8 @@ class Lesson {
   final Subject subject;
   final List<Room> rooms;
   final List<Teacher> teachers;
+  final Group group;
+  final List<Note> notes;
 
   Lesson({
     required this.id,
@@ -30,5 +34,7 @@ class Lesson {
     required this.subject,
     required this.rooms,
     required this.teachers,
+    required this.group,
+    required this.notes,
   });
 }
