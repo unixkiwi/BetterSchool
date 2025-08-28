@@ -86,18 +86,3 @@ RoomModel _$RoomModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RoomModelToJson(RoomModel instance) => <String, dynamic>{
   'local_id': instance.local_id,
 };
-
-TeacherModel _$TeacherModelFromJson(Map<String, dynamic> json) => TeacherModel(
-  id: (json['id'] as num?)?.toInt(),
-  local_id: json['local_id'] as String?,
-  forename: json['forename'] as String?,
-  name: json['name'] as String?,
-);
-
-Map<String, dynamic> _$TeacherModelToJson(TeacherModel instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'local_id': instance.local_id,
-      'forename': instance.forename,
-      'name': instance.name,
-    };

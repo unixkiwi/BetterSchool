@@ -16,3 +16,22 @@ class BesteSchuleApiResponse<T> {
   Map<String, dynamic> toJson(Object Function(T value) toJsonT) =>
       _$BesteSchuleApiResponseToJson(this, toJsonT);
 }
+
+@JsonSerializable()
+class TeacherModel {
+  final int? id;
+  final String? local_id;
+  final String? forename;
+  final String? name;
+
+  const TeacherModel({
+    required this.id,
+    required this.local_id,
+    required this.forename,
+    required this.name,
+  });
+
+  factory TeacherModel.fromJson(Map<String, dynamic> json) =>
+      _$TeacherModelFromJson(json);
+  Map<String, dynamic> toJson() => _$TeacherModelToJson(this);
+}
