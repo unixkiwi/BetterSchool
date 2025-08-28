@@ -43,6 +43,8 @@ class LessonModel {
   final SubjectModel? subject;
   final List<RoomModel>? rooms;
   final List<TeacherModel>? teachers;
+  final GroupModel group;
+  final List<NoteModel> notes;
 
   LessonModel({
     required this.id,
@@ -51,6 +53,8 @@ class LessonModel {
     required this.subject,
     required this.rooms,
     required this.teachers,
+    required this.group,
+    required this.notes
   });
 
   factory LessonModel.fromJson(Map<String, dynamic> json) =>
@@ -84,3 +88,28 @@ class RoomModel {
   Map<String, dynamic> toJson() => _$RoomModelToJson(this);
 }
 
+@JsonSerializable()
+class NoteModelType {
+  final String? name;
+  final int? id;
+
+  NoteModelType({required this.name, required this.id});
+
+  factory NoteModelType.fromJson(Map<String, dynamic> json) =>
+      _$NoteModelTypeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NoteModelTypeToJson(this);
+}
+
+@JsonSerializable()
+class NoteModel {
+  final String? description;
+  final NoteModelType? type;
+
+  NoteModel({required this.description, required this.type});
+
+  factory NoteModel.fromJson(Map<String, dynamic> json) =>
+      _$NoteModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NoteModelToJson(this);
+}

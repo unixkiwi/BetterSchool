@@ -1,7 +1,9 @@
 import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
+import 'package:betterschool/domain/models/group.dart';
 import 'package:betterschool/domain/models/lesson.dart';
+import 'package:betterschool/domain/models/note.dart';
 import 'package:betterschool/domain/models/room.dart';
 import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:betterschool/domain/models/subject.dart';
@@ -57,6 +59,19 @@ class TimetableRepo {
                     name: "Teacher",
                   ),
                 ],
+          group: Group(
+            name: lesson.group.name ?? "Unknown group",
+            shortName: lesson.group.local_id ?? "UNK",
+            isMeta: lesson.group.meta == null ? false : lesson.group.meta! > 0,
+          ),
+          notes: lesson.notes
+              .map(
+                (note) => Note(
+                  desc: note.description ?? "No description provided",
+                  type: note.type?.name ?? "",
+                ),
+              )
+              .toList(),
         ),
       );
     }

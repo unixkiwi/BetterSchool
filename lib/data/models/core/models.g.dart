@@ -42,3 +42,16 @@ Map<String, dynamic> _$TeacherModelToJson(TeacherModel instance) =>
       'forename': instance.forename,
       'name': instance.name,
     };
+
+GroupModel _$GroupModelFromJson(Map<String, dynamic> json) => GroupModel(
+  name: json['name'] as String?,
+  local_id: json['local_id'] as String?,
+  meta: (json['meta'] as num?)?.toInt(),
+);
+
+Map<String, dynamic> _$GroupModelToJson(GroupModel instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'local_id': instance.local_id,
+      'meta': instance.meta,
+    };

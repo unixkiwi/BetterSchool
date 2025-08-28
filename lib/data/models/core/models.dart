@@ -35,3 +35,16 @@ class TeacherModel {
       _$TeacherModelFromJson(json);
   Map<String, dynamic> toJson() => _$TeacherModelToJson(this);
 }
+
+@JsonSerializable()
+class GroupModel {
+  final String? name;
+  final String? local_id;
+  final int? meta;
+
+  GroupModel({required this.name, required this.local_id, required this.meta});
+
+  factory GroupModel.fromJson(Map<String, dynamic> json) =>
+      _$GroupModelFromJson(json);
+  Map<String, dynamic> toJson() => _$GroupModelToJson(this);
+}
