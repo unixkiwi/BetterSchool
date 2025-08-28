@@ -1,5 +1,6 @@
 import 'package:betterschool/domain/models/lesson.dart';
 import 'package:betterschool/domain/models/subject.dart';
+import 'package:betterschool/ui/core/widgets/field_chip.dart';
 import 'package:flutter/material.dart';
 
 class TimetableLessonTile extends StatelessWidget {
@@ -63,28 +64,15 @@ class TimetableLessonTile extends StatelessWidget {
             child: Row(
               children: [
                 ...lesson.rooms.map(
-                  (room) => Chip(
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                    padding: EdgeInsets.all(2),
-                    label: Text(room.name),
-                  ),
+                  (room) => FieldChip(label: room.name),
                 ),
 
                 Padding(padding: EdgeInsets.only(right: 8)),
 
                 ...lesson.teachers.map(
-                  (teacher) => Tooltip(
-                    triggerMode: TooltipTriggerMode.tap,
-                    message: "${teacher.forename} ${teacher.name}",
-                    child: Chip(
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.surfaceContainerHighest,
-                      padding: EdgeInsets.all(2),
-                      label: Text(teacher.shortName),
-                    ),
+                  (teacher) => FieldChipWithTooltip(
+                    chip: FieldChip(label: teacher.shortName),
+                    tooltip: "${teacher.forename} ${teacher.name}",
                   ),
                 ),
               ],
