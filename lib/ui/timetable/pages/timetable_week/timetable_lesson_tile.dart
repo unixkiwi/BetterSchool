@@ -39,7 +39,8 @@ class TimetableLessonTile extends StatelessWidget {
                     //TODO add bottomsheet for details
                     onTap: () {},
                     child: Tooltip(
-                      message: "This lesson was changed",
+                      message:
+                          "This lesson was changed.",
                       triggerMode: TooltipTriggerMode.tap,
                       preferBelow: false,
                       child: Container(
@@ -63,22 +64,37 @@ class TimetableLessonTile extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                ...lesson.rooms.map(
-                  (room) => FieldChip(label: room.name),
-                ),
+                ...lesson.rooms.map((room) => FieldChip(child: Text(room.name))),
 
                 Padding(padding: EdgeInsets.only(right: 8)),
 
                 ...lesson.teachers.map(
                   (teacher) => FieldChipWithTooltip(
-                    chip: FieldChip(label: teacher.shortName),
+                    chip: FieldChip(child: Text(teacher.shortName)),
                     tooltip: "${teacher.forename} ${teacher.name}",
                   ),
                 ),
 
                 Padding(padding: EdgeInsets.only(right: 8)),
 
-                ?lesson.group.isMeta ? null : FieldChipWithTooltip(chip: FieldChip(label: lesson.group.shortName), tooltip: lesson.group.name),
+                ?lesson.group.isMeta
+                    ? null
+                    : FieldChipWithTooltip(
+                        chip: FieldChip(child: Text(lesson.group.shortName)),
+                        tooltip: lesson.group.name,
+                      ),
+
+                ?lesson.notes.isNotEmpty
+                    ? FieldChipWithTooltip(
+                        chip: FieldChip(child: Icon(Icons.chat_rounded)),
+                        tooltip: "This lesson has ${lesson.notes.length} notes.",
+                        /* WITH COUNT, MAYBE SETTING
+                        Badge.count(
+                          count: lesson.notes.length,
+                          child: Icon(Icons.chat_rounded),
+                        ),*/
+                      )
+                    : null,
               ],
             ),
           ),

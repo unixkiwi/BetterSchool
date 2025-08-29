@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class FieldChip extends StatelessWidget {
-  final String label;
+  final Widget child;
   final Color? bgColor;
   final EdgeInsetsGeometry? padding;
 
-  const FieldChip({super.key, required this.label, this.bgColor, this.padding});
+  const FieldChip({super.key, required this.child, this.bgColor, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class FieldChip extends StatelessWidget {
         context,
       ).colorScheme.surfaceContainerHighest,
       padding: padding ?? EdgeInsets.all(2),
-      label: Text(label),
+      label: child, 
     );
   }
 }
