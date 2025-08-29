@@ -31,17 +31,34 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     // last page given through parameter
     // load prev week
     if (event.isLastPage) {
-      WeekString nextWeek = WeekString.fromDate(event.weekString.toDate().add(Duration(days: 7)));
+      WeekString nextWeek = WeekString.fromDate(
+        event.weekString.toDate().add(Duration(days: 7)),
+      );
       Result<SchoolWeek> response = await _repo.getWeek(nextWeek);
 
-      _handleSchoolWeekResult(response, emit, nextWeek);
+      TimetableState state = _handleSchoolWeekResult(response, emit, nextWeek);
+
+      if (state is TimetableWeekState) {
+        emit(TimetableWeekState(weekNr: state.weekNr, days: state.days, moveTo: 1));
+      } else {
+        emit(state);
+      }
     }
     // load next week
     else if (event.page == 0) {
-      WeekString prevWeek = WeekString.fromDate(event.weekString.toDate().subtract(Duration(days: 7)));
+      WeekString prevWeek = WeekString.fromDate(
+        event.weekString.toDate().subtract(Duration(days: 7)),
+      );
       Result<SchoolWeek> response = await _repo.getWeek(prevWeek);
 
-      _handleSchoolWeekResult(response, emit, prevWeek);
+      TimetableState state = _handleSchoolWeekResult(response, emit, prevWeek);
+
+      if (state is TimetableWeekState) {
+        // state.days.length because the first page is a loading page so I can use length and do not need to subtract
+        emit(TimetableWeekState(weekNr: state.weekNr, days: state.days, moveTo: state.days.length));
+      } else {
+        emit(state);
+      }
     }
   }
 
@@ -53,10 +70,10 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
     Result<SchoolWeek> response = await _repo.getWeek(now);
 
-    _handleSchoolWeekResult(response, emit, now);
+    emit(_handleSchoolWeekResult(response, emit, now));
   }
 
-  void _handleSchoolWeekResult(
+  TimetableState _handleSchoolWeekResult(
     Result<SchoolWeek> response,
     Emitter<TimetableState> emit,
     WeekString week,
@@ -67,9 +84,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
             .where((day) => day.date.weekday <= 5)
             .toList();
 
-        emit(TimetableWeekState(weekNr: week, days: days));
+        return TimetableWeekState(weekNr: week, days: days);
       } else {
-        emit(TimetableEmptyState());
+        return TimetableEmptyState();
       }
     } else if (response is Error<SchoolWeek>) {
       Exception error = response.error;
@@ -78,47 +95,46 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
         if (error.response?.statusCode == noInternetDioStatusCode ||
             error.type == DioExceptionType.connectionError ||
             error.type == DioExceptionType.connectionTimeout) {
-          emit(
-            TimetableErrorState(
-              title: "No Internet Connection",
-              description:
-                  "It seems like your phone is not connected to the internet. Thats why we couldn't fetch the data for your timetable!",
-              errorType: TimetableError.noConnection,
-            ),
+          return TimetableErrorState(
+            title: "No Internet Connection",
+            description:
+                "It seems like your phone is not connected to the internet. Thats why we couldn't fetch the data for your timetable!",
+            errorType: TimetableError.noConnection,
           );
         } else if (error.response?.statusCode == unauthorizedStatusCode ||
             error.response?.statusCode == forbiddenStatusCode) {
-          emit(
-            TimetableErrorState(
-              title: "Forbidden/Unauthorized",
-              description:
-                  "Your request was rejected because it is either unauthorized or forbidden. (${error.response?.statusCode})",
-              errorType: TimetableError.forbidden,
-            ),
+          return TimetableErrorState(
+            title: "Forbidden/Unauthorized",
+            description:
+                "Your request was rejected because it is either unauthorized or forbidden. (${error.response?.statusCode})",
+            errorType: TimetableError.forbidden,
           );
         } else {
           logger.e(error.response?.data);
           logger.e(error.type.toString());
           logger.e(error.requestOptions.path);
-          emit(
-            TimetableErrorState(
-              title:
-                  "An error occurred while fetching the data for your timetable. (${error.response?.statusCode} ${error.response?.statusMessage})",
-              description: error.message ?? error.toString(),
-              errorType: TimetableError.other,
-            ),
+
+          return TimetableErrorState(
+            title:
+                "An error occurred while fetching the data for your timetable. (${error.response?.statusCode} ${error.response?.statusMessage})",
+            description: error.message ?? error.toString(),
+            errorType: TimetableError.other,
           );
         }
       } else {
-        emit(
-          TimetableErrorState(
-            title:
-                "An error occurred while fetching the data for your timetable.",
-            description: error.toString(),
-            errorType: TimetableError.other,
-          ),
+        return TimetableErrorState(
+          title:
+              "An error occurred while fetching the data for your timetable.",
+          description: error.toString(),
+          errorType: TimetableError.other,
         );
       }
     }
+
+    return TimetableErrorState(
+      title: "An error occured while fetching the data for your timetable.",
+      description: "No description provided",
+      errorType: TimetableError.other,
+    );
   }
 }

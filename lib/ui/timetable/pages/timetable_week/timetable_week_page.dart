@@ -51,12 +51,11 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = _getPages(widget.days, widget.weekNr);
-    logger.d("Timetable pages: $pages");
 
     return BlocListener<TimetableBloc, TimetableState>(
       listener: (context, state) {
         // reset page so it doesn't stay at loading page
-        if (state is TimetableWeekState) _controller.jumpToPage(1);
+        if (state is TimetableWeekState) _controller.jumpToPage(state.moveTo ?? 0);
       },
       child: Scaffold(
         appBar: AppBar(title: Text("Timetable")), //TODO add time chip
