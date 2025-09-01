@@ -51,7 +51,7 @@ class Lesson extends Equatable {
     teachers,
     group,
     notes,
-    // it is intended to not compare sublessons
+    subLessons,
   ];
 
   Lesson copyWith({
