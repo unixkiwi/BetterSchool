@@ -53,4 +53,28 @@ class Lesson extends Equatable {
     notes,
     // it is intended to not compare sublessons
   ];
+
+  Lesson copyWith({
+    int? id,
+    int? nr,
+    LessonStatus? status,
+    Subject? subject,
+    List<Room>? rooms,
+    List<Teacher>? teachers,
+    Group? group,
+    List<Note>? notes,
+    List<Lesson>? subLessons,
+  }) {
+    return Lesson(
+      id: id ?? this.id,
+      nr: nr ?? this.nr,
+      status: status ?? this.status,
+      subject: subject ?? this.subject,
+      rooms: rooms ?? this.rooms,
+      teachers: teachers ?? this.teachers,
+      group: group ?? this.group,
+      notes: notes ?? this.notes,
+      subLessons: subLessons ?? this.subLessons,
+    );
+  }
 }
