@@ -21,8 +21,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ];
   final List<NavigationDestination> _destinations = const [
     NavigationDestination(
-      icon: Icon(Icons.calendar_today_outlined),
-      selectedIcon: Icon(Icons.calendar_today),
+      icon: Icon(Icons.calendar_month_outlined),
+      selectedIcon: Icon(Icons.calendar_month_rounded),
       label: 'Timetable',
     ),
     NavigationDestination(
@@ -38,6 +38,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ];
 
   List<WidgetBuilder> get pages => _pages;
+
   List<NavigationDestination> get destinations => _destinations;
 
   HomeBloc()
