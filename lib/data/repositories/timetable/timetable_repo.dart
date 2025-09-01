@@ -130,13 +130,21 @@ class TimetableRepo {
     for (int i = 0; i < lessonsByNrGrouped.length; i += 2) {
       if (i + 1 >= lessonsByNrGrouped.length) break;
 
-      if (lessonsByNrGrouped[i] == lessonsByNrGrouped[i + 1]) {
+      if (lessonsByNrGrouped.entries.elementAtOrNull(i)?.value ==
+          lessonsByNrGrouped.entries.elementAtOrNull(i + 1)?.value) {
         finalLessons.add(lessonsByNrGrouped[i]!);
       } else {
         finalLessons.add(
-          lessonsByNrGrouped[i]!.copyWith(
-            subLessons: [lessonsByNrGrouped[i + 1]!],
-          ),
+          lessonsByNrGrouped.entries
+              .elementAt(i)
+              .value
+              .copyWith(
+                subLessons:
+                    lessonsByNrGrouped.entries.elementAtOrNull(i + 1)?.value !=
+                        null
+                    ? [lessonsByNrGrouped.entries.elementAtOrNull(i + 1)!.value]
+                    : [],
+              ),
         );
       }
     }
