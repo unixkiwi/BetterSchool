@@ -3,6 +3,7 @@ import 'package:betterschool/domain/models/note.dart';
 import 'package:betterschool/domain/models/room.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/domain/models/teacher.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonEnum(valueField: "status")
@@ -17,7 +18,7 @@ enum LessonStatus {
   cancelled,
 }
 
-class Lesson {
+class Lesson extends Equatable {
   final int id;
   final int nr;
   final LessonStatus status;
@@ -27,7 +28,7 @@ class Lesson {
   final Group group;
   final List<Note> notes;
 
-  Lesson({
+  const Lesson({
     required this.id,
     required this.nr,
     required this.status,
@@ -37,4 +38,16 @@ class Lesson {
     required this.group,
     required this.notes,
   });
+
+  @override
+  List<Object?> get props => [
+    id,
+    nr,
+    status,
+    subject,
+    rooms,
+    teachers,
+    group,
+    notes,
+  ];
 }
