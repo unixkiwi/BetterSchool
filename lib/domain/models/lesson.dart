@@ -27,6 +27,7 @@ class Lesson extends Equatable {
   final List<Teacher> teachers;
   final Group group;
   final List<Note> notes;
+  final List<Lesson> subLessons;
 
   const Lesson({
     required this.id,
@@ -37,6 +38,7 @@ class Lesson extends Equatable {
     required this.teachers,
     required this.group,
     required this.notes,
+    this.subLessons = const [],
   });
 
   @override
@@ -49,5 +51,6 @@ class Lesson extends Equatable {
     teachers,
     group,
     notes,
+    // it is intended to not compare sublessons
   ];
 }
