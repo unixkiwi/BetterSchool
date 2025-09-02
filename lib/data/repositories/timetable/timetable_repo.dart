@@ -13,6 +13,7 @@ import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class TimetableRepo {
   final BesteSchuleApiClientImpl _apiClient;
@@ -119,7 +120,9 @@ class TimetableRepo {
 
         // add remaining lessons to the main lesson as sub lessons
         lessonsByNrGrouped[sortedByNr.key] = mainLesson.copyWith(
-          subLessons: lessons.where((lesson) => lesson != mainLesson).toList(),
+          subLessons: lessons
+              .where((lesson) => lesson.id != mainLesson.id)
+              .toList(),
         );
       }
     }
@@ -130,28 +133,30 @@ class TimetableRepo {
     for (int i = 0; i < lessonsByNrGrouped.length; i += 2) {
       if (i + 1 >= lessonsByNrGrouped.length) break;
 
-      if (lessonsByNrGrouped.entries.elementAtOrNull(i)?.value ==
-          lessonsByNrGrouped.entries.elementAtOrNull(i + 1)?.value) {
-        finalLessons.add(lessonsByNrGrouped[i]!);
-      } else {
+      Lesson firstLesson = lessonsByNrGrouped.entries.elementAtOrNull(i)!.value;
+      Lesson secondLesson = lessonsByNrGrouped.entries
+          .elementAtOrNull(i + 1)!
+          .value;
+
+      if (firstLesson.group == secondLesson.group &&
+          listEquals(firstLesson.notes, secondLesson.notes) &&
+          listEquals(firstLesson.rooms, secondLesson.rooms) &&
+          listEquals(firstLesson.teachers, secondLesson.teachers) &&
+          firstLesson.subject == secondLesson.subject &&
+          firstLesson.status == secondLesson.status) {
         finalLessons.add(
-          lessonsByNrGrouped.entries
-              .elementAt(i)
-              .value
-              .copyWith(
-                subLessons:
-                    lessonsByNrGrouped.entries.elementAtOrNull(i + 1)?.value !=
-                        null
-                    ? [lessonsByNrGrouped.entries.elementAtOrNull(i + 1)!.value]
-                    : [],
-              ),
+          firstLesson.copyWith(
+            subLessons: [...firstLesson.subLessons, ...secondLesson.subLessons],
+          ),
         );
+      } else {
+        finalLessons.add(firstLesson.copyWith(subLessons: [secondLesson]));
       }
     }
 
     // add last lesson if the number of lessons is odd
     if (lessonsByNrGrouped.length % 2 != 0) {
-      finalLessons.add(lessonsByNrGrouped[lessonsByNrGrouped.length - 1]!);
+      finalLessons.add(lessonsByNrGrouped.entries.last.value);
     }
 
     return finalLessons;
