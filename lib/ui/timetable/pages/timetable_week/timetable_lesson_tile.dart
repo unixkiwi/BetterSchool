@@ -1,6 +1,7 @@
 import 'package:betterschool/domain/models/lesson.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/ui/core/widgets/field_chip.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_week/lessontile_bottomsheet/timetable_lessontile_bottomsheet.dart';
 import 'package:flutter/material.dart';
 
 class TimetableLessonTile extends StatelessWidget {
@@ -44,10 +45,14 @@ class TimetableLessonTile extends StatelessWidget {
         border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: ListTile(
-        //TODO bottom info sheet
-        // onTap: () {
-        // showLessonTileBottomSheet(context, lesson);
-        // },
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => LessonBottomSheet(lesson: lesson),
+          );
+        },
         title: Text(
           subject.name.length > 17 ? subject.local_id : subject.name,
           style:
@@ -56,6 +61,7 @@ class TimetableLessonTile extends StatelessWidget {
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold) ??
               TextStyle(fontWeight: FontWeight.bold),
         ),
+        //TODO show time (like 1. und 2. Stunde) as trailing like beste.schule does
         subtitle: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
