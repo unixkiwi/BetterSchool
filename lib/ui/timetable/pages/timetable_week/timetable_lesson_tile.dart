@@ -46,11 +46,9 @@ class TimetableLessonTile extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          showModalBottomSheet(
+          showDialog(
             context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (context) => LessonBottomSheet(lesson: lesson),
+            builder: (context) => LessonDetailsDialog(lesson: lesson),
           );
         },
         title: Text(
