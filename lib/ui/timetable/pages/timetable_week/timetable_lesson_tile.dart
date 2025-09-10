@@ -1,7 +1,7 @@
 import 'package:betterschool/domain/models/lesson.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/ui/core/widgets/field_chip.dart';
-import 'package:betterschool/ui/timetable/pages/timetable_week/lessontile_bottomsheet/timetable_lessontile_bottomsheet.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_week/lessontile_bottomsheet/timetable_lessontile_details_screen.dart';
 import 'package:flutter/material.dart';
 
 class TimetableLessonTile extends StatelessWidget {
