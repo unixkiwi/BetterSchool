@@ -2,6 +2,8 @@ import 'package:betterschool/domain/models/lesson.dart';
 import 'package:betterschool/domain/models/note.dart';
 import 'package:flutter/material.dart';
 
+part 'timetable_lessontile_details_notes.dart';
+
 class LessonDetailsDialog extends StatelessWidget {
   final Lesson lesson;
 
@@ -76,109 +78,9 @@ class LessonDetailsDialog extends StatelessWidget {
             ),
             SizedBox(height: 8),
             // Scrollable notes section
-            Flexible(
-              child: Container(
-                width: double.infinity,
-                constraints: BoxConstraints(minHeight: 60),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                clipBehavior: Clip.hardEdge,
-                child: lesson.notes.isEmpty
-                    ? ListView(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.all(6),
-                        children: [
-                          Text(
-                            "There are no notes for this lesson.",
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
-                      )
-                    : Scrollbar(
-                        interactive: true,
-                        radius: Radius.circular(6),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.all(6),
-                          itemCount: lesson.notes.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: index != lesson.notes.length - 1
-                                  ? const EdgeInsets.only(
-                                      bottom: 4,
-                                      left: 2,
-                                      right: 2,
-                                    )
-                                  : const EdgeInsets.symmetric(horizontal: 2),
-                              child: _buildNoteTile(
-                                context,
-                                lesson.notes[index],
-                                index == lesson.notes.length - 1,
-                                index == 0,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-              ),
-            ),
+            TimetableLessontileDetailsNotesSection(notes: lesson.notes),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildNoteTile(
-    BuildContext context,
-    Note note,
-    bool isLast,
-    bool isFirst,
-  ) {
-    BorderRadius radius;
-
-    if (isLast && isFirst) {
-      radius = BorderRadius.all(Radius.circular(8));
-    } else if (isLast) {
-      radius = BorderRadius.only(
-        topLeft: Radius.circular(3),
-        topRight: Radius.circular(3),
-        bottomLeft: Radius.circular(8),
-        bottomRight: Radius.circular(8),
-      );
-    } else if (isFirst) {
-      radius = BorderRadius.only(
-        topLeft: Radius.circular(8),
-        topRight: Radius.circular(8),
-        bottomLeft: Radius.circular(3),
-        bottomRight: Radius.circular(3),
-      );
-    } else {
-      radius = BorderRadius.all(Radius.circular(3));
-    }
-
-    return Container(
-      padding: EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        borderRadius: radius,
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            note.type,
-            style: Theme.of(context).textTheme.labelSmall,
-            textAlign: TextAlign.start,
-          ),
-          Text(
-            note.desc,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.start,
-          ),
-        ],
       ),
     );
   }
