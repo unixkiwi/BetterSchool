@@ -62,6 +62,11 @@ class LessonDetailsDialog extends StatelessWidget {
               lesson.teachers.map((t) => "${t.forename} ${t.name}").toList(),
             ),
             SizedBox(height: 8),
+            // Subject
+            _buildScrollableInfoSection(context, "Subject", [
+              lesson.subject.name,
+            ]),
+            SizedBox(height: 8),
             // Notes Title
             Text(
               "Notes:",
