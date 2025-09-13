@@ -13,6 +13,7 @@ import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class TimetableRepo {
   final BesteSchuleApiClientImpl _apiClient;
@@ -20,20 +21,21 @@ class TimetableRepo {
   TimetableRepo(this._apiClient);
 
   List<Lesson> _getLessons(List<LessonModel> lessons) {
-    List<Lesson> result = [];
+    List<Lesson> lessonsConverted = [];
 
+    // generate lessons (domain layer classes)
     for (final LessonModel lesson in lessons) {
       List<Room> roomsIfNull = [Room(name: "---")];
 
-      result.add(
+      lessonsConverted.add(
         Lesson(
           id: lesson.id ?? -1,
-          nr: 0,
+          nr: lesson.nr ?? 0,
           status: lesson.status ?? LessonStatus.initial,
           subject: Subject(
-            id: lesson.subject!.id ?? -1,
-            local_id: lesson.subject!.local_id ?? "---",
-            name: lesson.subject!.name ?? "Unknown subject",
+            id: lesson.subject?.id ?? -1,
+            local_id: lesson.subject?.local_id ?? "---",
+            name: lesson.subject?.name ?? "Unknown subject",
           ),
           rooms: lesson.rooms != null && lesson.rooms!.isNotEmpty
               ? lesson.rooms!
@@ -76,9 +78,88 @@ class TimetableRepo {
       );
     }
 
-    result.sort((a, b) => a.nr.compareTo(b.nr));
+    lessonsConverted.sort((a, b) => a.nr.compareTo(b.nr));
 
-    return result;
+    // group lessons by nr
+    Map<int, List<Lesson>> lessonsByNr = {};
+
+    for (final Lesson lesson in lessonsConverted) {
+      if (lessonsByNr[lesson.nr] == null) lessonsByNr[lesson.nr] = [];
+      lessonsByNr[lesson.nr]?.add(lesson);
+    }
+
+    // create lessons with sublessons and group them
+    // 1. group lessons from one nr (e.g. cancelled -> take not cancelled if exists else just take cancelled)
+    final Map<int, Lesson> lessonsByNrGrouped = {};
+
+    for (final MapEntry<int, List<Lesson>> sortedByNr in lessonsByNr.entries) {
+      final List<Lesson> lessons = sortedByNr.value;
+
+      if (lessons.isEmpty) {
+        continue;
+      } else if (lessons.length == 1) {
+        lessonsByNrGrouped[sortedByNr.key] = lessons.first;
+      } else if (lessons.every((lesson) => lesson == lessons.first)) {
+        // Check whether all lessons are the same
+        lessonsByNrGrouped[sortedByNr.key] = lessons.first;
+      } else {
+        // sort lessons by subject name so the sorting is constant across nrs
+        lessons.sort((a, b) => a.subject.name.compareTo(b.subject.name));
+
+        // find main lesson (first try hold then planned then initial)
+        Lesson mainLesson = lessons.firstWhere(
+          (lesson) => lesson.status == LessonStatus.hold,
+          orElse: () => lessons.firstWhere(
+            (lesson) => lesson.status == LessonStatus.planned,
+            orElse: () => lessons.firstWhere(
+              (lesson) => lesson.status == LessonStatus.initial,
+              orElse: () => lessons.first,
+            ),
+          ),
+        );
+
+        // add remaining lessons to the main lesson as sub lessons
+        lessonsByNrGrouped[sortedByNr.key] = mainLesson.copyWith(
+          subLessons: lessons
+              .where((lesson) => lesson.id != mainLesson.id)
+              .toList(),
+        );
+      }
+    }
+
+    // 2. group by nr (always combine two)
+    List<Lesson> finalLessons = [];
+
+    for (int i = 0; i < lessonsByNrGrouped.length; i += 2) {
+      if (i + 1 >= lessonsByNrGrouped.length) break;
+
+      Lesson firstLesson = lessonsByNrGrouped.entries.elementAtOrNull(i)!.value;
+      Lesson secondLesson = lessonsByNrGrouped.entries
+          .elementAtOrNull(i + 1)!
+          .value;
+
+      if (firstLesson.group == secondLesson.group &&
+          listEquals(firstLesson.notes, secondLesson.notes) &&
+          listEquals(firstLesson.rooms, secondLesson.rooms) &&
+          listEquals(firstLesson.teachers, secondLesson.teachers) &&
+          firstLesson.subject == secondLesson.subject &&
+          firstLesson.status == secondLesson.status) {
+        finalLessons.add(
+          firstLesson.copyWith(
+            subLessons: [...firstLesson.subLessons, ...secondLesson.subLessons],
+          ),
+        );
+      } else {
+        finalLessons.add(firstLesson.copyWith(subLessons: [secondLesson]));
+      }
+    }
+
+    // add last lesson if the number of lessons is odd
+    if (lessonsByNrGrouped.length % 2 != 0) {
+      finalLessons.add(lessonsByNrGrouped.entries.last.value);
+    }
+
+    return finalLessons;
   }
 
   List<SchoolDay> _getDays(List<SchoolDayModel> days) {

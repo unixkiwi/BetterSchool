@@ -9,8 +9,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'timetable_state.dart';
 part 'timetable_event.dart';
+part 'timetable_state.dart';
 
 class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   final TimetableRepo _repo;
@@ -39,7 +39,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       TimetableState state = _handleSchoolWeekResult(response, emit, nextWeek);
 
       if (state is TimetableWeekState) {
-        emit(TimetableWeekState(weekNr: state.weekNr, days: state.days, moveTo: 1));
+        emit(
+          TimetableWeekState(weekNr: state.weekNr, days: state.days, moveTo: 1),
+        );
       } else {
         emit(state);
       }
@@ -55,7 +57,13 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
       if (state is TimetableWeekState) {
         // state.days.length because the first page is a loading page so I can use length and do not need to subtract
-        emit(TimetableWeekState(weekNr: state.weekNr, days: state.days, moveTo: state.days.length));
+        emit(
+          TimetableWeekState(
+            weekNr: state.weekNr,
+            days: state.days,
+            moveTo: state.days.length,
+          ),
+        );
       } else {
         emit(state);
       }
