@@ -34,6 +34,17 @@ class TimetableLessonTile extends StatelessWidget {
     }
   }
 
+  Color _getBorder(BuildContext context) {
+    switch (lesson.status) {
+      case LessonStatus.cancelled:
+        return Theme.of(context).colorScheme.error;
+      case LessonStatus.hold:
+        return Theme.of(context).colorScheme.outlineVariant;
+      default:
+        return Theme.of(context).colorScheme.outline;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Subject subject = lesson.subject;
@@ -42,7 +53,7 @@ class TimetableLessonTile extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: _getBorderRadius(),
         color: Theme.of(context).colorScheme.surfaceContainer,
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+        border: Border.all(color: _getBorder(context)),
       ),
       child: ListTile(
         onTap: () {
@@ -53,6 +64,7 @@ class TimetableLessonTile extends StatelessWidget {
         },
         title: Text(
           subject.name.length > 17 ? subject.local_id : subject.name,
+          //TODO read text for cancelled lessons
           style:
               Theme.of(
                 context,
