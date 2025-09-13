@@ -63,35 +63,5 @@ Widget _buildSublessonTile(
   bool isLast,
   bool isFirst,
 ) {
-  BorderRadius radius;
-
-  if (isLast && isFirst) {
-    radius = BorderRadius.all(Radius.circular(8));
-  } else if (isLast) {
-    radius = BorderRadius.only(
-      topLeft: Radius.circular(3),
-      topRight: Radius.circular(3),
-      bottomLeft: Radius.circular(8),
-      bottomRight: Radius.circular(8),
-    );
-  } else if (isFirst) {
-    radius = BorderRadius.only(
-      topLeft: Radius.circular(8),
-      topRight: Radius.circular(8),
-      bottomLeft: Radius.circular(3),
-      bottomRight: Radius.circular(3),
-    );
-  } else {
-    radius = BorderRadius.all(Radius.circular(3));
-  }
-
-  return Container(
-    padding: EdgeInsets.all(6),
-    decoration: BoxDecoration(
-      borderRadius: radius,
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-    ),
-    child: TimetableLessonTile(lesson: lesson),
-  );
+  return TimetableLessonTile(lesson: lesson);
 }

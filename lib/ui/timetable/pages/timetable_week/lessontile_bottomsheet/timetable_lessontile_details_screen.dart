@@ -81,6 +81,7 @@ class LessonDetailsDialog extends StatelessWidget {
             SizedBox(height: 8),
             // Scrollable notes section
             TimetableLessontileDetailsNotesSection(notes: lesson.notes),
+            SizedBox(height: 8),
             if (lesson.subLessons.isNotEmpty) ...[
               // Sublessons tile
               Text(
