@@ -47,21 +47,21 @@ class LessonDetailsDialog extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
             // Rooms
             _buildScrollableInfoSection(
               context,
               "Rooms",
               lesson.rooms.map((r) => r.name).toList(),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
             // Teacher
             _buildScrollableInfoSection(
               context,
               "Teachers",
               lesson.teachers.map((t) => "${t.forename} ${t.name}").toList(),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
             // Notes Title
             Text(
               "Notes:",
@@ -192,7 +192,7 @@ class LessonDetailsDialog extends StatelessWidget {
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 4),
         SizedBox(
           height: 40,
           child: ListView.builder(
@@ -202,7 +202,7 @@ class LessonDetailsDialog extends StatelessWidget {
               return Padding(
                 padding: EdgeInsets.only(right: 8),
                 child: Chip(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                   label: Text(items[index]),
                   backgroundColor: Theme.of(
                     context,
