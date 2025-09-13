@@ -1,8 +1,10 @@
 import 'package:betterschool/domain/models/lesson.dart';
 import 'package:betterschool/domain/models/note.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_week/timetable_lesson_tile.dart';
 import 'package:flutter/material.dart';
 
 part 'timetable_lessontile_details_notes.dart';
+part 'timetable_lessontile_details_sublessons.dart';
 
 class LessonDetailsDialog extends StatelessWidget {
   final Lesson lesson;
@@ -79,6 +81,20 @@ class LessonDetailsDialog extends StatelessWidget {
             SizedBox(height: 8),
             // Scrollable notes section
             TimetableLessontileDetailsNotesSection(notes: lesson.notes),
+            if (lesson.subLessons.isNotEmpty) ...[
+              // Sublessons tile
+              Text(
+                "Other Lessons:",
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              SizedBox(height: 8),
+              // Scrollable sublessons section
+              TimetableLessontileDetailsSublessonsSection(
+                sublessons: lesson.subLessons,
+              ),
+            ],
           ],
         ),
       ),
