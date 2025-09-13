@@ -42,12 +42,7 @@ class TimetableLessontileDetailsSublessonsSection extends StatelessWidget {
                       padding: index != sublessons.length - 1
                           ? const EdgeInsets.only(bottom: 4, left: 2, right: 2)
                           : const EdgeInsets.symmetric(horizontal: 2),
-                      child: _buildSublessonTile(
-                        context,
-                        sublessons[index],
-                        index == sublessons.length - 1,
-                        index == 0,
-                      ),
+                      child: TimetableLessonTile(lesson: sublessons[index]),
                     );
                   },
                 ),
@@ -55,13 +50,4 @@ class TimetableLessontileDetailsSublessonsSection extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _buildSublessonTile(
-  BuildContext context,
-  Lesson lesson,
-  bool isLast,
-  bool isFirst,
-) {
-  return TimetableLessonTile(lesson: lesson);
 }
