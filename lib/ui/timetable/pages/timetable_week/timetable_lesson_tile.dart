@@ -66,10 +66,18 @@ class TimetableLessonTile extends StatelessWidget {
           subject.name.length > 17 ? subject.local_id : subject.name,
           //TODO read text for cancelled lessons
           style:
-              Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold) ??
-              TextStyle(fontWeight: FontWeight.bold),
+              Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: lesson.status == LessonStatus.cancelled
+                    ? Theme.of(context).colorScheme.error
+                    : null,
+              ) ??
+              TextStyle(
+                fontWeight: FontWeight.bold,
+                color: lesson.status == LessonStatus.cancelled
+                    ? Theme.of(context).colorScheme.error
+                    : null,
+              ),
         ),
         //TODO show time (like 1. und 2. Stunde) as trailing like beste.schule does
         subtitle: SingleChildScrollView(
