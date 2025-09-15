@@ -78,7 +78,19 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
     Result<SchoolWeek> response = await _repo.getWeek(now);
 
-    emit(_handleSchoolWeekResult(response, emit, now));
+    TimetableState receivedState = _handleSchoolWeekResult(response, emit, now);
+
+    if (receivedState is TimetableWeekState && DateTime.now().weekday <= 5) {
+      emit(
+        TimetableWeekState(
+          weekNr: receivedState.weekNr,
+          days: receivedState.days,
+          moveTo: DateTime.now().weekday,
+        ),
+      );
+    } else {
+      emit(receivedState);
+    }
   }
 
   TimetableState _handleSchoolWeekResult(
