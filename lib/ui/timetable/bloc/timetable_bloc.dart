@@ -7,6 +7,7 @@ import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'timetable_event.dart';
@@ -70,22 +71,46 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     }
   }
 
+  bool isAfter1730() {
+    final DateTime now = DateTime.now();
+
+    return now.isAfter(DateTime(now.year, now.month, now.day, 17, 30));
+  }
+
   Future<void> _onPageLoaded(
     TimetablePageStartedEvent event,
     Emitter<TimetableState> emit,
   ) async {
-    WeekString now = WeekString.fromDate(DateTime.now());
+    DateTime now = DateTime.now();
+    WeekString targetWeek;
+    int moveTo;
 
-    Result<SchoolWeek> response = await _repo.getWeek(now);
+    if (now.weekday >= 5 && isAfter1730()) {
+      // get next week
+      targetWeek = WeekString.fromDate(now.add(Duration(days: 3)));
+      moveTo = 1;
+    } else if (isAfter1730()) {
+      targetWeek = WeekString.fromDate(now);
+      moveTo = now.weekday + 1;
+    } else {
+      targetWeek = WeekString.fromDate(DateTime.now());
+      moveTo = now.weekday;
+    }
 
-    TimetableState receivedState = _handleSchoolWeekResult(response, emit, now);
+    Result<SchoolWeek> response = await _repo.getWeek(targetWeek);
 
-    if (receivedState is TimetableWeekState && DateTime.now().weekday <= 5) {
+    TimetableState receivedState = _handleSchoolWeekResult(
+      response,
+      emit,
+      targetWeek,
+    );
+
+    if (receivedState is TimetableWeekState) {
       emit(
         TimetableWeekState(
           weekNr: receivedState.weekNr,
           days: receivedState.days,
-          moveTo: DateTime.now().weekday,
+          moveTo: moveTo,
         ),
       );
     } else {
