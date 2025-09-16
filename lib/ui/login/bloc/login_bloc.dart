@@ -7,8 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oauth2/oauth2.dart';
 
-part 'login_state.dart';
 part 'login_event.dart';
+part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository authRepo;
@@ -29,7 +29,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     switch (token) {
       case Success<String>():
-        logger.d("Token was successfully aquired locally. ${token.value} ");
+        //logger.d("Token was successfully aquired locally. ${token.value} ");
         emit(LoginSuccessful());
         break;
       case Error<String>():

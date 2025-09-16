@@ -1,5 +1,4 @@
 import 'package:betterschool/ui/home_navbar/bloc/home_bloc.dart';
-import 'package:betterschool/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +7,6 @@ class HomePageNavBar extends StatelessWidget {
 
   Widget _getPage(BuildContext context, HomeState state) {
     if (state is HomePageSelectedState) {
-      logger.d("HomePageSelected state received");
       return state.page(context);
     }
     return Center(child: CircularProgressIndicator());
