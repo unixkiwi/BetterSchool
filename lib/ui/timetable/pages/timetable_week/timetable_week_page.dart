@@ -26,6 +26,22 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
   final PageController _controller = PageController(initialPage: 1);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final blocState = context.read<TimetableBloc>().state;
+
+      if (blocState is TimetableWeekState && blocState.moveTo != null) {
+        logger.d(
+          "[Timetable] Made initially jump to page: ${blocState.moveTo}",
+        );
+
+        _controller.jumpToPage(blocState.moveTo!);
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -55,7 +71,10 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
     return BlocListener<TimetableBloc, TimetableState>(
       listener: (context, state) {
         // reset page so it doesn't stay at loading page
-        if (state is TimetableWeekState) _controller.jumpToPage(state.moveTo ?? 0);
+        if (state is TimetableWeekState) {
+          logger.d("[Timetable] Jumped to page ${state.moveTo}");
+          _controller.jumpToPage(state.moveTo ?? 1);
+        }
       },
       child: Scaffold(
         appBar: AppBar(title: Text("Timetable")), //TODO add time chip
