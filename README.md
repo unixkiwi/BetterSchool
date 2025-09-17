@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/github/license/unixkiwi/betterschool?style=for-the-badge" alt="GitHub License">
 </div>
 
-<div align="center"><b>Open Source, Ad-Free Forever, and Free</b></div>  
+<div align="center"><b>Free of charge, Ad-Free and Open Source forever</b></div>  
 <p align="center">BetterSchool is an unofficial, feature-rich client for <a href="https://beste.schule">beste.schule</a>, designed for students and parents.</p>
 <p align="center">The app is designed to give students and their parents a clean and simple way to access their data like timetable and grades from beste.schule.</p>
  
