@@ -1,3 +1,7 @@
+# Not yet available still in heavy development
+
+---
+
 <h1 align="center">🏫 BetterSchool 🏫</h1>
 
 <div align="center">
