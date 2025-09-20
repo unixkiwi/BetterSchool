@@ -2,6 +2,7 @@ import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_error_page.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_loading_page.dart';
+import 'package:betterschool/ui/timetable/pages/timetable_week/timetable_datebar.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_week/timetable_day_page.dart';
 import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/time_utils.dart';
@@ -77,7 +78,7 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("Timetable")), //TODO add time chip
+        appBar: TimetableDatebar(),
         body: PageView.builder(
           controller: _controller,
           itemCount: pages.length,
