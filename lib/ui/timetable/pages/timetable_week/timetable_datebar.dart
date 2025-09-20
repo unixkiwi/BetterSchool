@@ -1,7 +1,10 @@
+import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:flutter/material.dart';
 
 class TimetableDatebar extends StatelessWidget implements PreferredSizeWidget {
-  const TimetableDatebar({super.key});
+  final SchoolDay? currentDay;
+
+  const TimetableDatebar({super.key, required this.currentDay});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,7 @@ class TimetableDatebar extends StatelessWidget implements PreferredSizeWidget {
       ],
       title: TextButton(
         onPressed: () {},
-        child: Text(DateTime.now().toIso8601String()),
+        child: Text(currentDay?.date.toIso8601String() ?? "Loading..."),
       ),
       centerTitle: true,
     );

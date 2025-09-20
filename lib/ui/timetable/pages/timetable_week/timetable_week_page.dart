@@ -25,6 +25,7 @@ class TimetableWeekPage extends StatefulWidget {
 
 class _TimetableWeekPageState extends State<TimetableWeekPage> {
   final PageController _controller = PageController(initialPage: 1);
+  int _currentPage = 1; // Start at page 1 (first actual day)
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
         );
 
         _controller.jumpToPage(blocState.moveTo!);
+        if (blocState.moveTo != 0) _currentPage = blocState.moveTo!;
       }
     });
   }
@@ -65,6 +67,13 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
     return result;
   }
 
+  SchoolDay? _getCurrentDay() {
+    if (_currentPage > 0 && _currentPage <= widget.days.length) {
+      return widget.days[_currentPage - 1];
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = _getPages(widget.days, widget.weekNr);
@@ -74,11 +83,15 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
         // reset page so it doesn't stay at loading page
         if (state is TimetableWeekState) {
           logger.d("[Timetable] Jumped to page ${state.moveTo}");
-          _controller.jumpToPage(state.moveTo ?? 1);
+          final targetPage = state.moveTo ?? 1;
+          _controller.jumpToPage(targetPage);
+          setState(() {
+            _currentPage = targetPage;
+          });
         }
       },
       child: Scaffold(
-        appBar: TimetableDatebar(),
+        appBar: TimetableDatebar(currentDay: _getCurrentDay()),
         body: PageView.builder(
           controller: _controller,
           itemCount: pages.length,
@@ -90,13 +103,19 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
                       "The requested page could not be found and was out of range.",
                   errorType: TimetableError.other,
                 ),
-          onPageChanged: (page) => context.read<TimetableBloc>().add(
-            TimetablePageSwitchEvent(
-              page: page,
-              isLastPage: page == pages.length - 1,
-              weekString: widget.weekNr,
-            ),
-          ),
+          onPageChanged: (page) {
+            context.read<TimetableBloc>().add(
+              TimetablePageSwitchEvent(
+                page: page,
+                isLastPage: page == pages.length - 1,
+                weekString: widget.weekNr,
+              ),
+            );
+
+            setState(() {
+              _currentPage = page;
+            });
+          },
         ),
       ),
     );
