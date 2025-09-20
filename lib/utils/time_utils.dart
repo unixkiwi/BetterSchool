@@ -7,8 +7,13 @@ class WeekString {
   const WeekString({required this.year, required this.week});
 
   /// Creates a [WeekString] from a [DateTime]
-  /// If the date is a weekend, returns the next week
   factory WeekString.fromDate(DateTime date) {
+    return _getISOWeekString(date);
+  }
+
+  /// Creates a [WeekString] from a [DateTime]
+  /// If the date is a weekend, returns the next week
+  factory WeekString.fromDateSmart(DateTime date) {
     // If it's weekend, move to next Monday
     if (date.weekday >= 6) {
       // 8 because of 1 day to add for saturday so 8 - 7 -> 1
