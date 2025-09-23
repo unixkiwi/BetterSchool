@@ -54,6 +54,7 @@ class TimetableDatebar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: TextButton(
         onPressed: () {},
+        //TODO onDatePressed with date dialog for faster switch between dates
         child: Text(_getText(), style: Theme.of(context).textTheme.titleMedium),
       ),
       centerTitle: true,

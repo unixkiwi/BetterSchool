@@ -64,7 +64,6 @@ class TimetableLessonTile extends StatelessWidget {
         },
         title: Text(
           subject.name.length > 17 ? subject.local_id : subject.name,
-          //TODO read text for cancelled lessons
           style:
               Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
@@ -98,10 +97,7 @@ class TimetableLessonTile extends StatelessWidget {
               chipPadding,
 
               if (!lesson.group.isMeta) ...[
-                FieldChipWithTooltip(
-                  chip: FieldChip(child: Text(lesson.group.shortName)),
-                  tooltip: lesson.group.name,
-                ),
+                FieldChip(child: Text(lesson.group.shortName)),
                 chipPadding,
               ],
 
