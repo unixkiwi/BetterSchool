@@ -1,5 +1,6 @@
 import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TimetableDatebar extends StatelessWidget implements PreferredSizeWidget {
   final SchoolDay? currentDay;
@@ -16,6 +17,34 @@ class TimetableDatebar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
+  String _getText() {
+    String text = "";
+
+    if (currentDay == null && currentDay?.date == null) {
+      text = "Loading...";
+    } else {
+      DateTime date = currentDay!.date;
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+      DateTime target = DateTime(date.year, date.month, date.day);
+
+      String prefix = "";
+      if (target == today) {
+        prefix = "Today";
+      } else if (target == today.subtract(const Duration(days: 1))) {
+        prefix = "Yesterday";
+      } else if (target == today.add(const Duration(days: 1))) {
+        prefix = "Tomorrow";
+      } else {
+        prefix = DateFormat('EEEE').format(date);
+      }
+
+      text = "$prefix, ${DateFormat('d MMMM y').format(date)}";
+    }
+
+    return text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -25,7 +54,7 @@ class TimetableDatebar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: TextButton(
         onPressed: () {},
-        child: Text(currentDay?.date.toIso8601String() ?? "Loading..."),
+        child: Text(_getText(), style: Theme.of(context).textTheme.titleMedium),
       ),
       centerTitle: true,
       actions: [
