@@ -19,6 +19,36 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   TimetableBloc(this._repo) : super(TimetableStateLoading()) {
     on<TimetablePageStartedEvent>(_onPageLoaded);
     on<TimetablePageSwitchEvent>(_onPageSwitch);
+    on<TimetableDatebarBackButtonPressedEvent>(_onDatebarBackBtnPressed);
+    on<TimetableDatebarNextButtonPressedEvent>(_onDatebarNextBtnPressed);
+  }
+
+  Future<void> _onDatebarBackBtnPressed(
+    TimetableDatebarBackButtonPressedEvent event,
+    Emitter<TimetableState> emit,
+  ) async {
+    await _onPageSwitch(
+      TimetablePageSwitchEvent(
+        page: 0,
+        isLastPage: false,
+        weekString: event.weekString,
+      ),
+      emit,
+    );
+  }
+
+  Future<void> _onDatebarNextBtnPressed(
+    TimetableDatebarNextButtonPressedEvent event,
+    Emitter<TimetableState> emit,
+  ) async {
+    await _onPageSwitch(
+      TimetablePageSwitchEvent(
+        page: 6,
+        isLastPage: true,
+        weekString: event.weekString,
+      ),
+      emit,
+    );
   }
 
   Future<void> _onPageSwitch(

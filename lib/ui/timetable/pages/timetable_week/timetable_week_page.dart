@@ -91,7 +91,15 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
         }
       },
       child: Scaffold(
-        appBar: TimetableDatebar(currentDay: _getCurrentDay()),
+        appBar: TimetableDatebar(
+          currentDay: _getCurrentDay(),
+          onBack: () => context.read<TimetableBloc>().add(
+            TimetableDatebarBackButtonPressedEvent(weekString: widget.weekNr),
+          ),
+          onNext: () => context.read<TimetableBloc>().add(
+            TimetableDatebarNextButtonPressedEvent(weekString: widget.weekNr),
+          ),
+        ),
         body: PageView.builder(
           controller: _controller,
           itemCount: pages.length,
