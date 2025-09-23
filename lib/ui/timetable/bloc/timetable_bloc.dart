@@ -62,6 +62,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     // last page given through parameter
     // load prev week
     if (event.isLastPage) {
+      // show loading page
+      emit(TimetableStateLoading());
+
       WeekString nextWeek = WeekString.fromDate(
         event.weekString.toDate().add(Duration(days: 7)),
       );
@@ -79,6 +82,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     }
     // load next week
     else if (event.page == 0) {
+      // show loading page
+      emit(TimetableStateLoading());
+
       WeekString prevWeek = WeekString.fromDate(
         event.weekString.toDate().subtract(Duration(days: 7)),
       );
