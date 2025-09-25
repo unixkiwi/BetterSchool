@@ -10,7 +10,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   await RemoteCaching.instance.init(
-    defaultCacheDuration: Duration(hours: 1),
+    defaultCacheDuration: Duration(days: 1),
     verboseMode: true, // See logs in debug mode
   );
 
