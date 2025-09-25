@@ -9,6 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await RemoteCaching.instance.init(
+    defaultCacheDuration: Duration(hours: 1),
+    verboseMode: true, // See logs in debug mode
+  );
+
   initDependencies();
 
   runApp(
