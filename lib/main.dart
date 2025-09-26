@@ -12,7 +12,7 @@ void main() async {
 
   await RemoteCaching.instance.init(
     defaultCacheDuration: Duration(days: 1),
-    verboseMode: true, // See logs in debug mode
+    verboseMode: true,
   );
 
   initDependencies();
