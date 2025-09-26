@@ -14,6 +14,7 @@ import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:remote_caching/remote_caching.dart';
 
 class TimetableRepo {
   final BesteSchuleApiClientImpl _apiClient;
@@ -178,10 +179,26 @@ class TimetableRepo {
     return result;
   }
 
-  Future<Result<SchoolWeek>> getWeek(WeekString weekId) async {
+  Future<Result<SchoolWeek>> getWeek(
+    WeekString weekId, {
+    bool forceRefresh = false,
+  }) async {
     try {
-      BesteSchuleApiResponse<SchoolWeekModel> response = await _apiClient
-          .getWeek(weekId: weekId.toString());
+      BesteSchuleApiResponse<SchoolWeekModel> response = await RemoteCaching
+          .instance
+          .call<BesteSchuleApiResponse<SchoolWeekModel>>(
+            "timetableWeek$weekId",
+            cacheDuration: Duration(hours: 12),
+            forceRefresh: forceRefresh,
+            remote: () async =>
+                await _apiClient.getWeek(weekId: weekId.toString()),
+            fromJson: (json) =>
+                BesteSchuleApiResponse<SchoolWeekModel>.fromJson(
+                  json as Map<String, dynamic>,
+                  (json) =>
+                      SchoolWeekModel.fromJson(json as Map<String, dynamic>),
+                ),
+          );
 
       if (response.data != null && response.data!.days != null) {
         SchoolWeekModel data = response.data!;
