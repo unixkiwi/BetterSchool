@@ -15,6 +15,7 @@ part 'timetable_state.dart';
 
 class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
   final TimetableRepo _repo;
+  Set<WeekString> _loadingWeeks = Set.of([]);
 
   TimetableBloc(this._repo) : super(TimetableStateLoading()) {
     on<TimetablePageStartedEvent>(_onPageLoaded);
@@ -62,12 +63,23 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     // last page given through parameter
     // load prev week
     if (event.isLastPage) {
-      // show loading page
-      emit(TimetableStateLoading());
-
       WeekString nextWeek = WeekString.fromDate(
         event.weekString.toDate().add(Duration(days: 7)),
       );
+
+      if (_loadingWeeks.contains(nextWeek)) {
+        logger.w(
+          "⏳ Week ${nextWeek.toString()} is already being loaded, skipping...",
+        );
+        return;
+      }
+
+      // show loading page
+      emit(TimetableStateLoading());
+
+      // add week to loading
+      _loadingWeeks.add(nextWeek);
+
       Result<SchoolWeek> response = await _repo.getWeek(nextWeek);
 
       TimetableState state = _handleSchoolWeekResult(response, emit, nextWeek);
@@ -79,15 +91,29 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       } else {
         emit(state);
       }
+
+      // remove the loading week
+      _loadingWeeks.remove(nextWeek);
     }
     // load next week
     else if (event.page == 0) {
-      // show loading page
-      emit(TimetableStateLoading());
-
       WeekString prevWeek = WeekString.fromDate(
         event.weekString.toDate().subtract(Duration(days: 7)),
       );
+
+      if (_loadingWeeks.contains(prevWeek)) {
+        logger.w(
+          "⏳ Week ${prevWeek.toString()} is already being loaded, skipping...",
+        );
+        return;
+      }
+
+      // show loading page
+      emit(TimetableStateLoading());
+
+      // add week to loading
+      _loadingWeeks.add(prevWeek);
+
       Result<SchoolWeek> response = await _repo.getWeek(prevWeek);
 
       TimetableState state = _handleSchoolWeekResult(response, emit, prevWeek);
@@ -104,6 +130,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       } else {
         emit(state);
       }
+
+      // remove the loading week
+      _loadingWeeks.remove(prevWeek);
     }
   }
 
@@ -121,7 +150,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     WeekString targetWeek;
     int moveTo;
 
-    if (now.weekday >= 5 && isAfter1730()) {
+    if (now.weekday > 5 || (now.weekday == 5 && isAfter1730())) {
       // get next week
       targetWeek = WeekString.fromDate(now.add(Duration(days: 3)));
       moveTo = 1;
@@ -132,6 +161,16 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
       targetWeek = WeekString.fromDate(DateTime.now());
       moveTo = now.weekday;
     }
+
+    if (_loadingWeeks.contains(targetWeek)) {
+      logger.w(
+        "⏳ Week ${targetWeek.toString()} is already being loaded, skipping...",
+      );
+      return;
+    }
+
+    // add weekstring to loading weeks
+    _loadingWeeks.add(targetWeek);
 
     Result<SchoolWeek> response = await _repo.getWeek(targetWeek);
 
@@ -152,6 +191,9 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     } else {
       emit(receivedState);
     }
+
+    // remove weekstring from loading weeks
+    _loadingWeeks.remove(targetWeek);
   }
 
   TimetableState _handleSchoolWeekResult(
