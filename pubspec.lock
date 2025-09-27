@@ -593,7 +593,7 @@ packages:
     source: hosted
     version: "2.2.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"
@@ -609,7 +609,7 @@ packages:
     source: hosted
     version: "1.1.0"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
@@ -723,10 +723,9 @@ packages:
   remote_caching:
     dependency: "direct main"
     description:
-      name: remote_caching
-      sha256: "48083f516a0d1b4ff24f824a9be2d49ce6a86a9c18741c41398f80df199a4221"
-      url: "https://pub.dev"
-    source: hosted
+      path: remote_caching
+      relative: true
+    source: path
     version: "1.0.12"
   retrofit:
     dependency: "direct main"
@@ -870,7 +869,7 @@ packages:
     source: hosted
     version: "2.5.6"
   sqflite_common_ffi:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sqflite_common_ffi
       sha256: "9faa2fedc5385ef238ce772589f7718c24cdddd27419b609bb9c6f703ea27988"
@@ -901,6 +900,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.9.0"
+  sqlite3_flutter_libs:
+    dependency: "direct main"
+    description:
+      name: sqlite3_flutter_libs
+      sha256: "2b03273e71867a8a4d030861fc21706200debe5c5858a4b9e58f4a1c129586a4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.39"
   stack_trace:
     dependency: transitive
     description:
