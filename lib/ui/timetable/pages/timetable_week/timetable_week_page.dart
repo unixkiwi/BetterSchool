@@ -12,36 +12,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class TimetableWeekPage extends StatefulWidget {
   final WeekString weekNr;
   final List<SchoolDay> days;
-
   const TimetableWeekPage({
     super.key,
     required this.weekNr,
     required this.days,
   });
-
   @override
   State<TimetableWeekPage> createState() => _TimetableWeekPageState();
 }
 
 class _TimetableWeekPageState extends State<TimetableWeekPage> {
-  final PageController _controller = PageController(initialPage: 1);
+  late final PageController _controller;
   int _currentPage = 1; // Start at page 1 (first actual day)
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final blocState = context.read<TimetableBloc>().state;
 
-      if (blocState is TimetableWeekState && blocState.moveTo != null) {
-        logger.d(
-          "[Timetable] Made initially jump to page: ${blocState.moveTo}",
-        );
+    // get initial page
+    final blocState = context.read<TimetableBloc>().state;
+    int initialPage = 1; // default to page 1
 
-        _controller.jumpToPage(blocState.moveTo!);
-        if (blocState.moveTo != 0) _currentPage = blocState.moveTo!;
-      }
-    });
+    if (blocState is TimetableWeekState && blocState.moveTo != null) {
+      initialPage = blocState.moveTo!;
+      _currentPage = blocState.moveTo! != 0 ? blocState.moveTo! : 1;
+      logger.d("[Timetable] Set initial page to: $initialPage");
+    }
+
+    // initialize controller with correct page
+    _controller = PageController(initialPage: initialPage);
   }
 
   @override
@@ -52,18 +51,14 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
 
   List<Widget> _getPages(List<SchoolDay> days, WeekString weekNr) {
     List<Widget> result = [];
-
     // add first loading page
     result.add(TimetableLoadingPage());
-
     // add pages for weeks
     for (final SchoolDay day in days) {
       result.add(TimetableDayPage(day: day));
     }
-
     // add last loading page
     result.add(TimetableLoadingPage());
-
     return result;
   }
 
@@ -77,7 +72,6 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = _getPages(widget.days, widget.weekNr);
-
     return BlocListener<TimetableBloc, TimetableState>(
       listener: (context, state) {
         // reset page so it doesn't stay at loading page
@@ -119,7 +113,6 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
                 weekString: widget.weekNr,
               ),
             );
-
             setState(() {
               _currentPage = page;
             });
