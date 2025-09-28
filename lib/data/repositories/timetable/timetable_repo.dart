@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
@@ -179,26 +181,55 @@ class TimetableRepo {
     return result;
   }
 
+  Future<BesteSchuleApiResponse<SchoolWeekModel>> getWeekWithLogging(
+    String weekId, {
+    bool forceRefresh = false,
+  }) async {
+    final cacheKey = "timetableWeek-${weekId.toString()}";
+    logger.d('🔍 Cache key: $cacheKey');
+    logger.d('🔄 Force refresh: $forceRefresh');
+
+    try {
+      final result = await RemoteCaching.instance
+          .call<BesteSchuleApiResponse<SchoolWeekModel>>(
+            cacheKey,
+            cacheDuration: Duration(hours: 12),
+            forceRefresh: forceRefresh,
+            remote: () async {
+              logger.i(
+                '🌐 CACHE MISS - Making network request for week: $weekId',
+              );
+              final response = await _apiClient.getWeek(
+                weekId: weekId.toString(),
+              );
+              logger.d('✅ Network request completed');
+              return response;
+            },
+            fromJson: (json) {
+              logger.i('📦 CACHE HIT - Deserializing from cache');
+              return BesteSchuleApiResponse<SchoolWeekModel>.fromJson(
+                json as Map<String, dynamic>,
+                (json) =>
+                    SchoolWeekModel.fromJson(json as Map<String, dynamic>),
+              );
+            },
+          );
+
+      logger.d('✅ (Cache-)Request completed successfully');
+      return result;
+    } catch (e) {
+      logger.e('❌ Error in cached request: $e');
+      rethrow;
+    }
+  }
+
   Future<Result<SchoolWeek>> getWeek(
     WeekString weekId, {
     bool forceRefresh = false,
   }) async {
     try {
-      BesteSchuleApiResponse<SchoolWeekModel> response = await RemoteCaching
-          .instance
-          .call<BesteSchuleApiResponse<SchoolWeekModel>>(
-            "timetableWeek$weekId",
-            cacheDuration: Duration(hours: 12),
-            forceRefresh: forceRefresh,
-            remote: () async =>
-                await _apiClient.getWeek(weekId: weekId.toString()),
-            fromJson: (json) =>
-                BesteSchuleApiResponse<SchoolWeekModel>.fromJson(
-                  json as Map<String, dynamic>,
-                  (json) =>
-                      SchoolWeekModel.fromJson(json as Map<String, dynamic>),
-                ),
-          );
+      BesteSchuleApiResponse<SchoolWeekModel> response =
+          await getWeekWithLogging(weekId.toString());
 
       if (response.data != null && response.data!.days != null) {
         SchoolWeekModel data = response.data!;
