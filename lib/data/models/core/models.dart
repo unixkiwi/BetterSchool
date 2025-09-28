@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
 
-@JsonSerializable(genericArgumentFactories: true)
+@JsonSerializable(genericArgumentFactories: true, explicitToJson: true)
 class BesteSchuleApiResponse<T> {
   final T? data;
 
@@ -13,8 +13,9 @@ class BesteSchuleApiResponse<T> {
     T Function(Object? json) fromJsonT,
   ) => _$BesteSchuleApiResponseFromJson(json, fromJsonT);
 
-  Map<String, dynamic> toJson(Object Function(T value) toJsonT) =>
-      _$BesteSchuleApiResponseToJson(this, toJsonT);
+  Map<String, dynamic> toJson() => {'data': data};
+  /*Map<String, dynamic> toJson(Object Function(T value) toJsonT) =>
+      _$BesteSchuleApiResponseToJson(this, toJsonT);*/
 }
 
 @JsonSerializable()

@@ -2,6 +2,8 @@
 
 part of 'beste_schule_api_client_impl.dart';
 
+// dart format off
+
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
@@ -81,3 +83,5 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
     return Uri.parse(dioBaseUrl).resolveUri(url).toString();
   }
 }
+
+// dart format on

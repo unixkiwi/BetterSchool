@@ -4,12 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
 
-String toStringJson(dynamic value) => value.toString();
+String fromJsonNR(dynamic value) => value.toString();
+String? toJsonNR(String? value) => value;
 
 @JsonSerializable()
 class SchoolWeekModel {
-
-  @JsonKey(fromJson: toStringJson)
+  @JsonKey(fromJson: fromJsonNR, toJson: toJsonNR)
   String? nr;
   List<SchoolDayModel>? days;
 
@@ -54,7 +54,7 @@ class LessonModel {
     required this.rooms,
     required this.teachers,
     required this.group,
-    required this.notes
+    required this.notes,
   });
 
   factory LessonModel.fromJson(Map<String, dynamic> json) =>
