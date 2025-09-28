@@ -85,6 +85,11 @@ class _TimetableWeekPageState extends State<TimetableWeekPage> {
         }
       },
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () =>
+              context.read<TimetableBloc>().add(TimetablePageStartedEvent()),
+          child: Icon(Icons.today_rounded),
+        ),
         appBar: TimetableDatebar(
           currentDay: _getCurrentDay(),
           onBack: () => context.read<TimetableBloc>().add(
