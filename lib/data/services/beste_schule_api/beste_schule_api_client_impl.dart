@@ -1,4 +1,5 @@
 import 'package:betterschool/data/models/core/models.dart';
+import 'package:betterschool/data/models/grades/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -15,5 +16,10 @@ abstract class BesteSchuleApiClientImpl {
     @Path("id") required String weekId,
     @Query("include") String include = "days.lessons",
     @Query("interpolate") String interpolate = "true",
+  });
+
+  @GET('https://beste.schule/api/grades')
+  Future<BesteSchuleApiResponse<List<GradeModel>>> getGrades({
+    @Query("include") String include = "collection.subject",
   });
 }
