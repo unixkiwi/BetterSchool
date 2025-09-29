@@ -7,8 +7,10 @@ part of 'models.dart';
 // **************************************************************************
 
 GradeModel _$GradeModelFromJson(Map<String, dynamic> json) => GradeModel(
-  value: json['value'] as String,
-  givenAt: DateTime.parse(json['given_at'] as String),
+  value: json['value'] as String?,
+  givenAt: json['given_at'] == null
+      ? null
+      : DateTime.parse(json['given_at'] as String),
   collection: GradeCollectionModel.fromJson(
     json['collection'] as Map<String, dynamic>,
   ),
@@ -17,17 +19,19 @@ GradeModel _$GradeModelFromJson(Map<String, dynamic> json) => GradeModel(
 Map<String, dynamic> _$GradeModelToJson(GradeModel instance) =>
     <String, dynamic>{
       'value': instance.value,
-      'given_at': instance.givenAt.toIso8601String(),
+      'given_at': instance.givenAt?.toIso8601String(),
       'collection': instance.collection,
     };
 
 GradeCollectionModel _$GradeCollectionModelFromJson(
   Map<String, dynamic> json,
 ) => GradeCollectionModel(
-  type: json['type'] as String,
-  name: json['name'] as String,
-  intervalId: (json['interval_id'] as num).toInt(),
-  subject: SubjectModel.fromJson(json['subject'] as Map<String, dynamic>),
+  type: json['type'] as String?,
+  name: json['name'] as String?,
+  intervalId: (json['interval_id'] as num?)?.toInt(),
+  subject: json['subject'] == null
+      ? null
+      : SubjectModel.fromJson(json['subject'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$GradeCollectionModelToJson(

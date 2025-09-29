@@ -5,9 +5,9 @@ part 'models.g.dart';
 
 @JsonSerializable()
 class GradeModel {
-  final String value;
+  final String? value;
   @JsonKey(name: 'given_at')
-  final DateTime givenAt;
+  final DateTime? givenAt;
   final GradeCollectionModel collection;
 
   GradeModel({
@@ -24,11 +24,11 @@ class GradeModel {
 
 @JsonSerializable()
 class GradeCollectionModel {
-  final String type;
-  final String name;
+  final String? type;
+  final String? name;
   @JsonKey(name: 'interval_id')
-  final int intervalId;
-  final SubjectModel subject;
+  final int? intervalId;
+  final SubjectModel? subject;
 
   GradeCollectionModel({
     required this.type,
