@@ -34,6 +34,7 @@ class TeacherModel {
 
   factory TeacherModel.fromJson(Map<String, dynamic> json) =>
       _$TeacherModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$TeacherModelToJson(this);
 }
 
@@ -47,5 +48,20 @@ class GroupModel {
 
   factory GroupModel.fromJson(Map<String, dynamic> json) =>
       _$GroupModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$GroupModelToJson(this);
+}
+
+@JsonSerializable()
+class SubjectModel {
+  final int? id;
+  final String? local_id;
+  final String? name;
+
+  SubjectModel({required this.id, required this.local_id, required this.name});
+
+  factory SubjectModel.fromJson(Map<String, dynamic> json) =>
+      _$SubjectModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SubjectModelToJson(this);
 }

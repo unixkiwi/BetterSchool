@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
 String fromJsonNR(dynamic value) => value.toString();
+
 String? toJsonNR(String? value) => value;
 
 @JsonSerializable()
@@ -64,20 +65,6 @@ class LessonModel {
 }
 
 @JsonSerializable()
-class SubjectModel {
-  final int? id;
-  final String? local_id;
-  final String? name;
-
-  SubjectModel({required this.id, required this.local_id, required this.name});
-
-  factory SubjectModel.fromJson(Map<String, dynamic> json) =>
-      _$SubjectModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SubjectModelToJson(this);
-}
-
-@JsonSerializable()
 class RoomModel {
   final String? local_id;
 
@@ -85,6 +72,7 @@ class RoomModel {
 
   factory RoomModel.fromJson(Map<String, dynamic> json) =>
       _$RoomModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$RoomModelToJson(this);
 }
 

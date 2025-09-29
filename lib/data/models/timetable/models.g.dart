@@ -73,19 +73,6 @@ const _$LessonStatusEnumMap = {
   LessonStatus.cancelled: 'canceled',
 };
 
-SubjectModel _$SubjectModelFromJson(Map<String, dynamic> json) => SubjectModel(
-  id: (json['id'] as num?)?.toInt(),
-  local_id: json['local_id'] as String?,
-  name: json['name'] as String?,
-);
-
-Map<String, dynamic> _$SubjectModelToJson(SubjectModel instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'local_id': instance.local_id,
-      'name': instance.name,
-    };
-
 RoomModel _$RoomModelFromJson(Map<String, dynamic> json) =>
     RoomModel(local_id: json['local_id'] as String?);
 
