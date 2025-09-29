@@ -1,6 +1,8 @@
 import 'package:betterschool/data/repositories/auth/auth_repository.dart';
+import 'package:betterschool/data/repositories/grades/grade_repo.dart';
 import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
+import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:dio/dio.dart';
@@ -18,7 +20,7 @@ void initDependencies() {
       contentType: "application/json",
       headers: {"Accept": "application/json"},
       connectTimeout: Duration(seconds: 30),
-      receiveTimeout: Duration(seconds: 30)
+      receiveTimeout: Duration(seconds: 30),
     ),
   );
 
@@ -42,4 +44,8 @@ void initDependencies() {
   sl.registerSingleton(TimetableRepo(sl()));
 
   sl.registerFactory(() => TimetableBloc(sl()));
+
+  sl.registerSingleton(GradeRepo(sl()));
+
+  sl.registerFactory(() => GradesBloc(sl()));
 }

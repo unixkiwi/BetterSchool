@@ -1,4 +1,5 @@
 import 'package:betterschool/config/di.dart';
+import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
 import 'package:betterschool/ui/grades/pages/grades_page.dart';
 import 'package:betterschool/ui/home_navbar/pages/home_page.dart';
 import 'package:betterschool/ui/login/pages/login_page.dart';
@@ -9,12 +10,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 final String loginRoute = "/login";
+
 Widget loginPage(BuildContext context) => const LoginPage();
 
 final String homeRoute = "/home";
+
 Widget homeNavBarPage(BuildContext context) => const HomePageNavBar();
 
 final String timetableRoute = "/timetable";
+
 Widget timetablePage(BuildContext context) {
   return BlocProvider<TimetableBloc>(
     create: (context) {
@@ -25,9 +29,18 @@ Widget timetablePage(BuildContext context) {
 }
 
 final String gradesRoute = "/grades";
-Widget gradesPage(BuildContext context) => const GradesPage();
+
+Widget gradesPage(BuildContext context) {
+  return BlocProvider<GradesBloc>(
+    create: (context) {
+      return sl<GradesBloc>()..add(GradesPageStartedEvent());
+    },
+    child: const GradesPage(),
+  );
+}
 
 final String settingsRoute = "/settings";
+
 Widget settingsPage(BuildContext context) => const SettingsPage();
 
 final Map<String, WidgetBuilder> routes = {
