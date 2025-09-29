@@ -14,8 +14,11 @@ class GradesPage extends StatelessWidget {
           case GradesDataState():
             return ListView.builder(
               itemCount: state.grades.length,
-              itemBuilder: (context, index) =>
-                  ListTile(title: Text(state.grades[index].title)),
+              itemBuilder: (context, index) => ListTile(
+                title: Text(state.grades[index].title),
+                trailing: Text(state.grades[index].valueString),
+                subtitle: Text(state.grades[index].type),
+              ),
             );
           case GradesStateLoading():
             return Center(child: LoadingSpinner());
