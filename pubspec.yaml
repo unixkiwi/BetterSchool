@@ -50,8 +50,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.39
   path_provider: ^2.1.5
   sqflite_common_ffi: ^2.3.6
-  remote_caching:
-    path: ./remote_caching
+  remote_caching: ^1.0.12
 
   # date time utils
   in_date_utils: ^1.2.4+1
