@@ -20,6 +20,16 @@ class Grade extends Equatable {
     required this.date,
   });
 
+  factory Grade.empty() => Grade(
+    value: -1,
+    valueWithModifiers: -1,
+    valueString: "-1",
+    title: "No Title",
+    type: "No Type",
+    subject: Subject.empty(),
+    date: DateTime.now(),
+  );
+
   @override
   List<Object?> get props => [
     value,

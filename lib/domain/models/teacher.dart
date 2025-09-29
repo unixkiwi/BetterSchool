@@ -13,6 +13,9 @@ class Teacher extends Equatable {
     required this.name,
   });
 
+  factory Teacher.empty() =>
+      Teacher(id: -1, shortName: "---", forename: "Unknown", name: "Teacher");
+
   @override
   List<Object?> get props => [id, shortName, forename, name];
 }

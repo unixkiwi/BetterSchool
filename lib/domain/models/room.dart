@@ -5,6 +5,8 @@ class Room extends Equatable {
 
   const Room({required this.name});
 
+  factory Room.empty() => Room(name: "---");
+
   @override
   List<Object?> get props => [name];
 }

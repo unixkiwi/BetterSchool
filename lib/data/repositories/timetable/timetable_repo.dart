@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
@@ -32,48 +30,46 @@ class TimetableRepo {
 
       lessonsConverted.add(
         Lesson(
-          id: lesson.id ?? -1,
-          nr: lesson.nr ?? 0,
-          status: lesson.status ?? LessonStatus.initial,
+          id: lesson.id ?? Lesson.empty().id,
+          nr: lesson.nr ?? Lesson.empty().nr,
+          status: lesson.status ?? Lesson.empty().status,
           subject: Subject(
-            id: lesson.subject?.id ?? -1,
-            local_id: lesson.subject?.local_id ?? "---",
-            name: lesson.subject?.name ?? "Unknown subject",
+            id: lesson.subject?.id ?? Subject.empty().id,
+            local_id: lesson.subject?.local_id ?? Subject.empty().local_id,
+            name: lesson.subject?.name ?? Subject.empty().name,
           ),
           rooms: lesson.rooms != null && lesson.rooms!.isNotEmpty
               ? lesson.rooms!
-                    .map((room) => Room(name: room.local_id ?? "---"))
+                    .map(
+                      (room) => Room(name: room.local_id ?? Room.empty().name),
+                    )
                     .toList()
               : roomsIfNull,
           teachers: lesson.teachers != null && lesson.teachers!.isNotEmpty
               ? lesson.teachers!
                     .map(
                       (teacher) => Teacher(
-                        id: teacher.id ?? -1,
-                        shortName: teacher.local_id ?? "---",
-                        forename: teacher.forename ?? "Unknown",
-                        name: teacher.name ?? "Teacher",
+                        id: teacher.id ?? Teacher.empty().id,
+                        shortName:
+                            teacher.local_id ?? Teacher.empty().shortName,
+                        forename: teacher.forename ?? Teacher.empty().forename,
+                        name: teacher.name ?? Teacher.empty().name,
                       ),
                     )
                     .toList()
-              : [
-                  Teacher(
-                    id: -1,
-                    shortName: "---",
-                    forename: "Unknown",
-                    name: "Teacher",
-                  ),
-                ],
+              : [Teacher.empty()],
           group: Group(
-            name: lesson.group.name ?? "Unknown group",
-            shortName: lesson.group.local_id ?? "UNK",
-            isMeta: lesson.group.meta == null ? false : lesson.group.meta! > 0,
+            name: lesson.group.name ?? Group.empty().name,
+            shortName: lesson.group.local_id ?? Group.empty().shortName,
+            isMeta: lesson.group.meta == null
+                ? Group.empty().isMeta
+                : lesson.group.meta! > 0,
           ),
           notes: lesson.notes
               .map(
                 (note) => Note(
-                  desc: note.description ?? "No description provided",
-                  type: note.type?.name ?? "",
+                  desc: note.description ?? Note.empty().desc,
+                  type: note.type?.name ?? Note.empty().type,
                 ),
               )
               .toList(),
@@ -171,8 +167,8 @@ class TimetableRepo {
     for (final SchoolDayModel day in days) {
       result.add(
         SchoolDay(
-          id: day.id ?? "No ID",
-          date: day.date ?? DateTime.now(),
+          id: day.id ?? SchoolDay.empty().id,
+          date: day.date ?? SchoolDay.empty().date,
           lessons: _getLessons(day.lessons ?? []),
         ),
       );
@@ -236,7 +232,7 @@ class TimetableRepo {
 
         SchoolWeek result = SchoolWeek(
           days: _getDays(data.days ?? []),
-          nr: int.tryParse(data.nr ?? "-1") ?? -1,
+          nr: int.tryParse(data.nr ?? "-1") ?? SchoolWeek.empty().nr,
         );
 
         return Result.success(result);

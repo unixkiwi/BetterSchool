@@ -5,4 +5,6 @@ class SchoolWeek {
   List<SchoolDay> days;
 
   SchoolWeek({required this.days, required this.nr});
+
+  factory SchoolWeek.empty() => SchoolWeek(days: [], nr: -1);
 }

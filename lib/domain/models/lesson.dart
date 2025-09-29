@@ -41,6 +41,17 @@ class Lesson extends Equatable {
     this.subLessons = const [],
   });
 
+  factory Lesson.empty() => Lesson(
+    id: -1,
+    nr: 0,
+    status: LessonStatus.initial,
+    subject: Subject.empty(),
+    rooms: [Room.empty()],
+    teachers: [Teacher.empty()],
+    group: Group.empty(),
+    notes: [Note.empty()],
+  );
+
   @override
   List<Object?> get props => [
     id,
