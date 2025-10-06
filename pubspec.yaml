@@ -31,7 +31,7 @@ dependencies:
   intl: ^0.20.2
 
   # api requests
-  retrofit: ^4.7.2
+  retrofit: ^4.7.3
   json_annotation: ^4.9.0
   dio: ^5.9.0
 
@@ -64,7 +64,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
-  retrofit_generator: ^10.0.5
+  retrofit_generator: ^10.0.6
   build_runner: ^2.8.0
   json_serializable: ^6.11.1
 
