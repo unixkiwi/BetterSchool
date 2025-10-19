@@ -53,7 +53,7 @@ dependencies:
   remote_caching: ^1.0.12
 
   # date time utils
-  in_date_utils: ^1.2.4+1
+  in_date_utils: ^1.3.0
 
   # svg
   flutter_svg: ^2.2.1
