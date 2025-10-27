@@ -49,8 +49,8 @@
 
 ### 🚧 Coming Soon
 
-- ☑️ **Advanced analytics** such as grade trends within subjects and over years
-- ☑️ **To-Do List & Task Manager** (assignments, exams, deadlines).
+- [ ] **Advanced analytics** such as grade trends within subjects and over years
+- [ ] **To-Do List & Task Manager** (assignments, exams, deadlines).
 
 ---
 
