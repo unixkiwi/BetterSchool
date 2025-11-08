@@ -56,7 +56,7 @@ dependencies:
   in_date_utils: ^1.3.0
 
   # svg
-  flutter_svg: ^2.2.1
+  flutter_svg: ^2.2.2
   loading_animation_widget: ^1.3.0
 
 dev_dependencies:
