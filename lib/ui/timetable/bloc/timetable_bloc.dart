@@ -19,9 +19,46 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
   TimetableBloc(this._repo) : super(TimetableStateLoading()) {
     on<TimetablePageStartedEvent>(_onPageLoaded);
+    on<TimetableRefreshEvent>(_onRefresh);
     on<TimetablePageSwitchEvent>(_onPageSwitch);
     on<TimetableDatebarBackButtonPressedEvent>(_onDatebarBackBtnPressed);
     on<TimetableDatebarNextButtonPressedEvent>(_onDatebarNextBtnPressed);
+  }
+
+  Future<void> _onRefresh(
+    TimetableRefreshEvent event,
+    Emitter<TimetableState> emit,
+  ) async {
+    WeekString targetWeek = event.weekString;
+
+    // add weekstring to loading weeks
+    _loadingWeeks.add(targetWeek);
+
+    Result<SchoolWeek> response = await _repo.getWeek(
+      targetWeek,
+      forceRefresh: true,
+    );
+
+    TimetableState receivedState = _handleSchoolWeekResult(
+      response,
+      emit,
+      targetWeek,
+    );
+
+    if (receivedState is TimetableWeekState) {
+      emit(
+        TimetableWeekState(
+          weekNr: receivedState.weekNr,
+          days: receivedState.days,
+          moveTo: 1,
+        ),
+      );
+    } else {
+      emit(receivedState);
+    }
+
+    // remove weekstring from loading weeks
+    _loadingWeeks.remove(targetWeek);
   }
 
   Future<void> _onDatebarBackBtnPressed(

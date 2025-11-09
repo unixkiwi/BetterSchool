@@ -5,7 +5,11 @@ sealed class TimetableEvent {}
 
 final class TimetablePageStartedEvent extends TimetableEvent {}
 
-final class TimetableRefreshEvent extends TimetableEvent {}
+final class TimetableRefreshEvent extends TimetableEvent {
+  final WeekString weekString;
+
+  TimetableRefreshEvent({required this.weekString});
+}
 
 // Datebar
 final class TimetableDatebarBackButtonPressedEvent extends TimetableEvent {
