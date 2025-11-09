@@ -225,7 +225,10 @@ class TimetableRepo {
   }) async {
     try {
       BesteSchuleApiResponse<SchoolWeekModel> response =
-          await getWeekWithLogging(weekId.toString());
+          await getWeekWithLogging(
+            weekId.toString(),
+            forceRefresh: forceRefresh,
+          );
 
       if (response.data != null && response.data!.days != null) {
         SchoolWeekModel data = response.data!;
