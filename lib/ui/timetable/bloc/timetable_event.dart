@@ -7,8 +7,9 @@ final class TimetablePageStartedEvent extends TimetableEvent {}
 
 final class TimetableRefreshEvent extends TimetableEvent {
   final WeekString weekString;
+  final Completer<void>? completer;
 
-  TimetableRefreshEvent({required this.weekString});
+  TimetableRefreshEvent({required this.weekString, this.completer});
 }
 
 // Datebar

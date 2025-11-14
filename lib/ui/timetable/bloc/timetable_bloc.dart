@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:betterschool/config/constants.dart';
 import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
 import 'package:betterschool/domain/models/schoolday.dart';
@@ -29,36 +31,45 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
     TimetableRefreshEvent event,
     Emitter<TimetableState> emit,
   ) async {
+    final completer = event.completer;
     WeekString targetWeek = event.weekString;
 
     // add weekstring to loading weeks
     _loadingWeeks.add(targetWeek);
 
-    Result<SchoolWeek> response = await _repo.getWeek(
-      targetWeek,
-      forceRefresh: true,
-    );
-
-    TimetableState receivedState = _handleSchoolWeekResult(
-      response,
-      emit,
-      targetWeek,
-    );
-
-    if (receivedState is TimetableWeekState) {
-      emit(
-        TimetableWeekState(
-          weekNr: receivedState.weekNr,
-          days: receivedState.days,
-          moveTo: 1,
-        ),
+    try {
+      Result<SchoolWeek> response = await _repo.getWeek(
+        targetWeek,
+        forceRefresh: true,
       );
-    } else {
-      emit(receivedState);
-    }
 
-    // remove weekstring from loading weeks
-    _loadingWeeks.remove(targetWeek);
+      TimetableState receivedState = _handleSchoolWeekResult(
+        response,
+        emit,
+        targetWeek,
+      );
+
+      if (receivedState is TimetableWeekState) {
+        emit(
+          TimetableWeekState(
+            weekNr: receivedState.weekNr,
+            days: receivedState.days,
+            moveTo: 1,
+          ),
+        );
+      } else {
+        emit(receivedState);
+      }
+    } finally {
+      // remove weekstring from loading weeks
+      _loadingWeeks.remove(targetWeek);
+      // signal completion to the caller
+      try {
+        completer?.complete();
+      } catch (_) {
+        // ignore if already completed
+      }
+    }
   }
 
   Future<void> _onDatebarBackBtnPressed(
@@ -266,7 +277,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
           return TimetableErrorState(
             title: "Forbidden/Unauthorized",
             description:
-                "Your request was rejected because it is either unauthorized or forbidden. (${error.response?.statusCode})",
+                "Your request was rejected because it is either unauthorized or forbidden. (${error.response?.statusCode})",
             errorType: TimetableError.forbidden,
           );
         } else {
@@ -276,7 +287,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
           return TimetableErrorState(
             title:
-                "An error occurred while fetching the data for your timetable. (${error.response?.statusCode} ${error.response?.statusMessage})",
+                "An error occurred while fetching the data for your timetable. (${error.response?.statusCode} ${error.response?.statusMessage})",
             description: error.message ?? error.toString(),
             errorType: TimetableError.other,
           );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_week/timetable_day_empty_page.dart';
@@ -19,9 +21,18 @@ class TimetableDayPage extends StatelessWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
+        final completer = Completer<void>();
+
         context.read<TimetableBloc>().add(
-          TimetableRefreshEvent(weekString: WeekString.fromDate(day.date)),
+          TimetableRefreshEvent(
+            weekString: WeekString.fromDate(day.date),
+            completer: completer,
+          ),
         );
+
+        try {
+          await completer.future.timeout(const Duration(seconds: 30));
+        } catch (_) {}
       },
       child: ListView.builder(
         itemBuilder: (context, index) {
