@@ -25,13 +25,13 @@ dependencies:
   equatable: ^2.0.7
 
   # service locator
-  get_it: ^9.0.5
+  get_it: ^9.1.0
 
   # date formatter
   intl: ^0.20.2
 
   # api requests
-  retrofit: ^4.9.0
+  retrofit: ^4.9.1
   json_annotation: ^4.9.0
   dio: ^5.9.0
 
@@ -65,8 +65,8 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
   retrofit_generator: ^10.1.4
-  build_runner: ^2.10.3
-  json_serializable: ^6.11.1
+  build_runner: ^2.10.4
+  json_serializable: ^6.11.2
 
 flutter:
   uses-material-design: true
