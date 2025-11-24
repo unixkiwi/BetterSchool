@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:betterschool/config/constants.dart';
 import 'package:betterschool/data/repositories/grades/grade_repo.dart';
 import 'package:betterschool/domain/models/grade.dart';
@@ -16,6 +18,29 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
 
   GradesBloc(this._repo) : super(GradesStateLoading()) {
     on<GradesPageStartedEvent>(_onPageLoaded);
+    on<GradesPageRefreshedEvent>(_onRefresh);
+  }
+
+  Future<void> _onRefresh(
+    GradesPageRefreshedEvent event,
+    Emitter<GradesState> emit,
+  ) async {
+    final completer = event.completer;
+
+    try {
+      Result<List<Grade>> response = await _repo.getGrades(forceRefresh: true);
+
+      GradesState receivedState = _handleResult(response, emit);
+
+      emit(receivedState);
+    } finally {
+      // signal completion to the caller
+      try {
+        completer?.complete();
+      } catch (_) {
+        // ignore if already completed
+      }
+    }
   }
 
   Future<void> _onPageLoaded(

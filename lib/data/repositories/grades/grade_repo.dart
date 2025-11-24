@@ -104,7 +104,7 @@ class GradeRepo {
   Future<Result<List<Grade>>> getGrades({bool forceRefresh = false}) async {
     try {
       BesteSchuleApiResponse<List<GradeModel>> response =
-          await getGradesWithLogging();
+          await getGradesWithLogging(forceRefresh: forceRefresh);
 
       if (response.data != null) {
         List<GradeModel> data = response.data!;

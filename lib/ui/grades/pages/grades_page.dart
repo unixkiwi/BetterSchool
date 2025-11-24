@@ -1,5 +1,8 @@
 import 'package:betterschool/ui/core/widgets/loading.dart';
 import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
+import 'package:betterschool/ui/grades/pages/grades_empty_page.dart';
+import 'package:betterschool/ui/grades/pages/grades_error_page.dart';
+import 'package:betterschool/ui/grades/pages/grades_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,20 +15,17 @@ class GradesPage extends StatelessWidget {
       builder: (context, state) {
         switch (state) {
           case GradesDataState():
-            return ListView.builder(
-              itemCount: state.grades.length,
-              itemBuilder: (context, index) => ListTile(
-                title: Text(state.grades[index].title),
-                trailing: Text(state.grades[index].valueString),
-                subtitle: Text(state.grades[index].type),
-              ),
-            );
+            return GradesListPage(grades: state.grades);
           case GradesStateLoading():
             return Center(child: LoadingSpinner());
           case GradesErrorState():
-            return Center(child: Text("error: ${state.description}"));
+            return GradesErrorPage(
+              title: state.title,
+              description: state.description,
+              errorType: state.errorType,
+            );
           case GradesEmptyState():
-            return Center(child: Text("Empty"));
+            return GradesEmptyPage();
         }
       },
     );
