@@ -52,7 +52,7 @@ class GradeRepo {
                 grade.collection.subject?.local_id ?? Subject.empty().local_id,
             name: grade.collection.subject?.name ?? Subject.empty().name,
           ),
-          date: Grade.empty().date,
+          date: grade.givenAt ?? Grade.empty().date,
         ),
       );
     }
