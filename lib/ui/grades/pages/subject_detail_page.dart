@@ -54,9 +54,7 @@ class SubjectDetailPage extends StatelessWidget {
             Text(subject.name.length > 26 ? subject.local_id : subject.name),
             Text(
               '${grades.length} grade${grades.length == 1 ? '' : 's'}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                //color: Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.9),
-              ),
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
         ),
