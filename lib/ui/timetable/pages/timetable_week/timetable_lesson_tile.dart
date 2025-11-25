@@ -19,7 +19,12 @@ class TimetableLessonTile extends StatelessWidget {
   static final Widget chipPadding = Padding(padding: EdgeInsets.only(right: 4));
 
   BorderRadius _getBorderRadius() {
-    if (isLast) {
+    if (isLast && isFirst) {
+      return BorderRadius.vertical(
+        top: Radius.circular(12),
+        bottom: Radius.circular(12),
+      );
+    } else if (isLast) {
       return BorderRadius.vertical(
         top: Radius.circular(4),
         bottom: Radius.circular(12),
