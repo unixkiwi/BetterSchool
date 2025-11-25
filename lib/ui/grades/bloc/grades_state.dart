@@ -22,7 +22,7 @@ final class GradesErrorState extends GradesState {
 }
 
 final class GradesDataState extends GradesState {
-  final List<Grade> grades;
+  final List<GradeSubjectData> grades;
 
   GradesDataState(this.grades);
 }

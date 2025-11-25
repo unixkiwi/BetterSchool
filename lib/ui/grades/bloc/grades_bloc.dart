@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:betterschool/config/constants.dart';
 import 'package:betterschool/data/repositories/grades/grade_repo.dart';
 import 'package:betterschool/domain/models/grade.dart';
+import 'package:betterschool/ui/grades/utils/grade_helpers.dart';
 import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:dio/dio.dart';
@@ -60,7 +61,7 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
   ) {
     if (response is Success<List<Grade>>) {
       if ((response).value.isNotEmpty) {
-        return GradesDataState((response).value);
+        return GradesDataState(groupGradesBySubject((response).value));
       } else {
         return GradesEmptyState();
       }
