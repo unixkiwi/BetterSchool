@@ -62,7 +62,7 @@ MaterialColor getColorForGrade(double grade) {
     case <= 3.5:
       return decentGradeBadgeColor;
     case <= 4.5:
-      return badGradeBadgeColor;
+      return mediumGradeBadgeColor;
     default:
       return badGradeBadgeColor;
   }
