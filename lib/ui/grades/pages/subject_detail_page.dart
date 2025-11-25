@@ -77,65 +77,63 @@ class SubjectDetailPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Expanded(
-        child: ListView.builder(
-          itemCount: sorted.length,
-          itemBuilder: (context, index) {
-            final g = sorted[index];
-            final isFirst = index == 0;
-            final isLast = index == sorted.length - 1;
+      body: ListView.builder(
+        itemCount: sorted.length,
+        itemBuilder: (context, index) {
+          final g = sorted[index];
+          final isFirst = index == 0;
+          final isLast = index == sorted.length - 1;
 
-            return Padding(
-              padding: isLast
-                  ? const EdgeInsets.symmetric(horizontal: 8)
-                  : const EdgeInsets.only(bottom: 4, left: 8, right: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: _getBorderRadius(isFirst, isLast),
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.outline,
+          return Padding(
+            padding: isLast
+                ? const EdgeInsets.symmetric(horizontal: 8)
+                : const EdgeInsets.only(bottom: 4, left: 8, right: 8),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: _getBorderRadius(isFirst, isLast),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+              ),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 10,
+                ),
+                title: Text(
+                  g.title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 10,
+                subtitle: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      FieldChip(child: Text(_formatDate(g.date))),
+                      const SizedBox(width: 8),
+                      FieldChip(child: Text(g.type)),
+                    ],
                   ),
-                  title: Text(
-                    g.title,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                ),
+                trailing: CircleAvatar(
+                  backgroundColor: getColorForGrade(
+                    g.valueWithModifiers,
+                  ).withValues(alpha: 0.15),
+                  radius: 22,
+                  child: Text(
+                    g.valueString,
+                    style: TextStyle(
+                      color: getColorForGrade(g.valueWithModifiers),
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        FieldChip(child: Text(_formatDate(g.date))),
-                        const SizedBox(width: 8),
-                        FieldChip(child: Text(g.type)),
-                      ],
-                    ),
-                  ),
-                  trailing: CircleAvatar(
-                    backgroundColor: getColorForGrade(
-                      g.valueWithModifiers,
-                    ).withValues(alpha: 0.15),
-                    radius: 22,
-                    child: Text(
-                      g.valueString,
-                      style: TextStyle(
-                        color: getColorForGrade(g.valueWithModifiers),
-                        fontWeight: FontWeight.bold,
-                      ),
                     ),
                   ),
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
