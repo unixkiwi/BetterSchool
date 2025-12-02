@@ -18,27 +18,6 @@ class SubjectDetailPage extends StatelessWidget {
     required this.average,
   });
 
-  BorderRadius _getBorderRadius(bool isFirst, bool isLast) {
-    if (isLast && isFirst) {
-      return BorderRadius.vertical(
-        top: Radius.circular(12),
-        bottom: Radius.circular(12),
-      );
-    } else if (isLast) {
-      return BorderRadius.vertical(
-        top: Radius.circular(4),
-        bottom: Radius.circular(12),
-      );
-    } else if (isFirst) {
-      return BorderRadius.vertical(
-        bottom: Radius.circular(4),
-        top: Radius.circular(12),
-      );
-    } else {
-      return BorderRadius.circular(4);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final sorted = [...grades];
