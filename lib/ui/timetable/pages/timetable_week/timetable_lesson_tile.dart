@@ -1,43 +1,23 @@
 import 'package:betterschool/domain/models/lesson.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/ui/core/widgets/field_chip.dart';
+import 'package:betterschool/ui/core/widgets/material_3_expressive_list.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_week/lessontile_bottomsheet/timetable_lessontile_details_screen.dart';
 import 'package:flutter/material.dart';
 
 class TimetableLessonTile extends StatelessWidget {
   final Lesson lesson;
-  final bool isLast;
-  final bool isFirst;
+  final int index;
+  final int length;
 
   const TimetableLessonTile({
     super.key,
     required this.lesson,
-    this.isLast = false,
-    this.isFirst = false,
+    required this.index,
+    required this.length,
   });
 
   static final Widget chipPadding = Padding(padding: EdgeInsets.only(right: 4));
-
-  BorderRadius _getBorderRadius() {
-    if (isLast && isFirst) {
-      return BorderRadius.vertical(
-        top: Radius.circular(12),
-        bottom: Radius.circular(12),
-      );
-    } else if (isLast) {
-      return BorderRadius.vertical(
-        top: Radius.circular(4),
-        bottom: Radius.circular(12),
-      );
-    } else if (isFirst) {
-      return BorderRadius.vertical(
-        bottom: Radius.circular(4),
-        top: Radius.circular(12),
-      );
-    } else {
-      return BorderRadius.circular(4);
-    }
-  }
 
   Color _getBorder(BuildContext context) {
     switch (lesson.status) {
@@ -54,12 +34,10 @@ class TimetableLessonTile extends StatelessWidget {
   Widget build(BuildContext context) {
     Subject subject = lesson.subject;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: _getBorderRadius(),
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        border: Border.all(color: _getBorder(context)),
-      ),
+    return Material3ExpressiveListTile(
+      borderColor: _getBorder(context),
+      index: index,
+      listLength: length,
       child: ListTile(
         onTap: () {
           showDialog(

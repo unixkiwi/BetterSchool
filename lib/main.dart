@@ -5,6 +5,7 @@ import 'package:betterschool/routing/routes.dart';
 import 'package:betterschool/ui/home_navbar/bloc/home_bloc.dart';
 import 'package:betterschool/ui/login/bloc/login_bloc.dart';
 import 'package:betterschool/ui/login/pages/login_page.dart';
+import 'package:betterschool/ui/settings/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart';
@@ -27,7 +28,7 @@ void main() async {
   // maybe add some error stuff
   await initializeRemoteCaching();
 
-  initDependencies();
+  await initDependencies();
 
   runApp(
     MultiBlocProvider(
@@ -36,6 +37,9 @@ void main() async {
           create: (context) => LoginBloc(sl())..add(AppStartedEvent()),
         ),
         BlocProvider(create: (context) => HomeBloc()),
+        BlocProvider(
+          create: (context) => sl<SettingsBloc>()..add(LoadSettingsEvent()),
+        ),
       ],
       child: const BetterSchoolApp(),
     ),
@@ -47,34 +51,38 @@ class BetterSchoolApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
-          brightness: Brightness.light,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: <TargetPlatform, PageTransitionsBuilder>{
-            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-          },
-        ),
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
-          brightness: Brightness.dark,
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: <TargetPlatform, PageTransitionsBuilder>{
-            TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-          },
-        ),
-      ),
-      initialRoute: loginRoute,
-      routes: routes,
-      home: const LoginPage(),
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, settingsState) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          themeMode: settingsState.brightnessMode,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.green,
+              brightness: Brightness.light,
+            ),
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: <TargetPlatform, PageTransitionsBuilder>{
+                TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+              },
+            ),
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.green,
+              brightness: Brightness.dark,
+            ),
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: <TargetPlatform, PageTransitionsBuilder>{
+                TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+              },
+            ),
+          ),
+          initialRoute: loginRoute,
+          routes: routes,
+          home: const LoginPage(),
+        );
+      },
     );
   }
 }
