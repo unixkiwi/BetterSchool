@@ -38,11 +38,10 @@ class TimetableLessontileDetailsSublessonsSection extends StatelessWidget {
                   padding: EdgeInsets.all(6),
                   itemCount: sublessons.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: index != sublessons.length - 1
-                          ? const EdgeInsets.only(bottom: 4, left: 2, right: 2)
-                          : const EdgeInsets.symmetric(horizontal: 2),
-                      child: TimetableLessonTile(lesson: sublessons[index]),
+                    return TimetableLessonTile(
+                      lesson: sublessons[index],
+                      index: index,
+                      length: sublessons.length,
                     );
                   },
                 ),

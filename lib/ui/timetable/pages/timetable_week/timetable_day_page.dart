@@ -36,15 +36,10 @@ class TimetableDayPage extends StatelessWidget {
       },
       child: ListView.builder(
         itemBuilder: (context, index) {
-          return Padding(
-            padding: index != day.lessons.length - 1
-                ? const EdgeInsets.only(bottom: 4, left: 8, right: 8)
-                : const EdgeInsets.symmetric(horizontal: 8),
-            child: TimetableLessonTile(
-              lesson: day.lessons[index],
-              isLast: index == day.lessons.length - 1,
-              isFirst: index == 0,
-            ),
+          return TimetableLessonTile(
+            lesson: day.lessons[index],
+            index: index,
+            length: day.lessons.length,
           );
         },
         itemCount: day.lessons.length,
