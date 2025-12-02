@@ -41,7 +41,7 @@ Widget gradesPage(BuildContext context) {
 
 final String settingsRoute = "/settings";
 
-Widget settingsPage(BuildContext context) => const SettingsPage();
+Widget settingsPage(BuildContext context) => SettingsPage();
 
 final Map<String, WidgetBuilder> routes = {
   loginRoute: loginPage,
