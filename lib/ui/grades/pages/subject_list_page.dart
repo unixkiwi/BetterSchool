@@ -53,7 +53,6 @@ class SubjectListPage extends StatelessWidget {
             final avgText = avg < 0 ? '———' : avg.toStringAsFixed(2);
 
             Color badgeColor;
-
             badgeColor = getColorForGrade(subjectData.average);
 
             final isFirst = index == 0;

@@ -1,3 +1,5 @@
+import 'package:betterschool/config/di.dart';
+import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/domain/models/grade.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/ui/core/themes/grades_page_colors.dart';
@@ -53,17 +55,26 @@ double _calculateGradesAverage(List<Grade> grades, {bool useModifier = false}) {
   return sum / valid.length;
 }
 
-MaterialColor getColorForGrade(double grade) {
-  switch (grade) {
-    case < 0:
-      return invalidGradeBadgeColor;
-    case <= 2.5:
-      return goodGradeBadgeColor;
-    case <= 3.5:
-      return decentGradeBadgeColor;
-    case <= 4.5:
-      return mediumGradeBadgeColor;
-    default:
-      return badGradeBadgeColor;
+Color getColorForGrade(double grade) {
+  final ThemeMode mode = sl<SettingsRepository>().brightness.getValue();
+
+  final Brightness resolvedBrightness = mode == ThemeMode.system
+      ? WidgetsBinding.instance.platformDispatcher.platformBrightness
+      : (mode == ThemeMode.dark ? Brightness.dark : Brightness.light);
+
+  Color decentColor = resolvedBrightness == Brightness.light
+      ? decentGradeBadgeColorLight
+      : decentGradeBadgeColor;
+
+  if (grade < 0) {
+    return invalidGradeBadgeColor;
+  } else if (grade <= 2.5) {
+    return goodGradeBadgeColor;
+  } else if (grade <= 3.5) {
+    return decentColor;
+  } else if (grade <= 4.5) {
+    return mediumGradeBadgeColor;
+  } else {
+    return badGradeBadgeColor;
   }
 }
