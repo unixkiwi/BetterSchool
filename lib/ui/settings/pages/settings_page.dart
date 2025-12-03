@@ -28,9 +28,11 @@ class SettingsPage extends StatelessWidget {
             appBar: AppBar(title: Text("Settings")),
             body: ListView(
               children: [
+                // LOOK & FEEl
                 SettingSection(
                   title: SettingSectionTitle("Look & Feel"),
                   tiles: [
+                    // BRIGHTNESS MODE
                     SettingSingleOptionTile<String>(
                       icon: SettingTileIcon(
                         _themeIconMap[state.brightnessMode]!,
@@ -59,9 +61,11 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
+                // GRADES
                 SettingSection(
                   title: SettingSectionTitle("Grades"),
                   tiles: [
+                    // USE GRADE MODIFIERS
                     SettingSwitchTile(
                       icon: SettingTileIcon(Icons.calculate_rounded),
                       title: Text('Use Grade Modifiers'),
