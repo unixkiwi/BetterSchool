@@ -14,6 +14,9 @@ version: 0.2.0
 environment:
   sdk: ^3.9.0-0
 
+dependency_overrides:
+  analyzer: ^8.2.0
+
 dependencies:
   flutter:
     sdk: flutter
@@ -47,7 +50,7 @@ dependencies:
 
   # caching
   path: ^1.9.1
-  sqlite3_flutter_libs: ^0.5.40
+  sqlite3_flutter_libs: ^0.5.41
   path_provider: ^2.1.5
   sqflite_common_ffi: ^2.4.0
   remote_caching: ^1.0.14
@@ -68,7 +71,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
-  retrofit_generator: ^10.1.4
+  retrofit_generator: ^10.2.0
   build_runner: ^2.10.4
   json_serializable: ^6.11.3
 
