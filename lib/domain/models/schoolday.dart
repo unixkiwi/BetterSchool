@@ -1,12 +1,19 @@
+import 'package:betterschool/domain/models/journal_note.dart';
 import 'package:betterschool/domain/models/lesson.dart';
 
 class SchoolDay {
   final String id;
   final DateTime date;
   final List<Lesson> lessons;
+  final List<JournalNote> notes;
 
-  SchoolDay({required this.id, required this.date, required this.lessons});
+  SchoolDay({
+    required this.id,
+    required this.date,
+    required this.lessons,
+    required this.notes,
+  });
 
   factory SchoolDay.empty() =>
-      SchoolDay(id: "No ID", date: DateTime.now(), lessons: []);
+      SchoolDay(id: "No ID", date: DateTime.now(), lessons: [], notes: []);
 }

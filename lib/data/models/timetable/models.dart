@@ -27,13 +27,31 @@ class SchoolDayModel {
   final String? id;
   final DateTime? date;
   final List<LessonModel>? lessons;
+  final List<JournalNoteModel>? notes;
 
-  SchoolDayModel({required this.id, required this.date, required this.lessons});
+  SchoolDayModel({
+    required this.id,
+    required this.date,
+    required this.lessons,
+    required this.notes,
+  });
 
   factory SchoolDayModel.fromJson(Map<String, dynamic> json) =>
       _$SchoolDayModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$SchoolDayModelToJson(this);
+}
+
+@JsonSerializable()
+class JournalNoteModel {
+  final String? description;
+
+  JournalNoteModel({required this.description});
+
+  factory JournalNoteModel.fromJson(Map<String, dynamic> json) =>
+      _$JournalNoteModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$JournalNoteModelToJson(this);
 }
 
 @JsonSerializable()

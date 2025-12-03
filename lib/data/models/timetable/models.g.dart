@@ -26,6 +26,9 @@ SchoolDayModel _$SchoolDayModelFromJson(Map<String, dynamic> json) =>
       lessons: (json['lessons'] as List<dynamic>?)
           ?.map((e) => LessonModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      notes: (json['notes'] as List<dynamic>?)
+          ?.map((e) => JournalNoteModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$SchoolDayModelToJson(SchoolDayModel instance) =>
@@ -33,7 +36,14 @@ Map<String, dynamic> _$SchoolDayModelToJson(SchoolDayModel instance) =>
       'id': instance.id,
       'date': instance.date?.toIso8601String(),
       'lessons': instance.lessons,
+      'notes': instance.notes,
     };
+
+JournalNoteModel _$JournalNoteModelFromJson(Map<String, dynamic> json) =>
+    JournalNoteModel(description: json['description'] as String?);
+
+Map<String, dynamic> _$JournalNoteModelToJson(JournalNoteModel instance) =>
+    <String, dynamic>{'description': instance.description};
 
 LessonModel _$LessonModelFromJson(Map<String, dynamic> json) => LessonModel(
   id: (json['id'] as num?)?.toInt(),

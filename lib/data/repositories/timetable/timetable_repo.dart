@@ -2,6 +2,7 @@ import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/domain/models/group.dart';
+import 'package:betterschool/domain/models/journal_note.dart';
 import 'package:betterschool/domain/models/lesson.dart';
 import 'package:betterschool/domain/models/note.dart';
 import 'package:betterschool/domain/models/room.dart';
@@ -170,6 +171,15 @@ class TimetableRepo {
           id: day.id ?? SchoolDay.empty().id,
           date: day.date ?? SchoolDay.empty().date,
           lessons: _getLessons(day.lessons ?? []),
+          notes:
+              day.notes
+                  ?.map(
+                    (note) => JournalNote(
+                      desc: note.description ?? Note.empty().desc,
+                    ),
+                  )
+                  .toList() ??
+              [],
         ),
       );
     }
