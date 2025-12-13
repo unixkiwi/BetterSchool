@@ -61,7 +61,7 @@ dependencies:
   # svg
   flutter_svg: ^2.2.3
   loading_animation_widget: ^1.3.0
-  shared_preferences: ^2.5.3
+  shared_preferences: ^2.5.4
 
   # settings
   settings_tiles: ^6.0.1
