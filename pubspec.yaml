@@ -46,7 +46,7 @@ dependencies:
   oauth2: ^2.0.5
 
   # token store
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.0.0
 
   # caching
   path: ^1.9.1
