@@ -649,10 +649,10 @@ packages:
     dependency: "direct main"
     description:
       name: oauth_webauth
-      sha256: dd9f4e26a5f092deaa8c14693b9e9c50c7ea8a4c0d822a83ead89751160e5987
+      sha256: "84858752d7b9c0f59db5f409f2b7ed60e5ba0f48e522b71907d2343fb8fe613f"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.2.0"
   objective_c:
     dependency: transitive
     description:
