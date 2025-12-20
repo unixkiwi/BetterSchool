@@ -42,7 +42,7 @@ dependencies:
   logger: ^2.6.2
 
   # oauth
-  oauth_webauth: ^5.1.0
+  oauth_webauth: ^5.2.0
   oauth2: ^2.0.5
 
   # token store
