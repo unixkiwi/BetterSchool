@@ -1,4 +1,6 @@
-# Not yet available still in heavy development
+> [!WARNING]
+> This app is still in heavy development and may contain bugs or errors.
+> If you want to test this app, build it yourself or download it from the releases section. A first alpha is already available!
 
 ---
 
@@ -45,7 +47,6 @@
 - **Smart analytics and interactive charts**:
   - Average grade per subject
   - Average of all grades
-  - Visualize avgerage grades over time
 
 ### 🚧 Coming Soon
 
@@ -62,7 +63,10 @@
 
 ## ⚙️ Installation
 
-### 📲 Direct Download (coming soon, a month or so)
+### 📲 Direct Download
+
+> [!TIP]
+> A first alpha is already available!
 
 Get the latest APK from [Github Releases](https://github.com/unixkiwi/betterschool/releases)
 
@@ -96,7 +100,7 @@ flutter run --release  # for release (more performance)
 4. Build for Production (optional)
 
 ```bash
-flutter build apk --release  # Android
+flutter build apk --release --split-per-abi  # Android
 ```
 
 ---
