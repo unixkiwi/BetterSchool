@@ -2,14 +2,7 @@ name: betterschool
 description: "BetterSchool - A feature-rich client for beste.schule, designed for students and parents."
 publish_to: "none"
 
-# 0.1.0 - Auth
-# 0.2.0 - Timetable
-# 0.3.0 - Grades
-# 0.4.0 - Settings
-# 0.5.0 - Icon
-# 0.6.0 - Further Improvements
-# 1.0.0 - First MVVM clean architecture rewrite release
-version: 0.2.0
+version: 1.0.0-alpha+1
 
 environment:
   sdk: ^3.9.0-0
