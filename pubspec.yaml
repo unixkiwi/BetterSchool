@@ -2,7 +2,7 @@ name: betterschool
 description: "BetterSchool - A feature-rich client for beste.schule, designed for students and parents."
 publish_to: "none"
 
-version: 1.0.0-alpha+1
+version: 1.0.0-alpha+2
 
 environment:
   sdk: ^3.9.0-0
