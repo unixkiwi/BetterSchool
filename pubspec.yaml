@@ -27,7 +27,7 @@ dependencies:
   intl: ^0.20.2
 
   # api requests
-  retrofit: ^4.9.1
+  retrofit: ^4.9.2
   json_annotation: ^4.9.0
   dio: ^5.9.0
 
