@@ -38,7 +38,6 @@ class TimetableDayPage extends StatelessWidget {
                   day.lessons.length +
                   (day.notes.isNotEmpty ? 1 + day.notes.length : 0),
               itemBuilder: (context, index) {
-                // Lessons come first
                 if (index < day.lessons.length) {
                   return TimetableLessonTile(
                     lesson: day.lessons[index],
@@ -47,7 +46,6 @@ class TimetableDayPage extends StatelessWidget {
                   );
                 }
 
-                // After lessons, if notes exist, show a header then notes
                 final notesStartIndex = day.lessons.length;
                 if (index == notesStartIndex) {
                   return Padding(
@@ -61,7 +59,6 @@ class TimetableDayPage extends StatelessWidget {
                   );
                 }
 
-                // Note items
                 final noteIndex = index - notesStartIndex - 1;
                 final note = day.notes[noteIndex];
 
@@ -74,7 +71,7 @@ class TimetableDayPage extends StatelessWidget {
                       vertical: 6,
                     ),
                     leading: Icon(
-                      Icons.note_outlined,
+                      Icons.newspaper_rounded,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     title: Text(

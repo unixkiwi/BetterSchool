@@ -173,11 +173,12 @@ class TimetableRepo {
           lessons: _getLessons(day.lessons ?? []),
           notes:
               day.notes
-                  ?.map(
-                    (note) => JournalNote(
-                      desc: note.description ?? Note.empty().desc,
-                    ),
+                  ?.where(
+                    (note) =>
+                        note.description != null &&
+                        note.description!.isNotEmpty,
                   )
+                  .map((note) => JournalNote(desc: note.description!))
                   .toList() ??
               [],
         ),
