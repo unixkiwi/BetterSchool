@@ -66,18 +66,19 @@ class TimetableLessonTile extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              ...lesson.rooms.map((room) => FieldChip(child: Text(room.name))),
-
-              chipPadding,
-
-              ...lesson.teachers.map(
-                (teacher) => FieldChipWithTooltip(
-                  chip: FieldChip(child: Text(teacher.shortName)),
-                  tooltip: "${teacher.forename} ${teacher.name}",
-                ),
+              ...lesson.rooms.expand(
+                (room) => [FieldChip(child: Text(room.name)), chipPadding],
               ),
 
-              chipPadding,
+              ...lesson.teachers.expand(
+                (teacher) => [
+                  FieldChipWithTooltip(
+                    chip: FieldChip(child: Text(teacher.shortName)),
+                    tooltip: "${teacher.forename} ${teacher.name}",
+                  ),
+                  chipPadding,
+                ],
+              ),
 
               if (!lesson.group.isMeta) ...[
                 FieldChip(child: Text(lesson.group.shortName)),
@@ -85,14 +86,15 @@ class TimetableLessonTile extends StatelessWidget {
               ],
 
               if (lesson.notes.isNotEmpty) ...[
-                FieldChipWithTooltip(
-                  chip: FieldChip(child: Icon(Icons.chat_outlined)),
-                  tooltip: "This lesson has ${lesson.notes.length} notes.",
-                  /* WITH COUNT, MAYBE SETTING
-                      Badge.count(
-                        count: lesson.notes.length,
-                        child: Icon(Icons.chat_rounded),
-                      ),*/
+                Badge.count(
+                  isLabelVisible: lesson.notes.length > 1,
+                  count: lesson.notes.length,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  textColor: Theme.of(context).colorScheme.onPrimary,
+                  child: FieldChipWithTooltip(
+                    chip: FieldChip(child: Icon(Icons.chat_outlined)),
+                    tooltip: "This lesson has ${lesson.notes.length} notes.",
+                  ),
                 ),
                 chipPadding,
               ],
