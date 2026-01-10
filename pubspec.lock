@@ -841,10 +841,10 @@ packages:
     dependency: "direct main"
     description:
       name: remote_caching
-      sha256: "9af39c9a2638ecd70de88c4806d85acc97fdbda8b70bfb45e7a5569f16175008"
+      sha256: b0528e2e90efab1e6a7c4882b82adca341e78b6855edab25724d5df811d74525
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.14"
+    version: "1.0.15"
   retrofit:
     dependency: "direct main"
     description:
