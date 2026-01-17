@@ -1,0 +1,78 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'filter_result.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+FilterResult _$FilterResultFromJson(Map<String, dynamic> json) => FilterResult(
+  group: json['group'] as String?,
+  student: json['student'] as String?,
+  interval: json['interval'] as String?,
+  subject: json['subject'] as String?,
+  teacher: json['teacher'] as String?,
+  room: json['room'] as String?,
+  lessThanOrEqual: json['lessThanOrEqual'] as String?,
+  greaterThanOrEqual: json['greaterThanOrEqual'] as String?,
+  calculatedLessThanOrEqual: json['calculatedLessThanOrEqual'] as String?,
+  calculatedGreaterThanOrEqual: json['calculatedGreaterThanOrEqual'] as String?,
+  lesson: json['lesson'] as String?,
+  nr: json['nr'] as String?,
+  hasNotes: json['hasNotes'] as String?,
+  hasStatuses: json['hasStatuses'] as String?,
+  tooEarly: json['tooEarly'] as String?,
+  tooLate: json['tooLate'] as String?,
+  missingHomework: json['missingHomework'] as String?,
+  missingEquipment: json['missingEquipment'] as String?,
+  valueSet: json['valueSet'] as String?,
+  status: json['status'] as String?,
+  statusNot: json['statusNot'] as String?,
+  level: json['level'] as String?,
+  present: json['present'] as String?,
+  collectionType: json['collectionType'] as String?,
+  notableType: json['notableType'] as String?,
+  type: json['type'] as String?,
+  withoutJournal: json['withoutJournal'] as String?,
+  complete: json['complete'] as String?,
+  verified: json['verified'] as String?,
+  hasAbsence: json['hasAbsence'] as String?,
+  hasVerifiedAbsence: json['hasVerifiedAbsence'] as String?,
+  hasUnverifiedAbsence: json['hasUnverifiedAbsence'] as String?,
+);
+
+Map<String, dynamic> _$FilterResultToJson(FilterResult instance) =>
+    <String, dynamic>{
+      'group': instance.group,
+      'student': instance.student,
+      'interval': instance.interval,
+      'subject': instance.subject,
+      'teacher': instance.teacher,
+      'room': instance.room,
+      'lessThanOrEqual': instance.lessThanOrEqual,
+      'greaterThanOrEqual': instance.greaterThanOrEqual,
+      'calculatedLessThanOrEqual': instance.calculatedLessThanOrEqual,
+      'calculatedGreaterThanOrEqual': instance.calculatedGreaterThanOrEqual,
+      'lesson': instance.lesson,
+      'nr': instance.nr,
+      'hasNotes': instance.hasNotes,
+      'hasStatuses': instance.hasStatuses,
+      'tooEarly': instance.tooEarly,
+      'tooLate': instance.tooLate,
+      'missingHomework': instance.missingHomework,
+      'missingEquipment': instance.missingEquipment,
+      'valueSet': instance.valueSet,
+      'status': instance.status,
+      'statusNot': instance.statusNot,
+      'level': instance.level,
+      'present': instance.present,
+      'collectionType': instance.collectionType,
+      'notableType': instance.notableType,
+      'type': instance.type,
+      'withoutJournal': instance.withoutJournal,
+      'complete': instance.complete,
+      'verified': instance.verified,
+      'hasAbsence': instance.hasAbsence,
+      'hasVerifiedAbsence': instance.hasVerifiedAbsence,
+      'hasUnverifiedAbsence': instance.hasUnverifiedAbsence,
+    };

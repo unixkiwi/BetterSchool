@@ -1,0 +1,7 @@
+swagger_parser:
+  schema_path: assets/openapi.json
+  output_directory: lib/data/client
+  language: dart
+  json_serializer: json_serializable
+  root_client: true
+  client_postfix: Client

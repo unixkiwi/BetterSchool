@@ -3,6 +3,7 @@ import 'package:betterschool/data/repositories/grades/grade_repo.dart';
 import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
+import 'package:betterschool/data/client/rest_client.dart';
 import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
 import 'package:betterschool/ui/settings/bloc/settings_bloc.dart';
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
@@ -41,6 +42,8 @@ Future<void> initDependencies() async {
       },
     ),
   );
+
+  sl.registerSingleton(RestClient(dio, baseUrl: "https://beste.schule/api"));
 
   sl.registerSingleton(BesteSchuleApiClientImpl(sl()));
 

@@ -1,0 +1,20 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, unused_import, invalid_annotation_target, unnecessary_import
+
+import 'package:json_annotation/json_annotation.dart';
+
+part 'meta21.g.dart';
+
+@JsonSerializable()
+class Meta21 {
+  const Meta21({
+    required this.version,
+  });
+  
+  factory Meta21.fromJson(Map<String, Object?> json) => _$Meta21FromJson(json);
+  
+  final String version;
+
+  Map<String, Object?> toJson() => _$Meta21ToJson(this);
+}
