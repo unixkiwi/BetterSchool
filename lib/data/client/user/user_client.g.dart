@@ -20,7 +20,7 @@ class _UserClient implements UserClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<GetUsersId2faDisableResponse> userDisableTwoFactor0({
+  Future<GetUsersId2faDisableResponse> userDisableTwoFactorById({
     required String id,
   }) async {
     final _extra = <String, dynamic>{};
@@ -78,7 +78,7 @@ class _UserClient implements UserClient {
   }
 
   @override
-  Future<PostUsersIdResendMailResponse> userResendMail0({
+  Future<PostUsersIdResendMailResponse> userResendMailById({
     required String id,
   }) async {
     final _extra = <String, dynamic>{};
@@ -214,7 +214,7 @@ class _UserClient implements UserClient {
   }
 
   @override
-  Future<GetMeResponse> userMe0() async {
+  Future<GetMeResponse> userMe() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -241,7 +241,7 @@ class _UserClient implements UserClient {
   }
 
   @override
-  Future<GetUserResponse> userMe0() async {
+  Future<GetUserResponse> userGet() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -395,7 +395,7 @@ class _UserClient implements UserClient {
   }
 
   @override
-  Future<GetUser2faDisableResponse> userDisableTwoFactor0() async {
+  Future<GetUser2faDisableResponse> userDisableTwoFactor() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -483,11 +483,11 @@ class _UserClient implements UserClient {
   @override
   Future<DeleteUserFirebaseDeviceIdResponse> userDeleteFirebaseDevice({
     required String id,
-    int? id,
+    int? queryId,
     String? token,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'id': id, r'token': token};
+    final queryParameters = <String, dynamic>{r'id': queryId, r'token': token};
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
@@ -547,7 +547,7 @@ class _UserClient implements UserClient {
   }
 
   @override
-  Future<PostUserResendMailResponse> userResendMail0() async {
+  Future<PostUserResendMailResponse> userResendMail() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -604,7 +604,7 @@ class _UserClient implements UserClient {
   }
 
   @override
-  Future<void> userLogoutApi0() async {
+  Future<void> userMeLogout() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -623,7 +623,7 @@ class _UserClient implements UserClient {
   }
 
   @override
-  Future<void> userLogoutApi0() async {
+  Future<void> userLogout() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

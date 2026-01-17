@@ -33,7 +33,7 @@ abstract class GradeClient {
 
   /// Grade: Index
   @GET('/grades')
-  Future<GetGradesResponse> gradesIndex();
+  Future<GetGradesResponse> gradesIndex({@Query('include') String? include});
 
   /// Grade: Update
   @PUT('/grades/{id}')
@@ -44,13 +44,9 @@ abstract class GradeClient {
 
   /// Grade: Destroy
   @DELETE('/grades/{id}')
-  Future<void> gradesDestroy({
-    @Path('id') required String id,
-  });
+  Future<void> gradesDestroy({@Path('id') required String id});
 
   /// Grade: Show
   @GET('/grades/{id}')
-  Future<GetGradesIdResponse> gradesShow({
-    @Path('id') required String id,
-  });
+  Future<GetGradesIdResponse> gradesShow({@Path('id') required String id});
 }

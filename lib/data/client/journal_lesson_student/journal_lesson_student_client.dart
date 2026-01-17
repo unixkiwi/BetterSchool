@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../models/get_journal_lesson_student_id_response.dart';
-import '../models/get_journal_lesson_student_response_union.dart';
+import '../models/get_journal_lesson_student_response_sealed.dart';
 import '../models/post_journal_lesson_student_response.dart';
 import '../models/put_journal_lesson_student_id_response.dart';
 import '../models/store_journal_lesson_student_request.dart';
@@ -16,7 +16,8 @@ part 'journal_lesson_student_client.g.dart';
 
 @RestApi()
 abstract class JournalLessonStudentClient {
-  factory JournalLessonStudentClient(Dio dio, {String? baseUrl}) = _JournalLessonStudentClient;
+  factory JournalLessonStudentClient(Dio dio, {String? baseUrl}) =
+      _JournalLessonStudentClient;
 
   /// Journal Lesson Student: Store
   @POST('/journal/lesson-student')
@@ -26,7 +27,7 @@ abstract class JournalLessonStudentClient {
 
   /// Journal Lesson Student: Index
   @GET('/journal/lesson-student')
-  Future<GetJournalLessonStudentResponseUnion> lessonStudentIndex();
+  Future<GetJournalLessonStudentResponseSealed> lessonStudentIndex();
 
   /// Journal Lesson Student: Update
   @PUT('/journal/lesson-student/{id}')
@@ -37,9 +38,7 @@ abstract class JournalLessonStudentClient {
 
   /// Journal Lesson Student: Destroy
   @DELETE('/journal/lesson-student/{id}')
-  Future<void> lessonStudentDestroy({
-    @Path('id') required String id,
-  });
+  Future<void> lessonStudentDestroy({@Path('id') required String id});
 
   /// Journal Lesson Student: Show
   @GET('/journal/lesson-student/{id}')

@@ -35,11 +35,11 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
     final _options = _setStreamType<BesteSchuleApiResponse<SchoolWeekModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        'https://beste.schule/api/journal/weeks/${weekId}',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            'https://beste.schule/api/journal/weeks/${weekId}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -47,10 +47,10 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
     try {
       _value = BesteSchuleApiResponse<SchoolWeekModel>.fromJson(
         _result.data!,
-            (json) => SchoolWeekModel.fromJson(json as Map<String, dynamic>),
+        (json) => SchoolWeekModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -67,11 +67,11 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
     final _options = _setStreamType<BesteSchuleApiResponse<List<GradeModel>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
-        _dio.options,
-        'https://beste.schule/api/grades',
-        queryParameters: queryParameters,
-        data: _data,
-      )
+            _dio.options,
+            'https://beste.schule/api/grades',
+            queryParameters: queryParameters,
+            data: _data,
+          )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -79,17 +79,16 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
     try {
       _value = BesteSchuleApiResponse<List<GradeModel>>.fromJson(
         _result.data!,
-            (json) =>
-        json is List<dynamic>
+        (json) => json is List<dynamic>
             ? json
-            .map<GradeModel>(
-              (i) => GradeModel.fromJson(i as Map<String, dynamic>),
-        )
-            .toList()
+                  .map<GradeModel>(
+                    (i) => GradeModel.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
             : List.empty(),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, _result);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -109,9 +108,7 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
   }
 
   String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
-    if (baseUrl == null || baseUrl
-        .trim()
-        .isEmpty) {
+    if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }
 

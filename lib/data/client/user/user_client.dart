@@ -38,7 +38,7 @@ abstract class UserClient {
 
   /// User: Disable Two Factor
   @GET('/users/{id}/2fa/disable')
-  Future<GetUsersId2faDisableResponse> userDisableTwoFactor0({
+  Future<GetUsersId2faDisableResponse> userDisableTwoFactorById({
     @Path('id') required String id,
   });
 
@@ -50,7 +50,7 @@ abstract class UserClient {
 
   /// User: Resend Mail
   @POST('/users/{id}/resend-mail')
-  Future<PostUsersIdResendMailResponse> userResendMail0({
+  Future<PostUsersIdResendMailResponse> userResendMailById({
     @Path('id') required String id,
   });
 
@@ -60,9 +60,7 @@ abstract class UserClient {
 
   /// User: Show
   @GET('/users/{id}')
-  Future<GetUsersIdResponse> usersShow({
-    @Path('id') required int? id,
-  });
+  Future<GetUsersIdResponse> usersShow({@Path('id') required int? id});
 
   /// User: Update
   @PUT('/users/{id}')
@@ -73,23 +71,19 @@ abstract class UserClient {
 
   /// User: Destroy
   @DELETE('/users/{id}')
-  Future<void> usersDestroy({
-    @Path('id') required int? id,
-  });
+  Future<void> usersDestroy({@Path('id') required int? id});
 
   /// User: Me
   @GET('/me')
-  Future<GetMeResponse> userMe0();
+  Future<GetMeResponse> userMe();
 
   /// User: Me
   @GET('/user')
-  Future<GetUserResponse> userMe0();
+  Future<GetUserResponse> userGet();
 
   /// User: Update
   @PUT('/user')
-  Future<PutUserResponse> userUpdate1({
-    @Body() UpdateUserRequest? body,
-  });
+  Future<PutUserResponse> userUpdate1({@Body() UpdateUserRequest? body});
 
   /// User: Destroy
   @DELETE('/user')
@@ -99,9 +93,7 @@ abstract class UserClient {
   ///
   /// [body] - Name not received and was auto-generated.
   @POST('/user/token')
-  Future<dynamic> userAddMembership({
-    @Body() required Object1 body,
-  });
+  Future<dynamic> userAddMembership({@Body() required Object1 body});
 
   /// User: Post Password
   @POST('/user/password')
@@ -115,7 +107,7 @@ abstract class UserClient {
 
   /// User: Disable Two Factor
   @GET('/user/2fa/disable')
-  Future<GetUser2faDisableResponse> userDisableTwoFactor0();
+  Future<GetUser2faDisableResponse> userDisableTwoFactor();
 
   /// User: Verify Two Factor.
   ///
@@ -137,7 +129,7 @@ abstract class UserClient {
   @DELETE('/user/firebase-device/{id}')
   Future<DeleteUserFirebaseDeviceIdResponse> userDeleteFirebaseDevice({
     @Path('id') required String id,
-    @Query('id') int? id,
+    @Query('id') int? queryId,
     @Query('token') String? token,
   });
 
@@ -151,7 +143,7 @@ abstract class UserClient {
 
   /// User: Resend Mail
   @POST('/user/resend-mail')
-  Future<PostUserResendMailResponse> userResendMail0();
+  Future<PostUserResendMailResponse> userResendMail();
 
   /// User: Change School
   @PUT('/user/school')
@@ -161,9 +153,9 @@ abstract class UserClient {
 
   /// User: Logout API
   @GET('/me/logout')
-  Future<void> userLogoutApi0();
+  Future<void> userMeLogout();
 
   /// User: Logout API
   @GET('/user/logout')
-  Future<void> userLogoutApi0();
+  Future<void> userLogout();
 }

@@ -77,9 +77,10 @@ class _GradeClient implements GradeClient {
   }
 
   @override
-  Future<GetGradesResponse> gradesIndex() async {
+  Future<GetGradesResponse> gradesIndex({String? include}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'include': include};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<GetGradesResponse>(

@@ -367,7 +367,9 @@ class _SchoolClient implements SchoolClient {
   }
 
   @override
-  Future<String> schoolGetLogo0({required String extensionValue}) async {
+  Future<String> schoolGetLogoWithExtension({
+    required String extensionValue,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

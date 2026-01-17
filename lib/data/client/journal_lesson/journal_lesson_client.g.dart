@@ -81,12 +81,12 @@ class _JournalLessonClient implements JournalLessonClient {
   }
 
   @override
-  Future<InvalidType> journalLessonIndex() async {
+  Future<GetJournalLessonsResponseSealed> journalLessonIndex() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<InvalidType>(
+    final _options = _setStreamType<GetJournalLessonsResponseSealed>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -97,9 +97,9 @@ class _JournalLessonClient implements JournalLessonClient {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late InvalidType _value;
+    late GetJournalLessonsResponseSealed _value;
     try {
-      _value = InvalidType.fromJson(_result.data!);
+      _value = GetJournalLessonsResponseSealed.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

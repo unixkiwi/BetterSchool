@@ -1,6 +1,6 @@
-import 'package:betterschool/data/models/core/models.dart';
-import 'package:betterschool/data/models/grades/models.dart';
-import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
+import 'package:betterschool/data/client/models/grade.dart' as client;
+import 'package:betterschool/data/client/models/get_grades_response.dart';
+import 'package:betterschool/data/client/rest_client.dart';
 import 'package:betterschool/domain/models/grade.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/utils/logger.dart';
@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:remote_caching/remote_caching.dart';
 
 class GradeRepo {
-  final BesteSchuleApiClientImpl _apiClient;
+  final RestClient _apiClient;
 
   GradeRepo(this._apiClient);
 
@@ -35,24 +35,23 @@ class GradeRepo {
     }
   }
 
-  List<Grade> _getGradesFromModel(List<GradeModel> grades) {
+  List<Grade> _getGradesFromModel(List<client.Grade> grades) {
     List<Grade> result = [];
 
-    for (GradeModel grade in grades) {
+    for (client.Grade grade in grades) {
       result.add(
         Grade(
-          value: _getGrade(grade.value?.trim()),
-          valueWithModifiers: _getGradeWithModifiers(grade.value?.trim()),
-          valueString: grade.value ?? Grade.empty().valueString,
-          title: grade.collection.name ?? Grade.empty().title,
-          type: grade.collection.type ?? Grade.empty().type,
+          value: _getGrade(grade.value.trim()),
+          valueWithModifiers: _getGradeWithModifiers(grade.value.trim()),
+          valueString: grade.value,
+          title: grade.collection?.name ?? Grade.empty().title,
+          type: grade.collection?.type ?? Grade.empty().type,
           subject: Subject(
-            id: grade.collection.subject?.id ?? Subject.empty().id,
-            local_id:
-                grade.collection.subject?.local_id ?? Subject.empty().local_id,
-            name: grade.collection.subject?.name ?? Subject.empty().name,
+            id: grade.subject?.id ?? Subject.empty().id,
+            local_id: grade.subject?.localId ?? Subject.empty().local_id,
+            name: grade.subject?.name ?? Subject.empty().name,
           ),
-          date: grade.givenAt ?? Grade.empty().date,
+          date: DateTime.tryParse(grade.givenAt) ?? Grade.empty().date,
         ),
       );
     }
@@ -60,7 +59,7 @@ class GradeRepo {
     return result;
   }
 
-  Future<BesteSchuleApiResponse<List<GradeModel>>> getGradesWithLogging({
+  Future<GetGradesResponse> getGradesWithLogging({
     bool forceRefresh = false,
   }) async {
     final cacheKey = "grades";
@@ -68,30 +67,24 @@ class GradeRepo {
     logger.d('🔄 Force refresh: $forceRefresh');
 
     try {
-      final result = await RemoteCaching.instance
-          .call<BesteSchuleApiResponse<List<GradeModel>>>(
-            cacheKey,
-            cacheDuration: Duration(hours: 12),
-            forceRefresh: forceRefresh,
-            remote: () async {
-              logger.i('🌐 CACHE MISS - Making network request for grades');
-              final response = await _apiClient.getGrades();
-              logger.d('✅ Network request completed');
-              return response;
-            },
-            fromJson: (json) {
-              logger.i('📦 CACHE HIT - Deserializing from cache');
-              return BesteSchuleApiResponse<List<GradeModel>>.fromJson(
-                json as Map<String, dynamic>,
-                (json) => (json as List<dynamic>)
-                    .map<GradeModel>(
-                      (item) =>
-                          GradeModel.fromJson(item as Map<String, dynamic>),
-                    )
-                    .toList(),
-              );
-            },
-          );
+      final result = await RemoteCaching.instance.call<GetGradesResponse>(
+        cacheKey,
+        cacheDuration: Duration(hours: 12),
+        forceRefresh: forceRefresh,
+        remote: () async {
+          logger.i('🌐 CACHE MISS - Making network request for grades');
+          final response = await _apiClient.grade.gradesIndex(include: 'collection.subject');
+          logger.d('✅ Network request completed');
+          for (var grade in response.data) {
+            logger.w('Grade: ${grade.collection ?? "no collection"}');
+          }
+          return response;
+        },
+        fromJson: (json) {
+          logger.i('📦 CACHE HIT - Deserializing from cache');
+          return GetGradesResponse.fromJson(json as Map<String, dynamic>);
+        },
+      );
 
       logger.d('✅ (Cache-)Request completed successfully');
       return result;
@@ -103,30 +96,15 @@ class GradeRepo {
 
   Future<Result<List<Grade>>> getGrades({bool forceRefresh = false}) async {
     try {
-      BesteSchuleApiResponse<List<GradeModel>> response =
-          await getGradesWithLogging(forceRefresh: forceRefresh);
+      GetGradesResponse response = await getGradesWithLogging(
+        forceRefresh: forceRefresh,
+      );
 
-      if (response.data != null) {
-        List<GradeModel> data = response.data!;
-
-        List<Grade> result = _getGradesFromModel(data);
-
-        return Result.success(result);
-      } else {
-        return Result.error(
-          Exception(
-            "Received data from the API is null!\nresponse.data = ${(response.data == null).toString()}",
-          ),
-        );
-      }
+      return Success(_getGradesFromModel(response.data));
     } on DioException catch (dioException) {
       return Result.error(dioException);
     } on Exception catch (e) {
-      logger.e(e.runtimeType.toString());
       return Result.error(e);
-    } catch (e) {
-      logger.e(e.runtimeType.toString());
-      return Result.error(Exception(e.toString()));
     }
   }
 }

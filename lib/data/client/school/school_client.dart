@@ -60,9 +60,7 @@ abstract class SchoolClient {
   ///
   /// [user] - The user ID.
   @DELETE('/school/users/{user}')
-  Future<void> schoolRemoveUser({
-    @Path('user') required int user,
-  });
+  Future<void> schoolRemoveUser({@Path('user') required int user});
 
   /// School: Index
   @GET('/schools')
@@ -101,7 +99,7 @@ abstract class SchoolClient {
 
   /// School: Get Logo
   @GET('/school/logo.{extension}')
-  Future<String> schoolGetLogo0({
+  Future<String> schoolGetLogoWithExtension({
     @Path('extension') required String extensionValue,
   });
 }
