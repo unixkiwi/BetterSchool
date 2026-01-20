@@ -2,6 +2,7 @@ import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/grades/models.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/domain/models/grade.dart';
+import 'package:betterschool/domain/models/grade_calculation_rule.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
@@ -112,6 +113,50 @@ class GradeRepo {
         List<Grade> result = _getGradesFromModel(data);
 
         return Result.success(result);
+      } else {
+        return Result.error(
+          Exception(
+            "Received data from the API is null!\nresponse.data = ${(response.data == null).toString()}",
+          ),
+        );
+      }
+    } on DioException catch (dioException) {
+      return Result.error(dioException);
+    } on Exception catch (e) {
+      logger.e(e.runtimeType.toString());
+      return Result.error(e);
+    } catch (e) {
+      logger.e(e.runtimeType.toString());
+      return Result.error(Exception(e.toString()));
+    }
+  }
+
+  Future<Result<List<GradeCalculationRule>>> getGradeCalculationRule({required int subjectId}) async {
+    try {
+      BesteSchuleApiResponse<List<GradeCalculationRuleModel>> response =
+          await _apiClient.getFinalGrades();
+
+      if (response.data != null) {
+        List<GradeCalculationRuleModel> data = response.data!;
+
+        for (final rule in data) {
+          if (rule.subjectId == subjectId) {
+            return Result.success([
+              GradeCalculationRule(
+                id: rule.id,
+                rule: rule.calculation_verbal ?? GradeCalculationRule.empty().rule,
+                subjectId: rule.subjectId,
+                intervalId: rule.intervalId,
+              )
+            ]);
+          }
+        }
+
+        return Result.error(
+          Exception(
+            "No calculation rule found for subjectId: $subjectId",
+          ),
+        );
       } else {
         return Result.error(
           Exception(

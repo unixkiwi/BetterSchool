@@ -6,6 +6,24 @@ part of 'models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+GradeCalculationRuleModel _$GradeCalculationRuleModelFromJson(
+  Map<String, dynamic> json,
+) => GradeCalculationRuleModel(
+  id: (json['id'] as num).toInt(),
+  calculation_verbal: json['calculation_verbal'] as String?,
+  subjectId: (json['subject_id'] as num).toInt(),
+  intervalId: (json['interval_id'] as num).toInt(),
+);
+
+Map<String, dynamic> _$GradeCalculationRuleModelToJson(
+  GradeCalculationRuleModel instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'calculation_verbal': instance.calculation_verbal,
+  'subject_id': instance.subjectId,
+  'interval_id': instance.intervalId,
+};
+
 GradeModel _$GradeModelFromJson(Map<String, dynamic> json) => GradeModel(
   value: json['value'] as String?,
   givenAt: json['given_at'] == null

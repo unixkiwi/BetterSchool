@@ -22,4 +22,7 @@ abstract class BesteSchuleApiClientImpl {
   Future<BesteSchuleApiResponse<List<GradeModel>>> getGrades({
     @Query("include") String include = "collection.subject",
   });
+
+  @GET('https://beste.schule/api/finalgrades')
+  Future<BesteSchuleApiResponse<List<GradeCalculationRuleModel>>> getFinalGrades();
 }

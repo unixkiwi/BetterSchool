@@ -4,6 +4,28 @@ import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
 @JsonSerializable()
+class GradeCalculationRuleModel {
+  final int id;
+  final String? calculation_verbal;
+  @JsonKey(name: 'subject_id')
+  final int subjectId;
+  @JsonKey(name: 'interval_id')
+  final int intervalId;
+
+  GradeCalculationRuleModel({
+    required this.id,
+    required this.calculation_verbal,
+    required this.subjectId,
+    required this.intervalId,
+  });
+
+  factory GradeCalculationRuleModel.fromJson(Map<String, dynamic> json) =>
+      _$GradeCalculationRuleModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GradeCalculationRuleModelToJson(this);
+}
+
+@JsonSerializable()
 class GradeModel {
   final String? value;
   @JsonKey(name: 'given_at')
