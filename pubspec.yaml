@@ -26,6 +26,9 @@ dependencies:
   # date formatter
   intl: ^0.20.2
 
+  # grades average
+  math_expressions: ^3.1.0
+
   # api requests
   retrofit: ^4.9.2
   json_annotation: ^4.9.0
