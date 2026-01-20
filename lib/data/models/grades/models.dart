@@ -6,7 +6,7 @@ part 'models.g.dart';
 @JsonSerializable()
 class GradeCalculationRuleModel {
   final int id;
-  final String? calculation_verbal;
+  final String? calculation_rule;
   @JsonKey(name: 'subject_id')
   final int subjectId;
   @JsonKey(name: 'interval_id')
@@ -14,7 +14,7 @@ class GradeCalculationRuleModel {
 
   GradeCalculationRuleModel({
     required this.id,
-    required this.calculation_verbal,
+    required this.calculation_rule,
     required this.subjectId,
     required this.intervalId,
   });

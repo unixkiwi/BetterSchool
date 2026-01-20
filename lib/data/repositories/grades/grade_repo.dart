@@ -131,7 +131,7 @@ class GradeRepo {
     }
   }
 
-  Future<Result<List<GradeCalculationRule>>> getGradeCalculationRule({required int subjectId}) async {
+  Future<Result<List<GradeCalculationRule>>> getGradeCalculationRules() async {
     try {
       BesteSchuleApiResponse<List<GradeCalculationRuleModel>> response =
           await _apiClient.getFinalGrades();
@@ -139,24 +139,19 @@ class GradeRepo {
       if (response.data != null) {
         List<GradeCalculationRuleModel> data = response.data!;
 
-        for (final rule in data) {
-          if (rule.subjectId == subjectId) {
-            return Result.success([
-              GradeCalculationRule(
+        List<GradeCalculationRule> result = data
+            .map<GradeCalculationRule>(
+              (rule) => GradeCalculationRule(
                 id: rule.id,
-                rule: rule.calculation_verbal ?? GradeCalculationRule.empty().rule,
+                rule:
+                    rule.calculation_rule ?? GradeCalculationRule.empty().rule,
                 subjectId: rule.subjectId,
                 intervalId: rule.intervalId,
-              )
-            ]);
-          }
-        }
+              ),
+            )
+            .toList();
 
-        return Result.error(
-          Exception(
-            "No calculation rule found for subjectId: $subjectId",
-          ),
-        );
+        return Result.success(result);
       } else {
         return Result.error(
           Exception(

@@ -50,7 +50,7 @@ Future<void> initDependencies() async {
 
   sl.registerSingleton(GradeRepo(sl()));
 
-  sl.registerFactory(() => GradesBloc(sl()));
+  sl.registerFactory(() => GradesBloc(sl(), sl<SettingsRepository>()));
 
   final prefs = await SharedPreferences.getInstance();
   sl.registerSingleton<SharedPreferences>(prefs);

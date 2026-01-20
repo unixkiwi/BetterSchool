@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:betterschool/config/constants.dart';
 import 'package:betterschool/data/repositories/grades/grade_repo.dart';
+import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/domain/models/grade.dart';
+import 'package:betterschool/domain/models/grade_calculation_rule.dart';
 import 'package:betterschool/ui/grades/utils/grade_helpers.dart';
 import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
@@ -16,8 +18,10 @@ part 'grades_state.dart';
 
 class GradesBloc extends Bloc<GradesEvent, GradesState> {
   final GradeRepo _repo;
+  final SettingsRepository _settingsRepository;
 
-  GradesBloc(this._repo) : super(GradesStateLoading()) {
+  GradesBloc(this._repo, this._settingsRepository)
+    : super(GradesStateLoading()) {
     on<GradesPageStartedEvent>(_onPageLoaded);
     on<GradesPageRefreshedEvent>(_onRefresh);
   }
@@ -31,7 +35,14 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
     try {
       Result<List<Grade>> response = await _repo.getGrades(forceRefresh: true);
 
-      GradesState receivedState = _handleResult(response, emit);
+      Result<List<GradeCalculationRule>> calcRulesResponse = await _repo
+          .getGradeCalculationRules();
+
+      GradesState receivedState = _handleResult(
+        response,
+        emit,
+        calcRulesResponse: calcRulesResponse,
+      );
 
       emit(receivedState);
     } finally {
@@ -49,19 +60,44 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
     Emitter<GradesState> emit,
   ) async {
     Result<List<Grade>> response = await _repo.getGrades();
+    Result<List<GradeCalculationRule>> calcRulesResponse = await _repo
+        .getGradeCalculationRules();
 
-    GradesState receivedState = _handleResult(response, emit);
+    GradesState receivedState = _handleResult(
+      response,
+      emit,
+      calcRulesResponse: calcRulesResponse,
+    );
 
     emit(receivedState);
   }
 
   GradesState _handleResult(
     Result<List<Grade>> response,
-    Emitter<GradesState> emit,
-  ) {
+    Emitter<GradesState> emit, {
+    Result<List<GradeCalculationRule>>? calcRulesResponse,
+  }) {
     if (response is Success<List<Grade>>) {
       if ((response).value.isNotEmpty) {
-        return GradesDataState(groupGradesBySubject((response).value));
+        List<GradeCalculationRule>? calcRules;
+
+        if (calcRulesResponse is Error<List<GradeCalculationRule>>) {
+          logger.e(
+            'Error fetching grade calculation rules: ${(calcRulesResponse as Error).error.toString()}',
+          );
+
+          calcRules = null;
+        } else if (calcRulesResponse is Success<List<GradeCalculationRule>>) {
+          calcRules = (calcRulesResponse).value;
+        }
+
+        return GradesDataState(
+          groupGradesBySubject(
+            (response).value,
+            useModifier: _settingsRepository.useGradeModifiersKey.getValue(),
+            calculationRules: calcRules,
+          ),
+        );
       } else {
         return GradesEmptyState();
       }
