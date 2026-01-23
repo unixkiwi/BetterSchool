@@ -22,3 +22,9 @@ class ChangeUseAvgGradeCalcFormulaEvent extends SettingsEvent {
 
   ChangeUseAvgGradeCalcFormulaEvent(this.useAvgGradeCalcFormula);
 }
+
+class ChangeSelectedYearEvent extends SettingsEvent {
+  final int yearId;
+
+  ChangeSelectedYearEvent(this.yearId);
+}

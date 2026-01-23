@@ -24,12 +24,15 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
     required String weekId,
     String include = "days.lessons",
     String interpolate = "true",
+    int? filterYear,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'include': include,
       r'interpolate': interpolate,
+      r'filter[year]': filterYear,
     };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BesteSchuleApiResponse<SchoolWeekModel>>(
@@ -59,9 +62,14 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
   @override
   Future<BesteSchuleApiResponse<List<GradeModel>>> getGrades({
     String include = "collection.subject",
+    int? filterYear,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'include': include};
+    final queryParameters = <String, dynamic>{
+      r'include': include,
+      r'filter[year]': filterYear,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BesteSchuleApiResponse<List<GradeModel>>>(
@@ -96,9 +104,10 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
 
   @override
   Future<BesteSchuleApiResponse<List<GradeCalculationRuleModel>>>
-  getFinalGrades() async {
+  getFinalGrades({int? filterYear}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'filter[year]': filterYear};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
@@ -125,6 +134,42 @@ class _BesteSchuleApiClientImpl implements BesteSchuleApiClientImpl {
                     (i) => GradeCalculationRuleModel.fromJson(
                       i as Map<String, dynamic>,
                     ),
+                  )
+                  .toList()
+            : List.empty(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BesteSchuleApiResponse<List<YearModel>>> getYears() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BesteSchuleApiResponse<List<YearModel>>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            'https://beste.schule/api/years',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BesteSchuleApiResponse<List<YearModel>> _value;
+    try {
+      _value = BesteSchuleApiResponse<List<YearModel>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<YearModel>(
+                    (i) => YearModel.fromJson(i as Map<String, dynamic>),
                   )
                   .toList()
             : List.empty(),

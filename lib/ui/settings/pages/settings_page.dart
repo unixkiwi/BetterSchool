@@ -1,3 +1,4 @@
+import 'package:betterschool/domain/models/year.dart';
 import 'package:betterschool/ui/settings/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,6 +100,44 @@ class SettingsPage extends StatelessWidget {
                         );
                       },
                       toggled: state.useAvgGradeCalcFormula,
+                    ),
+                  ],
+                ),
+                // SCHOOL YEAR
+                SettingSection(
+                  title: SettingSectionTitle("School Year"),
+                  tiles: [
+                    SettingSingleOptionTile<String>(
+                      icon: SettingTileIcon(Icons.calendar_today_rounded),
+                      title: Text('Selected Year'),
+                      value: SettingTileValue(
+                        state.availableYears
+                            .firstWhere(
+                              (y) => y.id == state.selectedYearId,
+                              orElse: () => SchoolYear.empty(),
+                            )
+                            .name,
+                      ),
+                      description: Text('Select the school year'),
+                      dialogTitle: 'Select Year',
+                      options: state.availableYears.map((y) => y.name).toList(),
+                      initialOption: state.availableYears
+                          .firstWhere(
+                            (y) => y.id == state.selectedYearId,
+                            orElse: () => SchoolYear.empty(),
+                          )
+                          .name,
+                      onSubmitted: (value) {
+                        final selected = state.availableYears.firstWhere(
+                          (y) => y.name == value,
+                          orElse: () => SchoolYear.empty(),
+                        );
+                        if (selected.id != -1) {
+                          context.read<SettingsBloc>().add(
+                            ChangeSelectedYearEvent(selected.id),
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),

@@ -1,5 +1,6 @@
 import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/timetable/models.dart';
+import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/domain/models/group.dart';
 import 'package:betterschool/domain/models/journal_note.dart';
@@ -19,8 +20,9 @@ import 'package:remote_caching/remote_caching.dart';
 
 class TimetableRepo {
   final BesteSchuleApiClientImpl _apiClient;
+  final SettingsRepository _settingsRepo;
 
-  TimetableRepo(this._apiClient);
+  TimetableRepo(this._apiClient, this._settingsRepo);
 
   List<Lesson> _getLessons(List<LessonModel> lessons) {
     List<Lesson> lessonsConverted = [];
@@ -192,7 +194,11 @@ class TimetableRepo {
     String weekId, {
     bool forceRefresh = false,
   }) async {
-    final cacheKey = "timetableWeek-${weekId.toString()}";
+    final selectedYear = _settingsRepo.selectedYear.getValue();
+    final yearId = selectedYear != -1 ? selectedYear : null;
+
+    final cacheKey =
+        "timetableWeek-${weekId.toString()}${yearId != null ? '_$yearId' : ''}";
     logger.d('🔍 Cache key: $cacheKey');
     logger.d('🔄 Force refresh: $forceRefresh');
 
@@ -208,6 +214,7 @@ class TimetableRepo {
               );
               final response = await _apiClient.getWeek(
                 weekId: weekId.toString(),
+                filterYear: yearId,
               );
               logger.d('✅ Network request completed');
               return response;

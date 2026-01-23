@@ -28,6 +28,20 @@ Object? _$nullableGenericToJson<T>(
   Object? Function(T value) toJson,
 ) => input == null ? null : toJson(input);
 
+YearModel _$YearModelFromJson(Map<String, dynamic> json) => YearModel(
+  id: (json['id'] as num?)?.toInt(),
+  name: json['name'] as String?,
+  from: json['from'] == null ? null : DateTime.parse(json['from'] as String),
+  to: json['to'] == null ? null : DateTime.parse(json['to'] as String),
+);
+
+Map<String, dynamic> _$YearModelToJson(YearModel instance) => <String, dynamic>{
+  'id': instance.id,
+  'name': instance.name,
+  'from': instance.from?.toIso8601String(),
+  'to': instance.to?.toIso8601String(),
+};
+
 TeacherModel _$TeacherModelFromJson(Map<String, dynamic> json) => TeacherModel(
   id: (json['id'] as num?)?.toInt(),
   local_id: json['local_id'] as String?,
