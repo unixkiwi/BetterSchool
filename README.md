@@ -1,9 +1,3 @@
-> [!WARNING]
-> This app is still in heavy development and may contain bugs or errors.
-> If you want to test this app, build it yourself or download it from the releases section. A first alpha is already available!
-
----
-
 <h1 align="center">🏫 BetterSchool 🏫</h1>
 
 <div align="center">
@@ -66,7 +60,7 @@
 ### 📲 Direct Download
 
 > [!TIP]
-> A first alpha is already available!
+> A first release is already available!
 
 Get the latest APK from [Github Releases](https://github.com/unixkiwi/betterschool/releases)
 
