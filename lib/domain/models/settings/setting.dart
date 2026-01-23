@@ -1,8 +1,8 @@
 abstract class Setting<T> {
   final String storageKey;
-  final T? fallbackValue;
+  final T defaultValue;
 
-  const Setting({required this.storageKey, this.fallbackValue});
+  const Setting({required this.storageKey, required this.defaultValue});
 
   T getValue();
 

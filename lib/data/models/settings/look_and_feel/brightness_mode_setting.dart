@@ -8,7 +8,7 @@ class BrightnessModeSetting extends Setting<ThemeMode> {
   const BrightnessModeSetting(this._prefs)
     : super(
         storageKey: 'settings_brightness_mode',
-        fallbackValue: ThemeMode.system,
+        defaultValue: ThemeMode.system,
       );
 
   @override
@@ -20,7 +20,7 @@ class BrightnessModeSetting extends Setting<ThemeMode> {
       case 2:
         return ThemeMode.dark;
       default:
-        return ThemeMode.system;
+        return defaultValue;
     }
   }
 

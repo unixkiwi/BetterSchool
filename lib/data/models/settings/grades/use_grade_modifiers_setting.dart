@@ -5,11 +5,11 @@ class UseGradeModifiersSetting extends Setting<bool> {
   final SharedPreferences _prefs;
 
   const UseGradeModifiersSetting(this._prefs)
-    : super(storageKey: 'settings_use_modifiers', fallbackValue: false);
+    : super(storageKey: 'settings_use_modifiers', defaultValue: false);
 
   @override
   bool getValue() {
-    return _prefs.getBool(storageKey) ?? false;
+    return _prefs.getBool(storageKey) ?? defaultValue;
   }
 
   @override
