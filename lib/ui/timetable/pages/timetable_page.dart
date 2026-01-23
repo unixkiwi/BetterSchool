@@ -19,9 +19,11 @@ class TimetablePage extends StatelessWidget {
           case TimetableStateLoading():
             return TimetableLoadingPage();
           case TimetableErrorState():
-            return TimetableErrorPage(title: state.title, description: state.description, errorType: state.errorType);
-          case TimetableEmptyState():
-            return TimetableEmptyPage();
+            return TimetableErrorPage(
+              title: state.title,
+              description: state.description,
+              errorType: state.errorType,
+            );
           default:
             return TimetableLoadingPage();
         }

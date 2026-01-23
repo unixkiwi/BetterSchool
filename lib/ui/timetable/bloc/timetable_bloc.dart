@@ -257,7 +257,7 @@ class TimetableBloc extends Bloc<TimetableEvent, TimetableState> {
 
         return TimetableWeekState(weekNr: week, days: days);
       } else {
-        return TimetableEmptyState();
+        return TimetableWeekState(weekNr: week, days: []);
       }
     } else if (response is Error<SchoolWeek>) {
       Exception error = response.error;
