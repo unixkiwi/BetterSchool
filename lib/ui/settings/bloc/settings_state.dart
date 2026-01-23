@@ -6,6 +6,7 @@ class SettingsState {
   final bool useAvgGradeCalcFormula;
   final List<SchoolYear> availableYears;
   final int selectedYearId;
+  final bool isLoadingYears;
 
   SettingsState({
     required this.brightnessMode,
@@ -13,6 +14,7 @@ class SettingsState {
     required this.useAvgGradeCalcFormula,
     this.availableYears = const [],
     this.selectedYearId = -1,
+    this.isLoadingYears = false,
   });
 
   SettingsState copyWith({
@@ -21,6 +23,7 @@ class SettingsState {
     bool? useAvgGradeCalcFormula,
     List<SchoolYear>? availableYears,
     int? selectedYearId,
+    bool? isLoadingYears,
   }) {
     return SettingsState(
       brightnessMode: brightnessMode ?? this.brightnessMode,
@@ -29,6 +32,7 @@ class SettingsState {
           useAvgGradeCalcFormula ?? this.useAvgGradeCalcFormula,
       availableYears: availableYears ?? this.availableYears,
       selectedYearId: selectedYearId ?? this.selectedYearId,
+      isLoadingYears: isLoadingYears ?? this.isLoadingYears,
     );
   }
 }

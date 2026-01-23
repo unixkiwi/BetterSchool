@@ -17,7 +17,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         SettingsState(
           brightnessMode: _settingsRepo.brightness.getValue(),
           useModifiers: _settingsRepo.useGradeModifiersKey.getValue(),
-          useAvgGradeCalcFormula: _settingsRepo.useBesteSchuleGradeAvgCalcFormula
+          useAvgGradeCalcFormula: _settingsRepo
+              .useBesteSchuleGradeAvgCalcFormula
               .getValue(),
           selectedYearId: _settingsRepo.selectedYear.getValue(),
         ),
@@ -29,7 +30,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ChangeSelectedYearEvent>(_onChangeSelectedYear);
   }
 
-  Future<void> _onLoad(LoadSettingsEvent event, Emitter<SettingsState> emit) async {
+  Future<void> _onLoad(
+    LoadSettingsEvent event,
+    Emitter<SettingsState> emit,
+  ) async {
     emit(
       state.copyWith(
         brightnessMode: _settingsRepo.brightness.getValue(),
@@ -37,12 +41,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         useAvgGradeCalcFormula: _settingsRepo.useBesteSchuleGradeAvgCalcFormula
             .getValue(),
         selectedYearId: _settingsRepo.selectedYear.getValue(),
+        isLoadingYears: true,
       ),
     );
 
     final result = await _yearRepo.getYears();
     if (result is Success<List<SchoolYear>>) {
-      emit(state.copyWith(availableYears: result.value));
+      emit(state.copyWith(availableYears: result.value, isLoadingYears: false));
+    } else {
+      emit(state.copyWith(isLoadingYears: false));
     }
   }
 

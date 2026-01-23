@@ -107,38 +107,52 @@ class SettingsPage extends StatelessWidget {
                 SettingSection(
                   title: SettingSectionTitle("School Year"),
                   tiles: [
-                    SettingSingleOptionTile<String>(
-                      icon: SettingTileIcon(Icons.calendar_today_rounded),
-                      title: Text('Selected Year'),
-                      value: SettingTileValue(
-                        state.availableYears
+                    if (state.isLoadingYears)
+                      SettingSingleOptionTile<String>(
+                        icon: SettingTileIcon(Icons.calendar_today_rounded),
+                        title: Text('Selected Year'),
+                        value: SettingTileValue('Loading...'),
+                        description: Text('Select the school year'),
+                        dialogTitle: 'Loading',
+                        options: const ['Loading...'],
+                        initialOption: 'Loading...',
+                        onSubmitted: (_) {},
+                      )
+                    else
+                      SettingSingleOptionTile<String>(
+                        icon: SettingTileIcon(Icons.calendar_today_rounded),
+                        title: Text('Selected Year'),
+                        value: SettingTileValue(
+                          state.availableYears
+                              .firstWhere(
+                                (y) => y.id == state.selectedYearId,
+                                orElse: () => SchoolYear.empty(),
+                              )
+                              .name,
+                        ),
+                        description: Text('Select the school year'),
+                        dialogTitle: 'Select Year',
+                        options: state.availableYears
+                            .map((y) => y.name)
+                            .toList(),
+                        initialOption: state.availableYears
                             .firstWhere(
                               (y) => y.id == state.selectedYearId,
                               orElse: () => SchoolYear.empty(),
                             )
                             .name,
-                      ),
-                      description: Text('Select the school year'),
-                      dialogTitle: 'Select Year',
-                      options: state.availableYears.map((y) => y.name).toList(),
-                      initialOption: state.availableYears
-                          .firstWhere(
-                            (y) => y.id == state.selectedYearId,
+                        onSubmitted: (value) {
+                          final selected = state.availableYears.firstWhere(
+                            (y) => y.name == value,
                             orElse: () => SchoolYear.empty(),
-                          )
-                          .name,
-                      onSubmitted: (value) {
-                        final selected = state.availableYears.firstWhere(
-                          (y) => y.name == value,
-                          orElse: () => SchoolYear.empty(),
-                        );
-                        if (selected.id != -1) {
-                          context.read<SettingsBloc>().add(
-                            ChangeSelectedYearEvent(selected.id),
                           );
-                        }
-                      },
-                    ),
+                          if (selected.id != -1) {
+                            context.read<SettingsBloc>().add(
+                              ChangeSelectedYearEvent(selected.id),
+                            );
+                          }
+                        },
+                      ),
                   ],
                 ),
               ],
