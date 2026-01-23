@@ -35,8 +35,11 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
     try {
       Result<List<Grade>> response = await _repo.getGrades(forceRefresh: true);
 
-      Result<List<GradeCalculationRule>> calcRulesResponse = await _repo
-          .getGradeCalculationRules();
+      Result<List<GradeCalculationRule>>? calcRulesResponse;
+
+      if (_settingsRepository.useBesteSchuleGradeAvgCalcFormula.getValue()) {
+        calcRulesResponse = await _repo.getGradeCalculationRules();
+      }
 
       GradesState receivedState = _handleResult(
         response,
@@ -60,8 +63,12 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
     Emitter<GradesState> emit,
   ) async {
     Result<List<Grade>> response = await _repo.getGrades();
-    Result<List<GradeCalculationRule>> calcRulesResponse = await _repo
-        .getGradeCalculationRules();
+
+    Result<List<GradeCalculationRule>>? calcRulesResponse;
+
+    if (_settingsRepository.useBesteSchuleGradeAvgCalcFormula.getValue()) {
+      calcRulesResponse = await _repo.getGradeCalculationRules();
+    }
 
     GradesState receivedState = _handleResult(
       response,
@@ -95,6 +102,9 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
           groupGradesBySubject(
             (response).value,
             useModifier: _settingsRepository.useGradeModifiersKey.getValue(),
+            useBesteSchuleFormula: _settingsRepository
+                .useBesteSchuleGradeAvgCalcFormula
+                .getValue(),
             calculationRules: calcRules,
           ),
         );

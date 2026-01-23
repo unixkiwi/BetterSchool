@@ -82,6 +82,24 @@ class SettingsPage extends StatelessWidget {
                       },
                       toggled: state.useModifiers,
                     ),
+
+                    // USE AVERAGE GRADE CALCULATION FORMULA
+                    SettingSwitchTile(
+                      icon: SettingTileIcon(Icons.functions_rounded),
+                      title: Text('Use Average Grade Calculation Formula'),
+                      description: Text(
+                        'Use the average grade calculation formula from your teachers from beste.schule',
+                      ),
+                      value: SettingTileValue(
+                        state.useAvgGradeCalcFormula ? 'On' : 'Off',
+                      ),
+                      onChanged: (value) {
+                        context.read<SettingsBloc>().add(
+                          ChangeUseAvgGradeCalcFormulaEvent(value),
+                        );
+                      },
+                      toggled: state.useAvgGradeCalcFormula,
+                    ),
                   ],
                 ),
               ],

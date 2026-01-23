@@ -23,6 +23,7 @@ class GradeSubjectData {
 List<GradeSubjectData> groupGradesBySubject(
   List<Grade> grades, {
   bool useModifier = false,
+  bool useBesteSchuleFormula = false,
   List<GradeCalculationRule>? calculationRules,
 }) {
   if (calculationRules != null) {
@@ -46,6 +47,7 @@ List<GradeSubjectData> groupGradesBySubject(
     final avg = calculateGradeAverageForSubject(
       list,
       useModifier: useModifier,
+      useBesteSchuleFormula: useBesteSchuleFormula,
       calculationRule: calculationRules
           ?.firstWhere(
             (rule) =>
@@ -82,9 +84,10 @@ Set<String> extractTypesFromCalculationRule(String? rule) {
 double calculateGradeAverageForSubject(
   List<Grade> grades, {
   bool useModifier = false,
+  bool useBesteSchuleFormula = false,
   String? calculationRule,
 }) {
-  if (calculationRule != null) {
+  if (calculationRule != null && useBesteSchuleFormula) {
     logger.i('Calculating grade average with rule: $calculationRule');
     final types = extractTypesFromCalculationRule(calculationRule);
 

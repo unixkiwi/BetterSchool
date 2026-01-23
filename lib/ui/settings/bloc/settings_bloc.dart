@@ -13,11 +13,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         SettingsState(
           brightnessMode: _repo.brightness.getValue(),
           useModifiers: _repo.useGradeModifiersKey.getValue(),
+          useAvgGradeCalcFormula: _repo.useBesteSchuleGradeAvgCalcFormula
+              .getValue(),
         ),
       ) {
     on<LoadSettingsEvent>(_onLoad);
     on<ChangeThemeModeEvent>(_onChangeThemeMode);
     on<ChangeUseModifiersEvent>(_onChangeUseModifiers);
+    on<ChangeUseAvgGradeCalcFormulaEvent>(_onChangeUseAvgGradeCalcFormula);
   }
 
   void _onLoad(LoadSettingsEvent event, Emitter<SettingsState> emit) {
@@ -25,6 +28,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       state.copyWith(
         brightnessMode: _repo.brightness.getValue(),
         useModifiers: _repo.useGradeModifiersKey.getValue(),
+        useAvgGradeCalcFormula: _repo.useBesteSchuleGradeAvgCalcFormula
+            .getValue(),
       ),
     );
   }
@@ -43,5 +48,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     await _repo.useGradeModifiersKey.setValue(event.useModifiers);
     emit(state.copyWith(useModifiers: event.useModifiers));
+  }
+
+  Future<void> _onChangeUseAvgGradeCalcFormula(
+    ChangeUseAvgGradeCalcFormulaEvent event,
+    Emitter<SettingsState> emit,
+  ) async {
+    await _repo.useBesteSchuleGradeAvgCalcFormula.setValue(
+      event.useAvgGradeCalcFormula,
+    );
+    emit(state.copyWith(useAvgGradeCalcFormula: event.useAvgGradeCalcFormula));
   }
 }
