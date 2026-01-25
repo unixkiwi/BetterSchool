@@ -136,14 +136,35 @@ class GradeRepo {
     }
   }
 
-  Future<Result<List<GradeCalculationRule>>> getGradeCalculationRules() async {
+  Future<Result<List<GradeCalculationRule>>> getGradeCalculationRules({bool forceRefresh = false}) async {
     try {
       final selectedYear = _settingsRepo.selectedYear.getValue();
       final yearId = selectedYear != -1 ? selectedYear : null;
 
-      BesteSchuleApiResponse<List<GradeCalculationRuleModel>> response =
-          await _apiClient.getFinalGrades(filterYear: yearId);
-
+      BesteSchuleApiResponse<List<GradeCalculationRuleModel>> response = await RemoteCaching.instance
+          .call<BesteSchuleApiResponse<List<GradeCalculationRuleModel>>>(
+        "grade_calculation_rules${yearId != null ? '_$yearId' : ''}",
+        cacheDuration: Duration(hours: 12),
+        forceRefresh: forceRefresh,
+        remote: () async {
+          logger.i('🌐 CACHE MISS - Making network request for grade calculation rules');
+          final response = await _apiClient.getFinalGrades(filterYear: yearId);
+          logger.d('✅ Network request completed');
+          return response;
+        },
+        fromJson: (json) {
+          logger.i('📦 CACHE HIT - Deserializing from cache');
+          return BesteSchuleApiResponse<List<GradeCalculationRuleModel>>.fromJson(
+            json as Map<String, dynamic>,
+            (json) => (json as List<dynamic>)
+                .map<GradeCalculationRuleModel>(
+                  (item) => GradeCalculationRuleModel.fromJson(item as Map<String, dynamic>),
+                )
+                .toList(),
+          );
+        },
+      );
+      
       if (response.data != null) {
         List<GradeCalculationRuleModel> data = response.data!;
 
