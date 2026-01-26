@@ -62,7 +62,29 @@ class LoginPage extends StatelessWidget {
               if (state is LoginLoading) {
                 return CircularProgressIndicator();
               } else if (state is LoginFailed) {
-                return Icon(Icons.error_rounded);
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.error_rounded,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Login failed: ${state.error.toString()}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    LoginButton(
+                      onPressed: () => context.read<LoginBloc>().add(
+                        LoginButtonPressedEvent(),
+                      ),
+                    ),
+                  ],
+                );
               } else if (state is LoginSuccessful) {
                 return Icon(Icons.check_circle_rounded);
               } else {
