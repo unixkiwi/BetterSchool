@@ -63,6 +63,7 @@
 > A first release is already available!
 
 Get the latest APK from [Github Releases](https://github.com/unixkiwi/betterschool/releases)
+You will probably want the arm64-v8a version if you have a normal android device, if the version doesn't work try the armabi-v7a version. 
 
 ### 🛠️ Build from Source
 
