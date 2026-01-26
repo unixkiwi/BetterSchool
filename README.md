@@ -50,10 +50,10 @@
 ---
 
 ## 📱 Screenshots
+| Timetable | Grades | Settings |
+|-----------|--------|----------|
+| <img alt="Timetable View Screenshot" src="./assets/screenshots/screenshot_timetable.jpg"> | <img alt="Grades View Screenshot" src="./assets/screenshots/screenshot_grades.jpg"> | <img alt="Settings View Screenshot" src="./assets/screenshots/screenshot_settings.jpg">
 
-**Coming soon**
-
----
 
 ## ⚙️ Installation
 
