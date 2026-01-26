@@ -19,6 +19,25 @@ class BesteSchuleApiResponse<T> {
 }
 
 @JsonSerializable()
+class YearModel {
+  final int? id;
+  final String? name;
+  final DateTime? from;
+  final DateTime? to;
+
+  YearModel({
+    required this.id,
+    required this.name,
+    required this.from,
+    required this.to,
+  });
+  factory YearModel.fromJson(Map<String, dynamic> json) =>
+      _$YearModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$YearModelToJson(this);
+}
+
+@JsonSerializable()
 class TeacherModel {
   final int? id;
   final String? local_id;

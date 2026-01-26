@@ -18,6 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<AppStartedEvent>(_onAppStarted);
     on<SuccessfulOAuthLoginEvent>(_onOAuthSuccess);
     on<CancelledOAuthEvent>(_onCancelLogin);
+    on<FailedOAuthLoginEvent>(_onFailedLogin);
   }
 
   /// What happends when the app has been started
@@ -68,5 +69,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   void _onCancelLogin(CancelledOAuthEvent event, Emitter<LoginState> emit) {
     emit(LoginInitial());
+  }
+
+  void _onFailedLogin(FailedOAuthLoginEvent event, Emitter<LoginState> emit) {
+    emit(LoginFailed(error: event.error));
   }
 }

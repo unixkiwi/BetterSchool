@@ -2,6 +2,7 @@ import 'package:betterschool/data/repositories/auth/auth_repository.dart';
 import 'package:betterschool/data/repositories/grades/grade_repo.dart';
 import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
+import 'package:betterschool/data/repositories/year_repository.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
 import 'package:betterschool/ui/settings/bloc/settings_bloc.dart';
@@ -44,18 +45,22 @@ Future<void> initDependencies() async {
 
   sl.registerSingleton(BesteSchuleApiClientImpl(sl()));
 
-  sl.registerSingleton(TimetableRepo(sl()));
-
-  sl.registerFactory(() => TimetableBloc(sl()));
-
-  sl.registerSingleton(GradeRepo(sl()));
-
-  sl.registerFactory(() => GradesBloc(sl()));
-
   final prefs = await SharedPreferences.getInstance();
   sl.registerSingleton<SharedPreferences>(prefs);
 
   sl.registerSingleton<SettingsRepository>(SettingsRepository());
 
-  sl.registerFactory(() => SettingsBloc(sl<SettingsRepository>()));
+  sl.registerSingleton(YearRepository(sl()));
+
+  sl.registerSingleton(TimetableRepo(sl(), sl<SettingsRepository>()));
+
+  sl.registerFactory(() => TimetableBloc(sl()));
+
+  sl.registerSingleton(GradeRepo(sl(), sl<SettingsRepository>()));
+
+  sl.registerFactory(() => GradesBloc(sl(), sl<SettingsRepository>()));
+
+  sl.registerFactory<SettingsBloc>(
+    () => SettingsBloc(sl<SettingsRepository>(), sl<YearRepository>()),
+  );
 }

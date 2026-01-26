@@ -3,6 +3,7 @@ import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
 import 'package:betterschool/ui/grades/pages/grades_page.dart';
 import 'package:betterschool/ui/home_navbar/pages/home_page.dart';
 import 'package:betterschool/ui/login/pages/login_page.dart';
+import 'package:betterschool/ui/settings/bloc/settings_bloc.dart';
 import 'package:betterschool/ui/settings/pages/settings_page.dart';
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
 import 'package:betterschool/ui/timetable/pages/timetable_page.dart';
@@ -41,7 +42,10 @@ Widget gradesPage(BuildContext context) {
 
 final String settingsRoute = "/settings";
 
-Widget settingsPage(BuildContext context) => SettingsPage();
+Widget settingsPage(BuildContext context) {
+  context.read<SettingsBloc>().add(LoadSettingsEvent());
+  return SettingsPage();
+}
 
 final Map<String, WidgetBuilder> routes = {
   loginRoute: loginPage,

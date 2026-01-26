@@ -1,16 +1,10 @@
-> [!WARNING]
-> This app is still in heavy development and may contain bugs or errors.
-> If you want to test this app, build it yourself or download it from the releases section. A first alpha is already available!
-
----
-
 <h1 align="center">🏫 BetterSchool 🏫</h1>
 
 <div align="center">
   <img src="https://img.shields.io/github/commit-activity/t/unixkiwi/betterschool?style=for-the-badge&logo=git&label=Total%20Commits" alt="Total Commits">
   <img src="https://img.shields.io/github/last-commit/unixkiwi/betterschool?style=for-the-badge&logo=github&label=Last%20Commit" alt="Last Commit">
-  <img src="https://img.shields.io/github/actions/workflow/status/unixkiwi/betterschool/flutter_ci.yml?style=for-the-badge&logo=flutter&label=Flutter%20CI" alt="Flutter CI">
   <img src="https://img.shields.io/github/issues-raw/unixkiwi/betterschool?style=for-the-badge&logo=github&label=Total%20Issues" alt="Total Issues">
+  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/unixkiwi/betterschool?style=for-the-badge">
   <img src="https://img.shields.io/github/license/unixkiwi/betterschool?style=for-the-badge" alt="GitHub License">
 </div>
 
@@ -66,9 +60,11 @@
 ### 📲 Direct Download
 
 > [!TIP]
-> A first alpha is already available!
+> A first release is already available!
 
 Get the latest APK from [Github Releases](https://github.com/unixkiwi/betterschool/releases)
+
+You will probably want the arm64-v8a version if you have a normal android device, if the version doesn't work try the armabi-v7a version. 
 
 ### 🛠️ Build from Source
 

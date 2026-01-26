@@ -1,7 +1,9 @@
 import 'package:betterschool/data/models/core/models.dart';
 import 'package:betterschool/data/models/grades/models.dart';
+import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/domain/models/grade.dart';
+import 'package:betterschool/domain/models/grade_calculation_rule.dart';
 import 'package:betterschool/domain/models/subject.dart';
 import 'package:betterschool/utils/logger.dart';
 import 'package:betterschool/utils/result.dart';
@@ -10,8 +12,9 @@ import 'package:remote_caching/remote_caching.dart';
 
 class GradeRepo {
   final BesteSchuleApiClientImpl _apiClient;
+  final SettingsRepository _settingsRepo;
 
-  GradeRepo(this._apiClient);
+  GradeRepo(this._apiClient, this._settingsRepo);
 
   int _getGrade(String? grade) =>
       grade == null ? -1 : int.tryParse(grade[0]) ?? -1;
@@ -63,7 +66,10 @@ class GradeRepo {
   Future<BesteSchuleApiResponse<List<GradeModel>>> getGradesWithLogging({
     bool forceRefresh = false,
   }) async {
-    final cacheKey = "grades";
+    final selectedYear = _settingsRepo.selectedYear.getValue();
+    final yearId = selectedYear != -1 ? selectedYear : null;
+
+    final cacheKey = "grades${yearId != null ? '_$yearId' : ''}";
     logger.d('🔍 Cache key: $cacheKey');
     logger.d('🔄 Force refresh: $forceRefresh');
 
@@ -75,7 +81,7 @@ class GradeRepo {
             forceRefresh: forceRefresh,
             remote: () async {
               logger.i('🌐 CACHE MISS - Making network request for grades');
-              final response = await _apiClient.getGrades();
+              final response = await _apiClient.getGrades(filterYear: yearId);
               logger.d('✅ Network request completed');
               return response;
             },
@@ -110,6 +116,69 @@ class GradeRepo {
         List<GradeModel> data = response.data!;
 
         List<Grade> result = _getGradesFromModel(data);
+
+        return Result.success(result);
+      } else {
+        return Result.error(
+          Exception(
+            "Received data from the API is null!\nresponse.data = ${(response.data == null).toString()}",
+          ),
+        );
+      }
+    } on DioException catch (dioException) {
+      return Result.error(dioException);
+    } on Exception catch (e) {
+      logger.e(e.runtimeType.toString());
+      return Result.error(e);
+    } catch (e) {
+      logger.e(e.runtimeType.toString());
+      return Result.error(Exception(e.toString()));
+    }
+  }
+
+  Future<Result<List<GradeCalculationRule>>> getGradeCalculationRules({bool forceRefresh = false}) async {
+    try {
+      final selectedYear = _settingsRepo.selectedYear.getValue();
+      final yearId = selectedYear != -1 ? selectedYear : null;
+
+      BesteSchuleApiResponse<List<GradeCalculationRuleModel>> response = await RemoteCaching.instance
+          .call<BesteSchuleApiResponse<List<GradeCalculationRuleModel>>>(
+        "grade_calculation_rules${yearId != null ? '_$yearId' : ''}",
+        cacheDuration: Duration(hours: 12),
+        forceRefresh: forceRefresh,
+        remote: () async {
+          logger.i('🌐 CACHE MISS - Making network request for grade calculation rules');
+          final response = await _apiClient.getFinalGrades(filterYear: yearId);
+          logger.d('✅ Network request completed');
+          return response;
+        },
+        fromJson: (json) {
+          logger.i('📦 CACHE HIT - Deserializing from cache');
+          return BesteSchuleApiResponse<List<GradeCalculationRuleModel>>.fromJson(
+            json as Map<String, dynamic>,
+            (json) => (json as List<dynamic>)
+                .map<GradeCalculationRuleModel>(
+                  (item) => GradeCalculationRuleModel.fromJson(item as Map<String, dynamic>),
+                )
+                .toList(),
+          );
+        },
+      );
+      
+      if (response.data != null) {
+        List<GradeCalculationRuleModel> data = response.data!;
+
+        List<GradeCalculationRule> result = data
+            .map<GradeCalculationRule>(
+              (rule) => GradeCalculationRule(
+                id: rule.id,
+                rule:
+                    rule.calculation_rule ?? GradeCalculationRule.empty().rule,
+                subjectId: rule.subjectId,
+                intervalId: rule.intervalId,
+              ),
+            )
+            .toList();
 
         return Result.success(result);
       } else {
