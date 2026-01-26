@@ -3,8 +3,8 @@
 <div align="center">
   <img src="https://img.shields.io/github/commit-activity/t/unixkiwi/betterschool?style=for-the-badge&logo=git&label=Total%20Commits" alt="Total Commits">
   <img src="https://img.shields.io/github/last-commit/unixkiwi/betterschool?style=for-the-badge&logo=github&label=Last%20Commit" alt="Last Commit">
-  <img src="https://img.shields.io/github/actions/workflow/status/unixkiwi/betterschool/flutter_ci.yml?style=for-the-badge&logo=flutter&label=Flutter%20CI" alt="Flutter CI">
   <img src="https://img.shields.io/github/issues-raw/unixkiwi/betterschool?style=for-the-badge&logo=github&label=Total%20Issues" alt="Total Issues">
+  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/unixkiwi/betterschool?style=for-the-badge">
   <img src="https://img.shields.io/github/license/unixkiwi/betterschool?style=for-the-badge" alt="GitHub License">
 </div>
 
