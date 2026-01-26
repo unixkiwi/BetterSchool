@@ -62,9 +62,10 @@
 > [!TIP]
 > A first release is already available!
 
-Get the latest APK from [Github Releases](https://github.com/unixkiwi/betterschool/releases)
+[<img src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="80">](https://github.com/unixkiwi/betterschool/releases) 
+[<img src="https://github.com/user-attachments/assets/713d71c5-3dec-4ec4-a3f2-8d28d025a9c6" alt="Get it on Obtainium"  height="80">](https://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/unixkiwi/betterschool)
 
-You will probably want the arm64-v8a version if you have a normal android device, if the version doesn't work try the armabi-v7a version. 
+You will probably want the **arm64-v8a** version if you have a normal android device, if the version doesn't work try the armabi-v7a version. 
 
 ### 🛠️ Build from Source
 
