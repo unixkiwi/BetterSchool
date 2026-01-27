@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:betterschool/domain/models/year.dart';
 import 'package:betterschool/ui/settings/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_tiles/settings_tiles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatelessWidget {
   final Map<ThemeMode, String> _themeNameMap = {
@@ -154,6 +158,54 @@ class SettingsPage extends StatelessWidget {
                         },
                       ),
                   ],
+                ),
+                // About
+                FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    final version = snapshot.hasData
+                        ? snapshot.data!.version
+                        : 'Unknown';
+                    return SettingSection(
+                      title: SettingSectionTitle("About"),
+                      tiles: [
+                        SettingAboutTile(
+                          applicationName: "BetterSchool",
+                          applicationVersion: version,
+                          applicationLegalese: "AGPL v3.0 License",
+                          applicationIcon: Image.asset(
+                            'assets/app_icon.png',
+                            width: 64,
+                            height: 64,
+                          ),
+                          dialogChildren: [
+                            ListTile(
+                              title: Text("Author"),
+                              subtitle: Text("unixkiwi"),
+                              onTap: () {
+                                launchUrl(
+                                  Uri.parse("https://github.com/unixkiwi"),
+                                );
+                              },
+                            ),
+                            ListTile(
+                              title: Text("Source"),
+                              subtitle: Text(
+                                "https://github.com/unixkiwi/BetterSchool",
+                              ),
+                              onTap: () {
+                                launchUrl(
+                                  Uri.parse(
+                                    "https://github.com/unixkiwi/BetterSchool",
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
