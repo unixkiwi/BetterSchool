@@ -1,4 +1,5 @@
 import 'package:betterschool/data/models/core/models.dart';
+import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/data/services/beste_schule_api/beste_schule_api_client_impl.dart';
 import 'package:betterschool/domain/models/year.dart';
 import 'package:betterschool/utils/logger.dart';
@@ -7,10 +8,11 @@ import 'package:dio/dio.dart';
 import 'package:remote_caching/remote_caching.dart';
 
 class YearRepository {
+  final SettingsRepository _settingsRepo;
   final BesteSchuleApiClientImpl _apiClient;
   final _cacheKey = "school_years_cache";
 
-  YearRepository(this._apiClient);
+  YearRepository(this._apiClient, this._settingsRepo);
 
   Future<Result<List<SchoolYear>>> getYears() async {
     logger.i("Fetching school years from the API...");
@@ -46,6 +48,15 @@ class YearRepository {
               ),
             )
             .toList();
+
+        for (var year in result.reversed) {
+          if (DateTime.now().isAfter(year.from) &&
+              DateTime.now().isBefore(year.to) &&
+              _settingsRepo.selectedYear.getValue() == -1) {
+            await _settingsRepo.selectedYear.setValue(year.id);
+            break;
+          }
+        }
 
         return Result.success(result);
       } else {

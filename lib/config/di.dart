@@ -50,7 +50,7 @@ Future<void> initDependencies() async {
 
   sl.registerSingleton<SettingsRepository>(SettingsRepository());
 
-  sl.registerSingleton(YearRepository(sl()));
+  sl.registerSingleton(YearRepository(sl(), sl()));
 
   sl.registerSingleton(TimetableRepo(sl(), sl<SettingsRepository>()));
 
