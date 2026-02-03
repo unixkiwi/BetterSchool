@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:betterschool/domain/models/year.dart';
 import 'package:betterschool/ui/settings/bloc/settings_bloc.dart';
 import 'package:flutter/material.dart';
