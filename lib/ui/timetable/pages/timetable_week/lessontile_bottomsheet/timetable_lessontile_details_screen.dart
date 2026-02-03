@@ -24,10 +24,11 @@ class LessonDetailsDialog extends StatelessWidget {
           maxHeight: MediaQuery.of(context).size.height * 0.8,
           maxWidth: MediaQuery.of(context).size.width * 0.9,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             // Title row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +97,8 @@ class LessonDetailsDialog extends StatelessWidget {
                 sublessons: lesson.subLessons,
               ),
             ],
-          ],
+            ],
+          ),
         ),
       ),
     );
