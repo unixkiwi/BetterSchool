@@ -1,10 +1,7 @@
 import 'package:betterschool/data/models/settings/grades/use_beste_schule_grade_avg_calc_formula.dart';
-import 'package:betterschool/data/repositories/grades/grade_repo.dart';
 import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/data/repositories/timetable/timetable_repo.dart';
-import 'package:betterschool/domain/models/schoolday.dart';
 import 'package:betterschool/domain/models/week.dart';
-import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
 import 'package:betterschool/ui/timetable/bloc/timetable_bloc.dart';
 import 'package:betterschool/utils/result.dart';
 import 'package:betterschool/utils/time_utils.dart';
