@@ -168,21 +168,51 @@ class TimetableRepo {
     List<SchoolDay> result = [];
 
     for (final SchoolDayModel day in days) {
+      List<JournalNoteModel> noteModels = (day.notes ?? []).toList();
+
+      List<JournalNote> tempNotes = [];
+
+      List<JournalNote> notesBundled = [];
+
+      for (final JournalNoteModel noteModel in noteModels) {
+        if ((noteModel.description ?? "").isEmpty) {
+          logger.d(
+            "Empty note found, adding ${tempNotes.length} temp notes to final notes list",
+          );
+          if (tempNotes.isNotEmpty) {
+            notesBundled.add(
+              JournalNote(desc: tempNotes.map((n) => n.desc).join("\n")),
+            );
+            tempNotes.clear();
+          }
+        } else {
+          tempNotes.add(JournalNote(desc: noteModel.description ?? ""));
+        }
+      }
+
+      if (tempNotes.isNotEmpty) {
+        notesBundled.add(
+          JournalNote(desc: tempNotes.map((n) => n.desc).join("\n")),
+        );
+        tempNotes.clear();
+      }
+
+      List<JournalNote> notesSeperated = (day.notes ?? [])
+          .where((note) => (note.description ?? "").isNotEmpty)
+          .map(
+            (note) =>
+                JournalNote(desc: note.description ?? JournalNote.empty().desc),
+          )
+          .toList();
+
       result.add(
         SchoolDay(
           id: day.id ?? SchoolDay.empty().id,
           date: day.date ?? SchoolDay.empty().date,
           lessons: _getLessons(day.lessons ?? []),
-          notes:
-              day.notes
-                  ?.where(
-                    (note) =>
-                        note.description != null &&
-                        note.description!.isNotEmpty,
-                  )
-                  .map((note) => JournalNote(desc: note.description!))
-                  .toList() ??
-              [],
+          notes: _settingsRepo.useBundledNotes.getValue()
+              ? notesBundled
+              : notesSeperated,
         ),
       );
     }
