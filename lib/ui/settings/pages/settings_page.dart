@@ -70,7 +70,7 @@ class SettingsPage extends StatelessWidget {
                   tiles: [
                     // USE BUNDLED NOTES
                     SettingSwitchTile(
-                      icon: SettingTileIcon(Icons.note_rounded),
+                      icon: SettingTileIcon(Icons.splitscreen_rounded),
                       title: Text('Use Bundled Notes'),
                       description: Text(
                         'Separate timetable notes from beste.schule per line or bundle them',
