@@ -88,7 +88,7 @@ double calculateGradeAverageForSubject(
   String? calculationRule,
 }) {
   if (calculationRule != null && useBesteSchuleFormula) {
-    logger.i('Calculating grade average with rule: $calculationRule');
+    // logger.i('Calculating grade average with rule: $calculationRule');
     final types = extractTypesFromCalculationRule(calculationRule);
 
     final Map<String, double> typeSums = {};
