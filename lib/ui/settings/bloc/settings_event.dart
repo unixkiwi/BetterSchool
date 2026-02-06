@@ -17,6 +17,12 @@ class ChangeUseModifiersEvent extends SettingsEvent {
   ChangeUseModifiersEvent(this.useModifiers);
 }
 
+class ChangeUseBundledNotesEvent extends SettingsEvent {
+  final bool useBundledNotes;
+
+  ChangeUseBundledNotesEvent(this.useBundledNotes);
+}
+
 class ChangeUseAvgGradeCalcFormulaEvent extends SettingsEvent {
   final bool useAvgGradeCalcFormula;
 

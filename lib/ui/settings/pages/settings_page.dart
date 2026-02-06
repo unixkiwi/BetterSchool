@@ -64,6 +64,29 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ],
                 ),
+                // TIMETABLE
+                SettingSection(
+                  title: SettingSectionTitle("Timetable"),
+                  tiles: [
+                    // USE BUNDLED NOTES
+                    SettingSwitchTile(
+                      icon: SettingTileIcon(Icons.note_rounded),
+                      title: Text('Use Bundled Notes'),
+                      description: Text(
+                        'Separate timetable notes from beste.schule per line or bundle them',
+                      ),
+                      value: SettingTileValue(
+                        state.useBundledNotes ? 'On' : 'Off',
+                      ),
+                      onChanged: (value) {
+                        context.read<SettingsBloc>().add(
+                          ChangeUseBundledNotesEvent(value),
+                        );
+                      },
+                      toggled: state.useBundledNotes,
+                    ),
+                  ],
+                ),
                 // GRADES
                 SettingSection(
                   title: SettingSectionTitle("Grades"),

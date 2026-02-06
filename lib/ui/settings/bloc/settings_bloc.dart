@@ -17,6 +17,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         SettingsState(
           brightnessMode: _settingsRepo.brightness.getValue(),
           useModifiers: _settingsRepo.useGradeModifiersKey.getValue(),
+          useBundledNotes: _settingsRepo.useBundledNotes.getValue(),
           useAvgGradeCalcFormula: _settingsRepo
               .useBesteSchuleGradeAvgCalcFormula
               .getValue(),
@@ -26,6 +27,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<LoadSettingsEvent>(_onLoad);
     on<ChangeThemeModeEvent>(_onChangeThemeMode);
     on<ChangeUseModifiersEvent>(_onChangeUseModifiers);
+    on<ChangeUseBundledNotesEvent>(_onChangeUseBundledNotes);
     on<ChangeUseAvgGradeCalcFormulaEvent>(_onChangeUseAvgGradeCalcFormula);
     on<ChangeSelectedYearEvent>(_onChangeSelectedYear);
   }
@@ -38,6 +40,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       state.copyWith(
         brightnessMode: _settingsRepo.brightness.getValue(),
         useModifiers: _settingsRepo.useGradeModifiersKey.getValue(),
+        useBundledNotes: _settingsRepo.useBundledNotes.getValue(),
         useAvgGradeCalcFormula: _settingsRepo.useBesteSchuleGradeAvgCalcFormula
             .getValue(),
         selectedYearId: _settingsRepo.selectedYear.getValue(),
@@ -59,6 +62,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     await _settingsRepo.brightness.setValue(event.themeMode);
     emit(state.copyWith(brightnessMode: event.themeMode));
+  }
+
+  Future<void> _onChangeUseBundledNotes(
+    ChangeUseBundledNotesEvent event,
+    Emitter<SettingsState> emit,
+  ) async {
+    await _settingsRepo.useBundledNotes.setValue(event.useBundledNotes);
+    emit(state.copyWith(useBundledNotes: event.useBundledNotes));
   }
 
   Future<void> _onChangeUseModifiers(
