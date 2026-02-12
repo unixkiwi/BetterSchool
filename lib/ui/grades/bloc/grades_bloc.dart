@@ -99,7 +99,7 @@ class GradesBloc extends Bloc<GradesEvent, GradesState> {
         }
 
         return GradesDataState(
-          groupGradesBySubject(
+          calculateGradesData(
             (response).value,
             useModifier: _settingsRepository.useGradeModifiersKey.getValue(),
             useBesteSchuleFormula: _settingsRepository

@@ -37,6 +37,7 @@ class Grade extends Equatable {
     valueString,
     title,
     type,
+    subject,
     date,
   ];
 }

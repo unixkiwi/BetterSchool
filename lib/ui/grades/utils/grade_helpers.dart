@@ -20,6 +20,41 @@ class GradeSubjectData {
   });
 }
 
+class GradesData {
+  final double average;
+  final int gradesCount;
+  final List<GradeSubjectData> grades;
+
+  GradesData({
+    required this.average,
+    required this.grades,
+    required this.gradesCount,
+  });
+}
+
+GradesData calculateGradesData(
+  List<Grade> grades, {
+  bool useModifier = false,
+  bool useBesteSchuleFormula = false,
+  List<GradeCalculationRule>? calculationRules,
+}) {
+  final grouped = groupGradesBySubject(
+    grades,
+    useModifier: useModifier,
+    useBesteSchuleFormula: useBesteSchuleFormula,
+    calculationRules: calculationRules,
+  );
+
+  return GradesData(
+    average: grouped.isEmpty
+        ? -1
+        : grouped.map((e) => e.average).fold(0.0, (a, b) => a + b) /
+              grouped.length,
+    grades: grouped,
+    gradesCount: grades.length,
+  );
+}
+
 List<GradeSubjectData> groupGradesBySubject(
   List<Grade> grades, {
   bool useModifier = false,

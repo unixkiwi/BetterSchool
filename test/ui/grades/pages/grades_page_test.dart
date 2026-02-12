@@ -4,6 +4,7 @@ import 'package:betterschool/ui/grades/pages/grades_empty_page.dart';
 import 'package:betterschool/ui/grades/pages/grades_error_page.dart';
 import 'package:betterschool/ui/grades/pages/grades_page.dart';
 import 'package:betterschool/ui/grades/pages/subject_list_page.dart';
+import 'package:betterschool/ui/grades/utils/grade_helpers.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,7 +75,9 @@ void main() {
     testWidgets('renders SubjectListPage when state is GradesDataState', (
       tester,
     ) async {
-      when(() => mockGradesBloc.state).thenReturn(GradesDataState([]));
+      when(() => mockGradesBloc.state).thenReturn(
+        GradesDataState(GradesData(grades: [], average: -1, gradesCount: 0)),
+      );
 
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump();
