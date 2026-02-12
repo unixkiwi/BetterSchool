@@ -15,7 +15,7 @@ class GradesPage extends StatelessWidget {
       builder: (context, state) {
         switch (state) {
           case GradesDataState():
-            return SubjectListPage(gradesData: state.grades);
+            return GradesListPage(gradesData: state.grades);
           case GradesStateLoading():
             return Center(child: LoadingSpinner());
           case GradesErrorState():

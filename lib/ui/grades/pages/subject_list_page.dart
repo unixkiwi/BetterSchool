@@ -7,10 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/grades_bloc.dart';
 import 'subject_detail_page.dart';
 
-class SubjectListPage extends StatelessWidget {
+class GradesListPage extends StatelessWidget {
   final List<GradeSubjectData> gradesData;
 
-  const SubjectListPage({super.key, required this.gradesData});
+  const GradesListPage({super.key, required this.gradesData});
 
   BorderRadius _getBorderRadius(bool isFirst, bool isLast) {
     if (isLast) {

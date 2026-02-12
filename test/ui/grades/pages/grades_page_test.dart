@@ -79,7 +79,7 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump();
 
-      expect(find.byType(SubjectListPage), findsOneWidget);
+      expect(find.byType(GradesListPage), findsOneWidget);
     });
   });
 }
