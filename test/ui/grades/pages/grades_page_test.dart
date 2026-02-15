@@ -1,3 +1,5 @@
+import 'package:betterschool/data/models/settings/look_and_feel/brightness_mode_setting.dart';
+import 'package:betterschool/data/repositories/settings/settings_repository.dart';
 import 'package:betterschool/ui/core/widgets/loading.dart';
 import 'package:betterschool/ui/grades/bloc/grades_bloc.dart';
 import 'package:betterschool/ui/grades/pages/grades_empty_page.dart';
@@ -9,16 +11,45 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGradesBloc extends MockBloc<GradesEvent, GradesState>
     implements GradesBloc {}
 
+class MockSettingsRepository extends Mock implements SettingsRepository {}
+
+class MockBrightnessModeSetting extends Mock implements BrightnessModeSetting {}
+
 void main() {
   late MockGradesBloc mockGradesBloc;
+  late MockSettingsRepository mockSettingsRepository;
+  late MockBrightnessModeSetting mockBrightnessModeSetting;
 
   setUp(() {
     mockGradesBloc = MockGradesBloc();
+    mockSettingsRepository = MockSettingsRepository();
+    mockBrightnessModeSetting = MockBrightnessModeSetting();
+
+    // Setup brightness mock
+    when(
+      () => mockSettingsRepository.brightness,
+    ).thenReturn(mockBrightnessModeSetting);
+    when(
+      () => mockBrightnessModeSetting.getValue(),
+    ).thenReturn(ThemeMode.light);
+
+    // Register SettingsRepository in GetIt
+    if (GetIt.I.isRegistered<SettingsRepository>()) {
+      GetIt.I.unregister<SettingsRepository>();
+    }
+    GetIt.I.registerSingleton<SettingsRepository>(mockSettingsRepository);
+  });
+
+  tearDown(() {
+    if (GetIt.I.isRegistered<SettingsRepository>()) {
+      GetIt.I.unregister<SettingsRepository>();
+    }
   });
 
   Widget createWidgetUnderTest() {
