@@ -21,7 +21,7 @@ dependencies:
   equatable: ^2.0.8
 
   # service locator
-  get_it: ^9.2.0
+  get_it: ^9.2.1
 
   # date formatter
   intl: ^0.20.2
