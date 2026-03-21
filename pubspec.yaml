@@ -35,7 +35,7 @@ dependencies:
   dio: ^5.9.2
 
   # logging
-  logger: ^2.6.2
+  logger: ^2.7.0
 
   # oauth
   oauth_webauth: ^5.2.0
@@ -46,7 +46,7 @@ dependencies:
 
   # caching
   path: ^1.9.1
-  sqlite3_flutter_libs: ^0.5.41
+  sqlite3_flutter_libs: ^0.5.42
   path_provider: ^2.1.5
   sqflite_common_ffi: ^2.4.0
   remote_caching: ^1.0.18
@@ -70,8 +70,8 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
   retrofit_generator: ^10.2.3
-  build_runner: ^2.12.2
-  json_serializable: ^6.13.0
+  build_runner: ^2.13.1
+  json_serializable: ^6.13.1
   flutter_launcher_icons: ^0.14.4
   mocktail: ^1.0.4
   bloc_test: ^10.0.0
