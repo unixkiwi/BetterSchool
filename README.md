@@ -1,3 +1,6 @@
+> [!WARNING]
+> This app and is currently not available! 
+
 <h1 align="center">🏫 BetterSchool 🏫</h1>
 
 <div align="center">
