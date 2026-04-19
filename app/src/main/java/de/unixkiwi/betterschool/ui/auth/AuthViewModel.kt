@@ -33,7 +33,7 @@ class AuthViewModel @Inject constructor(
                 .onSuccess { hasToken ->
                     _uiState.value = if (hasToken) {
                         Log.i(TAG, "hasToken = true")
-                        AuthUiState.Success(authRepo.token ?: "null :(")
+                        AuthUiState.Success(authRepo.getToken() ?: "null :(")
                     } else {
                         Log.i(TAG, "hasToken = false")
                         AuthUiState.Idle
@@ -61,7 +61,8 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching { authRepo.clearToken() }
                 .onSuccess {
-                    _uiState.value = AuthUiState.Error(Throwable("Token is: ${authRepo.token}"))
+                    _uiState.value =
+                        AuthUiState.Error(Throwable("Token is: ${authRepo.getToken()}"))
                 }
                 .onFailure { throwable ->
                     Log.e(TAG, "Failed to clear token", throwable)
@@ -100,7 +101,7 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching { authRepo.getTokenFromAuthResponse(result) }
                 .onSuccess {
-                    _uiState.value = AuthUiState.Success(authRepo.token ?: "null :(")
+                    _uiState.value = AuthUiState.Success(authRepo.getToken() ?: "null :(")
                 }
                 .onFailure { throwable ->
                     Log.e(TAG, "Token exchange invocation failed", throwable)

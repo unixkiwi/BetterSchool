@@ -22,10 +22,9 @@ class AuthRepository(
     private val localTokenSource: LocalTokenSource
 ) {
     companion object {
-        private const val TAG = "AuthRepo getToken()"
+        private const val TAG = "AuthRepo"
     }
 
-    var token: String? = null
     private val config = AuthorizationServiceConfiguration(
         AUTHORIZE_URI.toUri(),
         TOKEN_URI.toUri()
@@ -48,14 +47,17 @@ class AuthRepository(
         Log.d(TAG, "isTokenLocally called!")
         val token: String? = localTokenSource.getToken()
         Log.d(TAG, "called getToken!")
-        if (token != null) this.token = token
         return !token.isNullOrEmpty()
+    }
+
+    suspend fun getToken(): String? {
+        Log.d(TAG, "getToken() called!")
+        return localTokenSource.getToken()
     }
 
     suspend fun clearToken() {
         Log.d(TAG, "clearToken() called")
         localTokenSource.clearToken()
-        token = localTokenSource.getToken()
         Log.w(TAG, "Cleared token!")
     }
 
@@ -79,7 +81,6 @@ class AuthRepository(
             }
         }
 
-        token = accessToken
         localTokenSource.setToken(accessToken)
     }
 }
