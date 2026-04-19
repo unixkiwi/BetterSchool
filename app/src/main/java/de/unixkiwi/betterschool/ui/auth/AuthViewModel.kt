@@ -25,6 +25,27 @@ class AuthViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
+    init {
+        Log.d(TAG, "init called")
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.Loading
+            runCatching { authRepo.isTokenLocally() }
+                .onSuccess { hasToken ->
+                    _uiState.value = if (hasToken) {
+                        Log.i(TAG, "hasToken = true")
+                        AuthUiState.Success(authRepo.token ?: "null :(")
+                    } else {
+                        Log.i(TAG, "hasToken = false")
+                        AuthUiState.Idle
+                    }
+                }
+                .onFailure { throwable ->
+                    Log.e(TAG, "init failed", throwable)
+                    _uiState.value = AuthUiState.Error(throwable)
+                }
+        }
+    }
+
     fun onLoginClicked(onIntentReady: (Intent) -> Unit) {
         viewModelScope.launch {
             runCatching { authRepo.createAuthRequestIntent() }
@@ -32,6 +53,18 @@ class AuthViewModel @Inject constructor(
                 .onFailure { throwable ->
                     Log.e(TAG, "Failed to create auth intent", throwable)
                     _uiState.value = AuthUiState.Error(throwable)
+                }
+        }
+    }
+
+    fun onClearClicked() {
+        viewModelScope.launch {
+            runCatching { authRepo.clearToken() }
+                .onSuccess {
+                    _uiState.value = AuthUiState.Error(Throwable("Token is: ${authRepo.token}"))
+                }
+                .onFailure { throwable ->
+                    Log.e(TAG, "Failed to clear token", throwable)
                 }
         }
     }
@@ -65,9 +98,9 @@ class AuthViewModel @Inject constructor(
 
         _uiState.value = AuthUiState.Loading
         viewModelScope.launch {
-            runCatching { authRepo.getToken(result) }
+            runCatching { authRepo.getTokenFromAuthResponse(result) }
                 .onSuccess {
-                    _uiState.value = AuthUiState.Success(authRepo.token)
+                    _uiState.value = AuthUiState.Success(authRepo.token ?: "null :(")
                 }
                 .onFailure { throwable ->
                     Log.e(TAG, "Token exchange invocation failed", throwable)

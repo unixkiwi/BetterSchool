@@ -21,8 +21,11 @@ class AuthRepository(
     private val authService: AuthorizationService,
     private val localTokenSource: LocalTokenSource
 ) {
+    companion object {
+        private const val TAG = "AuthRepo getToken()"
+    }
 
-    var token: String = ""
+    var token: String? = null
     private val config = AuthorizationServiceConfiguration(
         AUTHORIZE_URI.toUri(),
         TOKEN_URI.toUri()
@@ -41,8 +44,23 @@ class AuthRepository(
         )
     }
 
-    suspend fun getToken(authResponse: AuthorizationResponse): Unit =
-        suspendCancellableCoroutine { cont ->
+    suspend fun isTokenLocally(): Boolean {
+        Log.d(TAG, "isTokenLocally called!")
+        val token: String? = localTokenSource.getToken()
+        Log.d(TAG, "called getToken!")
+        if (token != null) this.token = token
+        return !token.isNullOrEmpty()
+    }
+
+    suspend fun clearToken() {
+        Log.d(TAG, "clearToken() called")
+        localTokenSource.clearToken()
+        token = localTokenSource.getToken()
+        Log.w(TAG, "Cleared token!")
+    }
+
+    suspend fun getTokenFromAuthResponse(authResponse: AuthorizationResponse) {
+        val accessToken = suspendCancellableCoroutine { cont ->
             val tokenRequest = authResponse.createTokenExchangeRequest()
 
             authService.performTokenRequest(tokenRequest) { res, ex ->
@@ -50,17 +68,18 @@ class AuthRepository(
 
                 when {
                     ex != null -> {
-                        Log.e("AuthRepo getToken()", "Msg: $ex")
+                        Log.e(TAG, "Msg: $ex")
                         cont.resumeWithException(ex)
                     }
 
-                    res?.accessToken != null -> {
-                        token = res.accessToken!!
-                        cont.resume(Unit)
-                    }
+                    res?.accessToken != null -> cont.resume(res.accessToken!!)
 
                     else -> cont.resumeWithException(IllegalStateException("No access token"))
                 }
             }
         }
+
+        token = accessToken
+        localTokenSource.setToken(accessToken)
+    }
 }
