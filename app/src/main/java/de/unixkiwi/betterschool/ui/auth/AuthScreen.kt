@@ -1,0 +1,85 @@
+package de.unixkiwi.betterschool.ui.auth
+
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
+@Composable
+fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.handleAuthResult(result.data)
+            } else {
+                Log.e("AuthScreen", "Intent result code: ${result.resultCode}")
+                viewModel.onLoginCanceled(result.resultCode)
+            }
+        }
+
+    AuthScreen(
+        uiState = uiState,
+        onClick = { viewModel.onLoginClicked { launcher.launch(it) } }
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun AuthScreen(
+    uiState: AuthUiState,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("Login") }) },
+        modifier = modifier.fillMaxSize()
+    ) { innerPadding ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            when (uiState) {
+                AuthUiState.Loading -> {
+                    CircularProgressIndicator()
+                }
+
+                is AuthUiState.Success -> {
+                    Text("Token: " + uiState.token)
+                }
+
+                is AuthUiState.Idle -> {
+                    LoginButton(onClick)
+                }
+
+                is AuthUiState.Canceled -> {
+                    Text("Login canceled")
+                    LoginButton(onClick, isRetry = true)
+                }
+
+                is AuthUiState.Error -> {
+                    Text(
+                        "Error: " + uiState.error.toString()
+                    )
+                    LoginButton(onClick, isRetry = true)
+                }
+            }
+        }
+    }
+}
