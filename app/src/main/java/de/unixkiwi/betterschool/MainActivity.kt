@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import de.unixkiwi.betterschool.ui.auth.AuthScreen
+import de.unixkiwi.betterschool.ui.RootNavigation
 import de.unixkiwi.betterschool.ui.theme.BetterSchoolTheme
 
 
@@ -17,7 +18,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             BetterSchoolTheme {
-                AuthScreen()
+                val navController = rememberNavController()
+
+                RootNavigation(navController)
             }
         }
     }

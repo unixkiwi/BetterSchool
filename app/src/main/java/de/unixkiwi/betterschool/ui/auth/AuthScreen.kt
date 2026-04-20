@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -22,7 +21,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
+fun AuthScreen(onSuccessfulLogin: () -> Unit, viewModel: AuthViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -37,16 +36,18 @@ fun AuthScreen(viewModel: AuthViewModel = hiltViewModel()) {
     AuthScreen(
         uiState = uiState,
         onClick = { viewModel.onLoginClicked { launcher.launch(it) } },
-        onClear = { viewModel.onClearClicked() }
+        onClear = { viewModel.onClearClicked() },
+        onSuccessfulLogin = onSuccessfulLogin
     )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun AuthScreen(
+private fun AuthScreen(
     uiState: AuthUiState,
     onClick: () -> Unit,
     onClear: () -> Unit,
+    onSuccessfulLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -65,10 +66,7 @@ fun AuthScreen(
                     CircularProgressIndicator()
                 }
 
-                is AuthUiState.Success -> {
-                    Text("Token: " + uiState.token)
-                    Button(onClick = onClear) { Text("Clear token") }
-                }
+                is AuthUiState.Success -> onSuccessfulLogin()
 
                 is AuthUiState.Idle -> {
                     LoginButton(onClick)
