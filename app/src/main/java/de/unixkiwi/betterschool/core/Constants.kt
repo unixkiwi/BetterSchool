@@ -1,4 +1,4 @@
-package de.unixkiwi.betterschool
+package de.unixkiwi.betterschool.core
 
 const val CLIENT_ID = "182"
 const val REDIRECT_URI = "de.unixkiwi.betterschool.compose://oauth2redirect"

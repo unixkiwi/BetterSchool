@@ -3,10 +3,10 @@ package de.unixkiwi.betterschool.data.auth
 import android.content.Intent
 import android.util.Log
 import androidx.core.net.toUri
-import de.unixkiwi.betterschool.AUTHORIZE_URI
-import de.unixkiwi.betterschool.CLIENT_ID
-import de.unixkiwi.betterschool.REDIRECT_URI
-import de.unixkiwi.betterschool.TOKEN_URI
+import de.unixkiwi.betterschool.core.AUTHORIZE_URI
+import de.unixkiwi.betterschool.core.CLIENT_ID
+import de.unixkiwi.betterschool.core.REDIRECT_URI
+import de.unixkiwi.betterschool.core.TOKEN_URI
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationResponse
