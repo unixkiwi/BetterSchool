@@ -5,15 +5,26 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import de.unixkiwi.betterschool.core.BESTE_SCHULE_BASE_URL
 import de.unixkiwi.betterschool.data.auth.AuthRepository
 import de.unixkiwi.betterschool.data.auth.CryptoManager
 import de.unixkiwi.betterschool.data.auth.LocalTokenSource
+import de.unixkiwi.betterschool.data.timetable.RemoteTimetableSource
+import de.unixkiwi.betterschool.data.timetable.TimetableRepository
 import net.openid.appauth.AuthorizationService
+import net.openid.appauth.BuildConfig
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -31,6 +42,46 @@ object AppModule {
         return PreferenceDataStoreFactory.create(
             produceFile = { context.preferencesDataStoreFile("auth_preferences") }
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoteTimetableSource(): RemoteTimetableSource {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        val logging = HttpLoggingInterceptor().apply {
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
+        }
+
+        val client = OkHttpClient.Builder()
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(logging)
+                }
+            }
+//            .addInterceptor(AuthInterceptor(token)) // Your auth interceptor from earlier
+            .build()
+
+
+
+        return Retrofit.Builder()
+            .baseUrl(BESTE_SCHULE_BASE_URL)
+            .client(client)
+            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+            .build()
+            .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTimetableRepository(remoteSource: RemoteTimetableSource): TimetableRepository {
+        return TimetableRepository(remoteSource)
     }
 
     @Provides
