@@ -35,7 +35,7 @@
 
                 <data
                     android:host="oauth2redirect"
-                    android:scheme="de.unixkiwi.betterschool.compose" />
+                    android:scheme="de.unixkiwi.betterschool" />
             </intent-filter>
         </activity>
     </application>

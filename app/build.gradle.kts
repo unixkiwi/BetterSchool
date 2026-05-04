@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "de.unixkiwi.betterschool.compose"
+        applicationId = "de.unixkiwi.betterschool"
         minSdk = 28
         targetSdk = 36
         versionCode = 1

@@ -1,5 +1,5 @@
 [versions]
-agp = "9.1.1"
+agp = "9.2.0"
 coreKtx = "1.18.0"
 hiltAndroidVersion = "2.59.2"
 hiltNavigationCompose = "1.3.0"
