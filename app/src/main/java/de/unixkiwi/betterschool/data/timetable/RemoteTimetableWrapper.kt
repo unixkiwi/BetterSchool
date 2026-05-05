@@ -7,12 +7,13 @@ data class BesteSchuleJournalWeek(
 data class BesteSchuleJournalDay(
     val date: String?,
     val time_name: String?,
-    val lessons: List<BesteSchuleJournalLesson>
+    val lessons: List<BesteSchuleJournalLesson>,
+    val notes: List<BesteSchuleJournalNote>
 )
 
 data class BesteSchuleJournalLesson(
     val nr: String,
-    val status: String,
+    val status: String?,
     val source: String?,
     val subject: BesteSchuleSubject,
     val teachers: List<BesteSchuleTeacher>,
@@ -22,21 +23,19 @@ data class BesteSchuleJournalLesson(
 )
 
 data class BesteSchuleSubject(
-    val local_id: String,
-    val name: String
+    val local_id: String?,
+    val name: String?
 )
 
 data class BesteSchuleTeacher(
-    val forname: String?,
+    val forename: String?,
     val name: String?
 )
 
 data class BesteSchuleGroup(
-    val name: String,
+    val name: String?,
     val local_id: String?,
-    val meta: Int,
-    val level_id: Int?,
-    val year_id: Int?
+    val meta: Int
 )
 
 data class BesteSchuleRoom(
@@ -44,10 +43,10 @@ data class BesteSchuleRoom(
 )
 
 data class BesteSchuleJournalNote(
-    val description: String,
+    val description: String?,
     val type: BesteSchuleJournalNoteType
 )
 
 data class BesteSchuleJournalNoteType(
-    val name: String
+    val name: String?
 )

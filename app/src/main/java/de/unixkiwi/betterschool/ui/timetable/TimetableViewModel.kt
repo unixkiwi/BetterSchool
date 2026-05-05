@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.unixkiwi.betterschool.core.models.SchoolWeek
 import de.unixkiwi.betterschool.data.auth.AuthRepository
-import de.unixkiwi.betterschool.data.timetable.BesteSchuleJournalDay
 import de.unixkiwi.betterschool.data.timetable.TimetableRepository
 import de.unixkiwi.betterschool.utils.WeekString
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +26,13 @@ class TimetableViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<TimetableUiState>(TimetableUiState.Loading)
     val uiState: StateFlow<TimetableUiState> = _uiState.asStateFlow()
+
+    fun updateSelectedPage(page: Int) {
+        val currentState = _uiState.value
+        if (currentState is TimetableUiState.Success) {
+            _uiState.value = currentState.copy(index = page)
+        }
+    }
 
     init {
         Log.d(TAG, "init called")
@@ -69,7 +76,7 @@ class TimetableViewModel @Inject constructor(
                                             }
 
                                         _uiState.value =
-                                            TimetableUiState.Success(week.days, index)
+                                            TimetableUiState.Success(week, index)
                                     }
                                     .onFailure { throwable ->
                                         Log.e(TAG, "init failed", throwable)
@@ -98,6 +105,6 @@ class TimetableViewModel @Inject constructor(
 
 sealed interface TimetableUiState {
     data object Loading : TimetableUiState
-    data class Success(val days: List<BesteSchuleJournalDay>, val index: Int) : TimetableUiState
+    data class Success(val week: SchoolWeek, val index: Int) : TimetableUiState
     data class Error(val error: Throwable) : TimetableUiState
 }
