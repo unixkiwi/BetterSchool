@@ -55,16 +55,12 @@ object AppModule {
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BODY
             } else {
-                HttpLoggingInterceptor.Level.NONE
+                HttpLoggingInterceptor.Level.BODY
             }
         }
 
         val client = OkHttpClient.Builder()
-            .apply {
-                if (BuildConfig.DEBUG) {
-                    addInterceptor(logging)
-                }
-            }
+            .addInterceptor(logging)
 //            .addInterceptor(AuthInterceptor(token)) // Your auth interceptor from earlier
             .build()
 

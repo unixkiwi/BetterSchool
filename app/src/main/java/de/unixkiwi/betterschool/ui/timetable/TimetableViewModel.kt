@@ -5,8 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.unixkiwi.betterschool.data.auth.AuthRepository
-import de.unixkiwi.betterschool.data.timetable.BesteSchuleJournalLesson
+import de.unixkiwi.betterschool.data.timetable.BesteSchuleJournalDay
 import de.unixkiwi.betterschool.data.timetable.TimetableRepository
+import de.unixkiwi.betterschool.utils.WeekString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,21 +35,51 @@ class TimetableViewModel @Inject constructor(
                 .onSuccess { token ->
                     Log.i(TAG, "Got token")
                     if (token != null) {
-                        runCatching {
-                            timetableRepository.getWeek(
-                                "2026-17",
-                                authToken = "Bearer $token"
-                            )
-                        }
-                            .onSuccess { week ->
-                                Log.i(TAG, "data: ${week.days}")
+                        runCatching { authRepo.isTokenExpired() }
+                            .onSuccess { isExpired ->
+                                if (isExpired) {
+                                    Log.w(TAG, "Token has expired, user needs to re-authenticate")
+                                    _uiState.value = TimetableUiState.Error(
+                                        IllegalStateException("Token expired, please log in again")
+                                    )
+                                    return@launch
+                                }
 
-                                _uiState.value =
-                                    TimetableUiState.Success(week.days[LocalDate.now().dayOfWeek.value].lessons)
+                                runCatching {
+                                    Log.d(
+                                        TAG,
+                                        "Requesting data for ${
+                                            WeekString.fromDateSmart(LocalDate.now())
+                                        }"
+                                    )
+                                    timetableRepository.getWeek(
+                                        WeekString.fromDateSmart(LocalDate.now()).toString(),
+                                        authToken = "Bearer $token"
+                                    )
+                                }
+                                    .onSuccess { week ->
+                                        Log.i(TAG, "data: ${week.days}")
+
+                                        val now = LocalDate.now()
+                                        val index =
+                                            if (now.dayOfWeek.value >= 6) {
+                                                0
+                                            } else {
+                                                now.dayOfWeek.value - 1
+                                            }
+
+                                        _uiState.value =
+                                            TimetableUiState.Success(week.days, index)
+                                    }
+                                    .onFailure { throwable ->
+                                        Log.e(TAG, "init failed", throwable)
+                                        _uiState.value = TimetableUiState.Error(throwable)
+                                    }
                             }
                             .onFailure { throwable ->
-                                Log.e(TAG, "init failed", throwable)
+                                Log.e(TAG, "failed to check token expiry", throwable)
                                 _uiState.value = TimetableUiState.Error(throwable)
+                                return@launch
                             }
                     } else {
                         Log.w(TAG, "received token was null")
@@ -67,6 +98,6 @@ class TimetableViewModel @Inject constructor(
 
 sealed interface TimetableUiState {
     data object Loading : TimetableUiState
-    data class Success(val lessons: List<BesteSchuleJournalLesson>) : TimetableUiState
+    data class Success(val days: List<BesteSchuleJournalDay>, val index: Int) : TimetableUiState
     data class Error(val error: Throwable) : TimetableUiState
 }

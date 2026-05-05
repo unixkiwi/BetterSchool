@@ -61,8 +61,12 @@ class AuthRepository(
         Log.w(TAG, "Cleared token!")
     }
 
+    suspend fun isTokenExpired(): Boolean {
+        return localTokenSource.isTokenExpired()
+    }
+
     suspend fun getTokenFromAuthResponse(authResponse: AuthorizationResponse) {
-        val accessToken = suspendCancellableCoroutine { cont ->
+        val tokenData = suspendCancellableCoroutine { cont ->
             val tokenRequest = authResponse.createTokenExchangeRequest()
 
             authService.performTokenRequest(tokenRequest) { res, ex ->
@@ -74,13 +78,17 @@ class AuthRepository(
                         cont.resumeWithException(ex)
                     }
 
-                    res?.accessToken != null -> cont.resume(res.accessToken!!)
+                    res?.accessToken != null -> {
+                        val expiryTime = res.accessTokenExpirationTime
+                        Log.d(TAG, "Token received with expiry time: $expiryTime")
+                        cont.resume(Pair(res.accessToken!!, expiryTime))
+                    }
 
                     else -> cont.resumeWithException(IllegalStateException("No access token"))
                 }
             }
         }
 
-        localTokenSource.setToken(accessToken)
+        localTokenSource.setToken(tokenData.first, tokenData.second)
     }
 }

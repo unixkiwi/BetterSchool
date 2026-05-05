@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -44,34 +46,38 @@ private fun TimetableScreen(uiState: TimetableUiState, modifier: Modifier = Modi
 
         is TimetableUiState.Error -> Text("Error: ${uiState.error}", modifier = modifier)
         is TimetableUiState.Success -> {
-            LazyColumn(contentPadding = PaddingValues(6.dp)) {
-                itemsIndexed(uiState.lessons) { index, lesson ->
-                    ListItem(
-                        colors = ListItemDefaults.colors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                        ),
-                        onClick = { },
-                        shapes = ListItemDefaults.segmentedShapes(
-                            index = index,
-                            count = uiState.lessons.size
-                        ),
-                        content = {
-                            Text(
-                                "[" + lesson.nr + "] " + lesson.subject.name + " (" + lesson.subject.local_id + ")",
-                                style = MaterialTheme.typography.headlineSmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                lesson.status,
-                                style = MaterialTheme.typography.bodyMedium,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        },
-                    )
-                    Spacer(modifier = Modifier.height(1.dp))
+            val pagerState =
+                rememberPagerState(pageCount = { uiState.days.size }, initialPage = uiState.index)
+            HorizontalPager(state = pagerState, modifier = modifier.fillMaxSize()) { page ->
+                LazyColumn(contentPadding = PaddingValues(6.dp)) {
+                    itemsIndexed(uiState.days[page].lessons) { index, lesson ->
+                        ListItem(
+                            colors = ListItemDefaults.colors(
+                                containerColor = if (lesson.status == "canceled") MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceContainerHigh
+                            ),
+                            onClick = { },
+                            shapes = ListItemDefaults.segmentedShapes(
+                                index = index,
+                                count = uiState.days[uiState.index].lessons.size
+                            ),
+                            content = {
+                                Text(
+                                    "[" + lesson.nr + "] " + lesson.subject.name + " (" + lesson.subject.local_id + ")",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            supportingContent = {
+                                Text(
+                                    lesson.status,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                    }
                 }
             }
         }
