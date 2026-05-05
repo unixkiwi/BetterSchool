@@ -38,7 +38,8 @@ class TimetableRepository(private val remoteSource: RemoteTimetableSource) {
                             teachers = lesson.teachers.map { teacher ->
                                 SchoolTeacher(
                                     forename = teacher.forename ?: SchoolTeacher().forename,
-                                    name = teacher.name ?: SchoolTeacher().name
+                                    name = teacher.name ?: SchoolTeacher().name,
+                                    shortName = teacher.local_id ?: SchoolTeacher().shortName
                                 )
                             },
                             group = SchoolGroup(

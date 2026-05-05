@@ -29,7 +29,8 @@ data class BesteSchuleSubject(
 
 data class BesteSchuleTeacher(
     val forename: String?,
-    val name: String?
+    val name: String?,
+    val local_id: String?
 )
 
 data class BesteSchuleGroup(
