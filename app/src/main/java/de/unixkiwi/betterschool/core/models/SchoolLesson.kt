@@ -8,5 +8,6 @@ data class SchoolLesson(
     val teachers: List<SchoolTeacher>,
     val group: SchoolGroup,
     val rooms: List<SchoolRoom>,
-    val notes: List<SchoolJournalNote>
+    val notes: List<SchoolJournalNote>,
+    val subLessons: List<SchoolLesson> = emptyList()
 )

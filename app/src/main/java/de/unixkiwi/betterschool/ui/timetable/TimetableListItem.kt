@@ -1,7 +1,6 @@
 package de.unixkiwi.betterschool.ui.timetable
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -51,58 +50,46 @@ fun TimetableListItem(
             )
         },
         supportingContent = {
-            Column {
-                LazyRow {
-                    if (lesson.teachers.isNotEmpty()) {
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Icon(
-                                    painterResource(R.drawable.person),
-                                    null,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Text(
-                                    if (teacherLongText.length < 21) teacherLongText else lesson.teachers.joinToString(
-                                        ", "
-                                    ) { it.shortName },
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 4.dp, end = 8.dp)
-                                )
-                            }
-                        }
-                    }
-                    if (lesson.rooms.isNotEmpty()) {
-                        item {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                Icon(
-                                    painterResource(R.drawable.room),
-                                    null,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                                Text(
-                                    lesson.rooms.joinToString(", ") { it.name },
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 4.dp, end = 4.dp)
-                                )
-                            }
+            LazyRow {
+                if (lesson.teachers.isNotEmpty()) {
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.person),
+                                null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                if (teacherLongText.length < 21) teacherLongText else lesson.teachers.joinToString(
+                                    ", "
+                                ) { it.shortName },
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(start = 4.dp, end = 8.dp)
+                            )
                         }
                     }
                 }
-
-                if (lesson.subLessons.isNotEmpty()) {
-                    Text(
-                        text = "Grouped lessons: ${lesson.subLessons.joinToString { it.subject.name }}",
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = 4.dp, top = 2.dp)
-                    )
+                if (lesson.rooms.isNotEmpty()) {
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.room),
+                                null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                lesson.rooms.joinToString(", ") { it.name },
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+                            )
+                        }
+                    }
                 }
             }
         },

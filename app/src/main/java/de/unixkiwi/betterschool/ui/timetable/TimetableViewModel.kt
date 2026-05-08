@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.unixkiwi.betterschool.core.models.SchoolWeek
 import de.unixkiwi.betterschool.data.auth.AuthRepository
 import de.unixkiwi.betterschool.data.timetable.TimetableRepository
+import de.unixkiwi.betterschool.data.timetable.groupedForTimetable
 import de.unixkiwi.betterschool.utils.WeekString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -67,6 +68,8 @@ class TimetableViewModel @Inject constructor(
                                     .onSuccess { week ->
                                         Log.i(TAG, "data: ${week.days}")
 
+                                        val groupedWeek = week.groupedForTimetable()
+
                                         val now = LocalDate.now()
                                         val index =
                                             if (now.dayOfWeek.value >= 6) {
@@ -76,7 +79,7 @@ class TimetableViewModel @Inject constructor(
                                             }
 
                                         _uiState.value =
-                                            TimetableUiState.Success(week, index)
+                                            TimetableUiState.Success(groupedWeek, index)
                                     }
                                     .onFailure { throwable ->
                                         Log.e(TAG, "init failed", throwable)
