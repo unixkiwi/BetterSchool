@@ -106,13 +106,32 @@ fun TimetableListItem(
                                 Text(
                                     lesson.rooms.joinToString(", ") { it.name },
                                     style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+                                    modifier = Modifier.padding(start = 4.dp, end = 8.dp)
                                 )
+                            }
+                        }
+                        if (lesson.subLessons.isNotEmpty()) {
+                            item {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Start
+                                ) {
+                                    Icon(
+                                        painterResource(R.drawable.ic_list_alt_add_rounded_24dp),
+                                        null,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Text(
+                                        "More lessons",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        modifier = Modifier.padding(start = 4.dp, end = 8.dp)
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        },
+        }
     )
 }
