@@ -14,7 +14,7 @@ fun List<SchoolLesson>.groupedForTimetable(): List<SchoolLesson> {
     if (isEmpty()) return emptyList()
 
     val lessonsByNr = sortedWith(
-        compareBy<SchoolLesson>({ it.nr.toIntOrNull() ?: Int.MAX_VALUE }, { it.nr })
+        compareBy({ it.nr.toIntOrNull() ?: Int.MAX_VALUE }, { it.nr })
     ).groupByTo(linkedMapOf()) { it.nr }
 
     val lessonsByNrGrouped = linkedMapOf<String, SchoolLesson>()
