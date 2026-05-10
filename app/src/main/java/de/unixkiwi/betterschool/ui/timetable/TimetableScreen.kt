@@ -17,7 +17,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LoadingIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -130,11 +133,48 @@ private fun TimetableScreen(
                         verticalArrangement = Arrangement.Top,
                         modifier = Modifier.fillMaxSize()
                     ) {
+                        item {
+                            Text(
+                                "Lessons",
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                            )
+                        }
                         itemsIndexed(uiState.week.days[page].lessons) { index, lesson ->
                             TimetableListItem(
                                 lesson = lesson,
                                 index = index,
                                 listSize = uiState.week.days[page].lessons.size
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
+                        item {
+                            Text(
+                                "Notes",
+                                style = MaterialTheme.typography.headlineSmall,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                            )
+                        }
+                        itemsIndexed(uiState.week.days[page].notes) { index, note ->
+                            ListItem(
+                                modifier = modifier,
+                                onClick = { },
+                                shapes = ListItemDefaults.segmentedShapes(
+                                    index = index,
+                                    count = uiState.week.days[page].notes.size
+                                ),
+                                colors = ListItemDefaults.colors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                                ),
+                                content = {
+                                    Text(
+                                        note.description,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                         }

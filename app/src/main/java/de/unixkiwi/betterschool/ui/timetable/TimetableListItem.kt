@@ -44,7 +44,7 @@ fun TimetableListItem(
         content = {
             Text(
                 if (lesson.subject.name.length > 35) lesson.subject.shortName else lesson.subject.name,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
