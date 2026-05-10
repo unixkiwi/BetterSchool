@@ -53,7 +53,7 @@ fun TimetableSuccessComponent(
                 Text(
                     "Lessons",
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
                 )
             }
             itemsIndexed(uiState.week.days[page].lessons) { index, lesson ->
