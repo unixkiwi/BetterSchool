@@ -90,7 +90,7 @@ private fun TimetableScreen(
                 }
             )
         },
-        
+
         ) { innerPad ->
         when (uiState) {
             is TimetableUiState.Loading -> Column(
@@ -118,7 +118,6 @@ private fun TimetableScreen(
                 LaunchedEffect(pagerState.currentPage) {
                     onPageChanged(pagerState.currentPage)
                 }
-
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier
@@ -128,7 +127,8 @@ private fun TimetableScreen(
                     LazyColumn(
                         contentPadding = PaddingValues(6.dp),
                         horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Top
+                        verticalArrangement = Arrangement.Top,
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         itemsIndexed(uiState.week.days[page].lessons) { index, lesson ->
                             TimetableListItem(
