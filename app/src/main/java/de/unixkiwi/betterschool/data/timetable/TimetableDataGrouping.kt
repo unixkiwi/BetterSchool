@@ -47,14 +47,8 @@ fun List<SchoolLesson>.groupedForTimetable(): List<SchoolLesson> {
             val lessonsSortedBySubject = lessons.sortedBy { it.subject.name }
 
             val mainLessonIndex = lessonsSortedBySubject.indexOfFirst { lesson ->
-                // substitutionplan = source for replacement lessons
-                // timetable = default, may contain notes which are relevant for
-                // the substitutionplan lesson about why it is replaced or similar
-                lesson.source == "substitutionplan"
+                lesson.status == SchoolLessonStatus.PLANNED
             }.takeIf { it >= 0 }
-                ?: lessonsSortedBySubject.indexOfFirst { lesson ->
-                    lesson.status == SchoolLessonStatus.PLANNED
-                }.takeIf { it >= 0 }
                 ?: lessonsSortedBySubject.indexOfFirst { lesson ->
                     lesson.status == SchoolLessonStatus.HOLD
                 }.takeIf { it >= 0 }
