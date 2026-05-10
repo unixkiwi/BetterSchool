@@ -1,14 +1,33 @@
 package de.unixkiwi.betterschool.data.timetable
 
+import de.unixkiwi.betterschool.core.models.SchoolDay
 import de.unixkiwi.betterschool.core.models.SchoolLesson
 import de.unixkiwi.betterschool.core.models.SchoolLessonStatus
 import de.unixkiwi.betterschool.core.models.SchoolWeek
+import kotlinx.datetime.isoDayNumber
 
-fun SchoolWeek.groupedForTimetable(): SchoolWeek = copy(
-    days = days.map { day ->
-        day.copy(lessons = day.lessons.groupedForTimetable())
+fun SchoolWeek.groupedForTimetable(): SchoolWeek {
+    val newDays = mutableListOf<SchoolDay>()
+
+    days.forEach { day ->
+        val groupedDayLessons = day.lessons.groupedForTimetable()
+
+        if (!(
+                    groupedDayLessons.isEmpty()
+                            && day.lessons.isEmpty()
+                            && (day.date != null && day.date.dayOfWeek.isoDayNumber > 5)
+                    )
+        ) {
+            newDays += day.copy(
+                lessons = groupedDayLessons
+            )
+        }
     }
-)
+
+    return copy(
+        days = newDays
+    )
+}
 
 fun List<SchoolLesson>.groupedForTimetable(): List<SchoolLesson> {
     if (isEmpty()) return emptyList()
@@ -28,10 +47,16 @@ fun List<SchoolLesson>.groupedForTimetable(): List<SchoolLesson> {
             val lessonsSortedBySubject = lessons.sortedBy { it.subject.name }
 
             val mainLessonIndex = lessonsSortedBySubject.indexOfFirst { lesson ->
-                lesson.status == SchoolLessonStatus.HOLD
+                // substitutionplan = source for replacement lessons
+                // timetable = default, may contain notes which are relevant for
+                // the substitutionplan lesson about why it is replaced or similar
+                lesson.source == "substitutionplan"
             }.takeIf { it >= 0 }
                 ?: lessonsSortedBySubject.indexOfFirst { lesson ->
                     lesson.status == SchoolLessonStatus.PLANNED
+                }.takeIf { it >= 0 }
+                ?: lessonsSortedBySubject.indexOfFirst { lesson ->
+                    lesson.status == SchoolLessonStatus.HOLD
                 }.takeIf { it >= 0 }
                 ?: lessonsSortedBySubject.indexOfFirst { lesson ->
                     lesson.status == SchoolLessonStatus.INITIAL
