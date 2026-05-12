@@ -34,7 +34,7 @@ fun TimetableSuccessList(
         item {
             Text(
                 "Lessons",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
             )
         }
@@ -44,7 +44,7 @@ fun TimetableSuccessList(
                 index = index,
                 listSize = uiState.week.days[page].lessons.size
             )
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(ListItemDefaults.SegmentedGap))
         }
         item {
             Spacer(modifier = Modifier.height(10.dp))
@@ -52,24 +52,28 @@ fun TimetableSuccessList(
         item {
             Text(
                 "Notes",
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
             )
         }
         itemsIndexed(uiState.week.days[page].notes) { index, note ->
             ListItem(
                 onClick = { },
-                shapes = ListItemDefaults.segmentedShapes(
-                    index = index,
-                    count = uiState.week.days[page].notes.size
-                ),
+                shapes = if (uiState.week.days[page].notes.size == 1) {
+                    ListItemDefaults.shapes(shape = MaterialTheme.shapes.large)
+                } else {
+                    ListItemDefaults.segmentedShapes(
+                        index = index,
+                        count = uiState.week.days[page].notes.size
+                    )
+                },
                 colors = ListItemDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer
                 ),
                 content = {
                     Text(
                         note.description,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
             )

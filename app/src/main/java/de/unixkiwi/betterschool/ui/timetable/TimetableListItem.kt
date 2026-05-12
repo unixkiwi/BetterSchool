@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -13,6 +14,10 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,7 +28,7 @@ import de.unixkiwi.betterschool.R
 import de.unixkiwi.betterschool.core.models.SchoolLesson
 import de.unixkiwi.betterschool.core.models.SchoolLessonStatus
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TimetableListItem(
     lesson: SchoolLesson,
@@ -31,27 +36,43 @@ fun TimetableListItem(
     listSize: Int,
     modifier: Modifier = Modifier
 ) {
-    val teacherLongText = lesson.teachers.joinToString(", ") { it.name }
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    if (showBottomSheet) {
+        TimetableListItemBottomSheet(
+            lesson = lesson,
+            onDismissRequest = { showBottomSheet = false }
+        )
+    }
 
     ListItem(
         modifier = modifier,
         colors = ListItemDefaults.colors(
-            containerColor = if (lesson.status == SchoolLessonStatus.CANCELED) MaterialTheme.colorScheme.errorContainer.copy(
-                alpha = 0.75F
-            ) else MaterialTheme.colorScheme.surfaceContainerHigh
+            containerColor = when (lesson.status) {
+                SchoolLessonStatus.CANCELED -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.75F)
+                SchoolLessonStatus.PLANNED -> MaterialTheme.colorScheme.surfaceContainerHighest
+                SchoolLessonStatus.HOLD -> MaterialTheme.colorScheme.surfaceContainerLow
+                SchoolLessonStatus.INITIAL -> MaterialTheme.colorScheme.surfaceContainer
+            }
         ),
-        onClick = { },
-        shapes = ListItemDefaults.segmentedShapes(
-            index = index,
-            count = listSize
-        ),
+        onClick = {
+            showBottomSheet = true
+        },
+        shapes = if (listSize == 1) {
+            ListItemDefaults.shapes(shape = MaterialTheme.shapes.large)
+        } else {
+            ListItemDefaults.segmentedShapes(
+                index = index,
+                count = listSize
+            )
+        },
         content = {
             Text(
                 if (lesson.subject.name.length > 35) lesson.subject.shortName else lesson.subject.name,
-                style = if (lesson.status == SchoolLessonStatus.CANCELED) MaterialTheme.typography.bodyLarge.copy(
+                style = if (lesson.status == SchoolLessonStatus.CANCELED) MaterialTheme.typography.headlineMedium.copy(
                     color = MaterialTheme.colorScheme.onErrorContainer,
                     textDecoration = TextDecoration.LineThrough
-                ) else MaterialTheme.typography.bodyLarge,
+                ) else MaterialTheme.typography.headlineMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -63,12 +84,14 @@ fun TimetableListItem(
                 if (cancelledSubLessons.isNotEmpty()) {
                     Text(
                         cancelledSubLessons.joinToString(", ") { it.subject.shortName },
-                        style = MaterialTheme.typography.bodyMedium.copy(
+                        style = MaterialTheme.typography.bodyLarge.copy(
                             textDecoration = TextDecoration.LineThrough
                         ),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
+                val teacherLongText = lesson.teachers.joinToString(", ") { it.name }
 
                 LazyRow {
                     if (lesson.teachers.isNotEmpty()) {
@@ -86,7 +109,7 @@ fun TimetableListItem(
                                     if (teacherLongText.length < 21) teacherLongText else lesson.teachers.joinToString(
                                         ", "
                                     ) { it.shortName },
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(start = 4.dp, end = 8.dp)
                                 )
                             }
@@ -105,7 +128,7 @@ fun TimetableListItem(
                                 )
                                 Text(
                                     lesson.rooms.joinToString(", ") { it.name },
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(start = 4.dp, end = 8.dp)
                                 )
                             }
@@ -123,7 +146,7 @@ fun TimetableListItem(
                                     )
                                     Text(
                                         "More lessons",
-                                        style = MaterialTheme.typography.bodyMedium,
+                                        style = MaterialTheme.typography.bodyLarge,
                                         modifier = Modifier.padding(start = 4.dp, end = 8.dp)
                                     )
                                 }
