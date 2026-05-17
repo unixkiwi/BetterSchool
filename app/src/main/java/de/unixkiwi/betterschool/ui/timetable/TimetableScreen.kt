@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import de.unixkiwi.betterschool.R
+import de.unixkiwi.betterschool.utils.WeekString
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
@@ -35,7 +36,15 @@ fun TimetableScreen(viewModel: TimetableViewModel = hiltViewModel()) {
 
     TimetableScreen(
         uiState = uiState,
-        onPageChanged = { viewModel.updateSelectedPage(it) }
+        onPageChanged = { viewModel.updateSelectedPage(it) },
+        onPrevWeekBtnClick = { viewModel.goToPreviousWeek() },
+        onNextWeekBtnClick = { viewModel.goToNextWeek() },
+        onCurrentDayBtnClick = {
+            viewModel.updateWeek(
+                WeekString.fromDateSmart(java.time.LocalDate.now()),
+                false
+            )
+        }
     )
 }
 
@@ -44,6 +53,9 @@ fun TimetableScreen(viewModel: TimetableViewModel = hiltViewModel()) {
 private fun TimetableScreen(
     uiState: TimetableUiState,
     onPageChanged: (Int) -> Unit,
+    onPrevWeekBtnClick: () -> Unit,
+    onNextWeekBtnClick: () -> Unit,
+    onCurrentDayBtnClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -105,6 +117,9 @@ private fun TimetableScreen(
                 TimetableSuccessComponent(
                     uiState,
                     onPageChanged,
+                    onPrevWeekBtnClick,
+                    onNextWeekBtnClick,
+                    onCurrentDayBtnClick,
                     Modifier
                         .fillMaxSize()
                         .padding(innerPad)

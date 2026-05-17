@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.toJavaLocalDate
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -65,7 +66,7 @@ class TimetableViewModel @Inject constructor(
 
                                         val now = LocalDate.now()
 
-                                        val index = if (week == WeekString.fromDate(now)) {
+                                        val index = if (week == WeekString.fromDateSmart(now)) {
                                             if (now.dayOfWeek.value >= 6) {
                                                 0
                                             } else {
@@ -103,6 +104,36 @@ class TimetableViewModel @Inject constructor(
                     _uiState.value = TimetableUiState.Error(throwable)
                     return@launch
                 }
+        }
+    }
+
+    fun goToPreviousWeek() {
+        val currentState = _uiState.value
+        if (currentState is TimetableUiState.Success) {
+            val currentWeek = currentState.week
+            val firstDay = currentWeek.days.firstOrNull()?.date
+            val previousWeek = if (firstDay == null) {
+                Log.w(TAG, "Current week has no days, settings to week before current")
+                WeekString.fromDateSmart(LocalDate.now()).previousWeek()
+            } else {
+                WeekString.fromDate(firstDay.toJavaLocalDate()).previousWeek()
+            }
+            updateWeek(previousWeek, isGoBackAction = true)
+        }
+    }
+
+    fun goToNextWeek() {
+        val currentState = _uiState.value
+        if (currentState is TimetableUiState.Success) {
+            val currentWeek = currentState.week
+            val firstDay = currentWeek.days.firstOrNull()?.date
+            val previousWeek = if (firstDay == null) {
+                Log.w(TAG, "Current week has no days, settings to week before current")
+                WeekString.fromDateSmart(LocalDate.now()).nextWeek()
+            } else {
+                WeekString.fromDate(firstDay.toJavaLocalDate()).nextWeek()
+            }
+            updateWeek(previousWeek, isGoBackAction = false)
         }
     }
 

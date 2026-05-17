@@ -60,11 +60,18 @@ data class WeekString(
             .with(DayOfWeek.MONDAY)
     }
 
+    fun plusWeeks(n: Int): WeekString {
+        val newDate = toDate().plusWeeks(n.toLong())
+        return fromDate(newDate)
+    }
+
+    fun minusWeeks(n: Int): WeekString = plusWeeks(-n)
+
+    fun nextWeek(): WeekString = plusWeeks(1)
+
+    fun previousWeek(): WeekString = plusWeeks(-1)
+
     override fun compareTo(other: WeekString): Int {
-        return if (this.year != other.year) {
-            this.year.compareTo(other.year)
-        } else {
-            this.week.compareTo(other.week)
-        }
+        return toString().compareTo(other.toString())
     }
 }
