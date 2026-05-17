@@ -35,8 +35,8 @@ class TimetableViewModel @Inject constructor(
         }
     }
 
-    init {
-        Log.d(TAG, "init called")
+    fun updateWeek(week: WeekString, isGoBackAction: Boolean = false) {
+        Log.d(TAG, "updateWeek called with week: $week, isGoBackAction: $isGoBackAction")
         viewModelScope.launch {
             _uiState.value = TimetableUiState.Loading
             runCatching { authRepo.getToken() }
@@ -54,35 +54,36 @@ class TimetableViewModel @Inject constructor(
                                 }
 
                                 runCatching {
-                                    Log.d(
-                                        TAG,
-                                        "Requesting data for ${
-                                            WeekString.fromDateSmart(LocalDate.now())
-                                        }"
-                                    )
+                                    Log.d(TAG, "Requesting data for $week")
                                     timetableRepository.getWeek(
-                                        WeekString.fromDateSmart(LocalDate.now()).toString(),
+                                        week.toString(),
                                         authToken = "Bearer $token"
                                     )
                                 }
-                                    .onSuccess { week ->
-                                        Log.i(TAG, "data: ${week.days}")
-
-                                        val groupedWeek = week.groupedForTimetable()
+                                    .onSuccess { weekResult ->
+                                        val groupedWeek = weekResult.groupedForTimetable()
 
                                         val now = LocalDate.now()
-                                        val index =
+
+                                        val index = if (week == WeekString.fromDate(now)) {
                                             if (now.dayOfWeek.value >= 6) {
                                                 0
                                             } else {
                                                 now.dayOfWeek.value - 1
                                             }
+                                        } else {
+                                            if (isGoBackAction) {
+                                                groupedWeek.days.size - 1
+                                            } else {
+                                                0
+                                            }
+                                        }
 
                                         _uiState.value =
                                             TimetableUiState.Success(groupedWeek, index)
                                     }
                                     .onFailure { throwable ->
-                                        Log.e(TAG, "init failed", throwable)
+                                        Log.e(TAG, "updateWeek failed", throwable)
                                         _uiState.value = TimetableUiState.Error(throwable)
                                     }
                             }
@@ -103,6 +104,11 @@ class TimetableViewModel @Inject constructor(
                     return@launch
                 }
         }
+    }
+
+    init {
+        Log.d(TAG, "init called")
+        updateWeek(WeekString.fromDateSmart(LocalDate.now()))
     }
 }
 
