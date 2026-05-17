@@ -1,6 +1,8 @@
 package de.unixkiwi.betterschool.ui.timetable
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -11,8 +13,10 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,6 +32,27 @@ import androidx.compose.ui.unit.dp
 import de.unixkiwi.betterschool.R
 import de.unixkiwi.betterschool.core.models.SchoolLesson
 import de.unixkiwi.betterschool.core.models.SchoolLessonStatus
+
+
+private fun getIconForStatus(status: SchoolLessonStatus): Int {
+    return when (status) {
+        SchoolLessonStatus.CANCELED -> R.drawable.ic_cancel_rounded_24dp
+        SchoolLessonStatus.PLANNED -> R.drawable.ic_calendar_clock_rounded_24dp
+        SchoolLessonStatus.HOLD -> R.drawable.ic_task_alt_rounded_24dp
+        SchoolLessonStatus.INITIAL -> R.drawable.ic_pending_rounded_24dp
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun getShapeForStatus(status: SchoolLessonStatus): Shape {
+    return when (status) {
+        SchoolLessonStatus.CANCELED -> MaterialShapes.PixelCircle.toShape()
+        SchoolLessonStatus.PLANNED -> MaterialShapes.Cookie4Sided.toShape()
+        SchoolLessonStatus.HOLD -> MaterialShapes.Cookie12Sided.toShape()
+        SchoolLessonStatus.INITIAL -> MaterialShapes.Sunny.toShape()
+    }
+}
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +91,26 @@ fun TimetableListItem(
                 index = index,
                 count = listSize
             )
+        },
+        leadingContent = {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(
+                        color = if (lesson.status == SchoolLessonStatus.CANCELED) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.primary,
+                        shape = getShapeForStatus(lesson.status)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painterResource(getIconForStatus(lesson.status)),
+                    null,
+                    modifier = Modifier
+                        .size(28.dp)
+                        .padding(2.dp),
+                    tint = if (lesson.status == SchoolLessonStatus.CANCELED) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.onPrimary
+                )
+            }
         },
         content = {
             Text(
