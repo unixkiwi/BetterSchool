@@ -1,5 +1,6 @@
 > [!WARNING]
-> This app and is currently not available! 
+> This app and is currently not available!
+> I am also currently rewriting this app using native kotlin + jetpack compose, you can take a look at the code on the jetpack rewrite branch and compile it yourself if you want to take a look.
 
 <h1 align="center">🏫 BetterSchool 🏫</h1>
 
